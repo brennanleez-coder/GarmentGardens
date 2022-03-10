@@ -8,12 +8,14 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import util.enumeration.AccessRightEnum;
+import util.security.CryptographicHelper;
 
 /**
  *
@@ -32,19 +34,25 @@ public class StaffEntity implements Serializable {
     private String username;
     private String password;
     
+    @Column(columnDefinition = "CHAR(32) NOT NULL")
+    private String salt;
+    
     @OneToMany(mappedBy = "staff")
     private List<DisputeEntity> disputes;
 
     public StaffEntity() {
+        this.salt = CryptographicHelper.getInstance().generateRandomString(32);
         this.disputes = new ArrayList<DisputeEntity>();
     }
 
     public StaffEntity(String firstName, String lastName, AccessRightEnum accessRightEnum, String username, String password) {
+        this();
         this.firstName = firstName;
         this.lastName = lastName;
         this.accessRightEnum = accessRightEnum;
         this.username = username;
-        this.password = password;
+        //this.password = password;
+        setPassword(password);
     }
 
     public Long getStaffId() {
@@ -117,7 +125,14 @@ public class StaffEntity implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        if(password != null)
+        {
+            this.password = CryptographicHelper.getInstance().byteArrayToHexString(CryptographicHelper.getInstance().doMD5Hashing(password + this.salt));
+        }
+        else
+        {
+            this.password = null;
+        }
     }
 
     /**
@@ -132,6 +147,15 @@ public class StaffEntity implements Serializable {
      */
     public void setDisputes(List<DisputeEntity> disputes) {
         this.disputes = disputes;
+    }
+    
+    public String getSalt() {
+        return salt;
+    }
+
+    // Newly added in v4.5
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
     
 }

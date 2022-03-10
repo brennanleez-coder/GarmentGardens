@@ -21,6 +21,7 @@ import util.exception.StaffNotFoundException;
 import util.exception.StaffUsernameExistException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateStaffException;
+import util.security.CryptographicHelper;
 //import util.security.CryptographicHelper;
 
 
@@ -143,8 +144,8 @@ public class StaffEntitySessionBean implements StaffEntitySessionBeanLocal
         try
         {
             StaffEntity staffEntity = retrieveStaffByUsername(username);
-            //String passwordHash = CryptographicHelper.getInstance().byteArrayToHexString(CryptographicHelper.getInstance().doMD5Hashing(password + staffEntity.getSalt()));
-            String passwordHash = String.valueOf(password.hashCode());
+            String passwordHash = CryptographicHelper.getInstance().byteArrayToHexString(CryptographicHelper.getInstance().doMD5Hashing(password + staffEntity.getSalt()));
+            //String passwordHash = String.valueOf(password.hashCode());
             if(staffEntity.getPassword().equals(passwordHash))
             {
                 staffEntity.getDisputes().size();                

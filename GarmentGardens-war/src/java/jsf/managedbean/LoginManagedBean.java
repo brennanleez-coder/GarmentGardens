@@ -8,7 +8,7 @@ package jsf.managedbean;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
 import entity.StaffEntity;
 import java.io.IOException;
-import javafx.event.ActionEvent;
+import javax.faces.event.ActionEvent;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -25,8 +25,13 @@ import util.exception.InvalidLoginCredentialException;
 @RequestScoped
 public class LoginManagedBean {
 
+//    @EJB(name = "StaffEntitySessionBeanLocal")
+//    private StaffEntitySessionBeanLocal staffEntitySessionBeanLocal1;
+
     @EJB(name = "StaffEntitySessionBeanLocal")
     private StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
+    
+    
 
     private String username;
     private String password;
