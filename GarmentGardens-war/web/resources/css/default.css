@@ -1,0 +1,66 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 10 Mar, 2022, 4:14:02 PM
+    Author     : brennanlee
+*/
+
+a {
+    text-decoration-line: none;	
+}
+
+a:hover {
+    text-decoration-line: underline;
+    cursor: hand;
+}
+
+
+
+/* PrimeFaces styling elements below this comment */
+
+.ui-widget {
+    font-size: small;
+}
+
+.ui-column-header {
+    font-size: small;
+}
+
+.ui-column-title {
+    font-size: small;
+}
+
+.ui-datatable {
+    font-size: small;
+}
+
+.ui-datatable-header {
+    font-size: small;
+}
+
+.ui-datatable-footer {
+    font-size: small;
+}
+
+.ui-datatable-column {
+    font-size: small;
+}
+
+.ui-sortable-column {
+    font-size: small;
+}
+
+.ui-sortable-column-icon {
+    font-size: small;
+}
+
+.ui-datatable-data {
+    font-size: small;
+}
+
+div.ui-growl {
+   left: 10;
+}
