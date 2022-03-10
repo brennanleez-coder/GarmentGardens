@@ -48,7 +48,7 @@ public class AdvertisementEntity implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
+        int hash = 1;
         hash += (advertisementId != null ? advertisementId.hashCode() : 0);
         return hash;
     }
