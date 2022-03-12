@@ -1,0 +1,275 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/template/defaultTemplate.xhtml"
+                xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        
+        <ez:Breadcrumb pageName="staffManagement" />
+        
+        <div>
+            <h3>Staff Management</h3>
+
+        </div>
+        
+        <h:form>
+            
+                <p:menubar>
+
+                    <p:submenu label="File" icon="ui-icon-document">
+                        <p:menuitem value="Create New Staff" onclick="PF('dialogCreateNewStaff').show()" icon="pi pi-plus" />
+                    </p:submenu>                                        
+
+                </p:menubar>
+                <br/>
+
+            </h:form>
+            
+            <h:form id="formAllStaffs">
+            
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="dataTableAllStaffs" widgetVar="dataTableAllStaffs" value="#{staffManagementManagedBean.staffEntities}" var="staffEntity" rowKey="#{staffEntity.staffId}" rowIndexVar="row"
+                             filteredValue="#{staffManagementManagedBean.filteredStaffEntities}"
+                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: right;">
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllStaffs').filter()" style="width:300px" placeholder="Enter keyword"/>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column headerText="Staff ID" sortBy="#{staffEntity.staffId}" filterBy="#{staffEntity.staffId}" filterMatchMode="contains">
+                        <h:outputText value="#{staffEntity.staffId}" />
+                    </p:column>                            
+
+                    <p:column headerText="First Name" sortBy="#{staffEntity.firstName}" filterBy="#{staffEntity.firstName}" filterMatchMode="contains">
+                        <h:outputText value="#{staffEntity.firstName}" />
+                    </p:column>
+                    
+                    <p:column headerText="Last Name" sortBy="#{staffEntity.lastName}" filterBy="#{staffEntity.lastName}" filterMatchMode="contains">
+                        <h:outputText value="#{staffEntity.lastName}" />
+                    </p:column>
+                    
+                    <p:column headerText="Access Rights" sortBy="#{staffEntity.accessRightEnum}" filterBy="#{staffEntity.accessRightEnum}" filterMatchMode="contains">
+                        <h:outputText value="#{staffEntity.accessRightEnum}" />
+                    </p:column>
+
+                    <p:column headerText="Username" sortBy="#{staffEntity.username}" filterBy="#{staffEntity.username}" filterMatchMode="contains">
+                        <h:outputText value="#{staffEntity.username}" />
+                    </p:column>
+
+                    <p:column headerText="Action" >
+                        <p:commandButton update="ccViewStaff:formViewStaff" oncomplete="PF('dialogViewStaff').show()" icon="ui-icon-document" title="View">
+                            <f:setPropertyActionListener value="#{staffEntity}" target="#{staffManagementManagedBean.viewStaffManagedBean.staffEntityToView}" />
+                        </p:commandButton>
+                        <p:commandButton actionListener="#{staffManagementManagedBean.doUpdateStaff}" update="formUpdateStaff" oncomplete="PF('dialogUpdateStaff').show()" icon="ui-icon-pencil" title="Update">
+                            <f:attribute name="staffEntityToUpdate" value="#{staffEntity}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{staffManagementManagedBean.deleteStaff}" update="formAllStaffs:dataTableAllStaffs formAllStaffs:messages">
+                            <f:attribute name="staffEntityToDelete" value="#{staffEntity}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{staffEntity.username} ?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </h:form>
+            
+            <h:form id="formCreateNewStaff">
+
+                <p:dialog id="dialogCreateNewStaff" widgetVar="dialogCreateNewStaff" header="Create New Staff" closable="true">
+
+                    <p:messages id="messagesCreateNewStaff" redisplay="false" />
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="firstName" value="First Name: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="firstName" value="#{staffManagementManagedBean.newStaffEntity.firstName}" placeholder="Enter first name" required="true" requiredMessage="First Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="firstName" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="lastName" value="Last Name: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="lastName" value="#{staffManagementManagedBean.newStaffEntity.lastName}" placeholder="Enter last name" required="true" requiredMessage="Last Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="lastName" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="selAccessRights" value="Access Rights: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="selAccessRights" value="#{staffManagementManagedBean.newStaffEntity.accessRightEnum}">
+                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
+                                    <f:selectItem itemValue="ADMINISTRATOR" itemLabel="Administrator" />
+                                    <f:selectItem itemValue="MANAGER" itemLabel="Manager" />
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="selAccessRights" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="username" value="Username: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="username" value="#{staffManagementManagedBean.newStaffEntity.username}" placeholder="Enter username" required="true" requiredMessage="Username is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="username" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="password" value="Password: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:password id="password" value="#{staffManagementManagedBean.newStaffEntity.password}" placeholder="Enter password" required="true" requiredMessage="Password is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="password" />
+                            </p:column>
+                        </p:row>
+
+                       
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton  value="Create New Staff" update="@form formAllStaffs:dataTableAllStaffs" actionListener="#{staffManagementManagedBean.createNewStaff}" oncomplete="PF('dialogCreateNewStaff').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+
+            <ez:ViewStaff id="ccViewStaff" />
+
+            <h:form id="formUpdateStaff">
+
+                <p:dialog id="dialogUpdateStaff" widgetVar="dialogUpdateStaff" header="Update Staff" closable="true">
+
+                    <p:messages id="messagesUpdateStaff" redisplay="false" />
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Staff ID: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{staffManagementManagedBean.selectedStaffEntityToUpdate.staffId}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="firstName" value="First Name: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="firstName" value="#{staffManagementManagedBean.selectedStaffEntityToUpdate.firstName}" placeholder="Enter First Name" required="true" requiredMessage="First name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="firstName" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="lastName" value="Last Name: " />
+                            </p:column>
+                            <p:column>
+                                    <p:inputText id="lastName" value="#{staffManagementManagedBean.selectedStaffEntityToUpdate.lastName}" placeholder="Enter Last Name" required="true" requiredMessage="Last name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="lastName" />
+                            </p:column>
+                        </p:row>
+                        
+                         <p:row>
+                            <p:column>
+                                <p:outputLabel for="selAccessRights" value="Access Rights " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="selAccessRights" value="#{staffManagementManagedBean.selectedStaffEntityToUpdate.accessRightEnum}">
+                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
+                                    <f:selectItem itemValue="ADMINISTRATOR" itemLabel="Administrator" />
+                                    <f:selectItem itemValue="MANAGER" itemLabel="Manager" />
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="selAccessRights" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="username" value="Username: " />
+                            </p:column>
+                            <p:column>
+                                    <p:inputText id="username" value="#{staffManagementManagedBean.selectedStaffEntityToUpdate.username}" placeholder="Enter Username" required="true" requiredMessage="Username is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="username" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="password" value="Password: " />
+                            </p:column>
+                            <p:column>
+                                    <p:password id="password" value="#{staffManagementManagedBean.selectedStaffEntityToUpdate.password}" placeholder="Enter Password" required="true" requiredMessage="Password is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="password" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton value="Update Staff" update="@form formAllStaffs:dataTableAllStaffs" actionListener="#{staffManagementManagedBean.updateStaff}" oncomplete="PF('dialogUpdateStaff').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+        
+    </ui:define>
+
+</ui:composition>

@@ -5,8 +5,11 @@
  */
 package ejb.session.singleton;
 
+import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
+import entity.MessageOfTheDayEntity;
 import entity.StaffEntity;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -32,6 +35,9 @@ import util.exception.UnknownPersistenceException;
 @LocalBean
 @Startup
 public class DataInitSessionBean {
+
+    @EJB(name = "MessageOfTheDayEntitySessionBeanLocal")
+    private MessageOfTheDayEntitySessionBeanLocal messageOfTheDayEntitySessionBeanLocal;
 
     @EJB(name = "StaffEntitySessionBeanLocal")
     private StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
@@ -68,6 +74,10 @@ public class DataInitSessionBean {
         {
             StaffEntity bigboss = new StaffEntity("manager", "lee", AccessRightEnum.ADMINISTRATOR, "manager", "password");
             staffEntitySessionBeanLocal.createNewStaff(bigboss);
+            
+            messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 1", "Message 1", new Date()));
+            messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 2", "Message 2", new Date()));
+            messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 3", "Message 3", new Date()));             
         }
         catch(StaffUsernameExistException | UnknownPersistenceException | InputDataValidationException  ex) 
         {
