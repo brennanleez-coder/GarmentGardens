@@ -7,8 +7,10 @@ package ejb.session.singleton;
 
 import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
+import ejb.session.stateless.UserEntitySessionBeanLocal;
 import entity.MessageOfTheDayEntity;
 import entity.StaffEntity;
+import entity.UserEntity;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -18,14 +20,12 @@ import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.AccessRightEnum;
-import util.exception.CreateNewCategoryException;
-import util.exception.CreateNewProductException;
-import util.exception.CreateNewTagException;
+import util.enumeration.RoleEnum;
 import util.exception.InputDataValidationException;
-import util.exception.ProductSkuCodeExistException;
 import util.exception.StaffNotFoundException;
 import util.exception.StaffUsernameExistException;
 import util.exception.UnknownPersistenceException;
+import util.exception.UserUsernameExistException;
 
 /**
  *
@@ -36,19 +36,19 @@ import util.exception.UnknownPersistenceException;
 @Startup
 public class DataInitSessionBean {
 
+    @EJB(name = "UserEntitySessionBeanLocal")
+    private UserEntitySessionBeanLocal userEntitySessionBeanLocal;
+
     @EJB(name = "MessageOfTheDayEntitySessionBeanLocal")
     private MessageOfTheDayEntitySessionBeanLocal messageOfTheDayEntitySessionBeanLocal;
 
     @EJB(name = "StaffEntitySessionBeanLocal")
     private StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
 
+    
     @PersistenceContext(unitName = "GarmentGardens-ejbPU")
     private EntityManager em;
     
-    
-
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
 
     public DataInitSessionBean() {
     }
@@ -58,28 +58,33 @@ public class DataInitSessionBean {
     {
         try
         {
-            staffEntitySessionBeanLocal.retrieveStaffByUsername("manager");
+            staffEntitySessionBeanLocal.retrieveStaffByUsername("admin");
         }
         catch(StaffNotFoundException ex)
         {
             initializeData();
         }
-//        em.persist(new MessageOfTheDayEntity("test", "This is a test run", new Date()));
-//        em.persist(new StaffEntity("manager", "lee", AccessRightEnum.ADMINISTRATOR,"manager","password" ));
     }
     
     private void initializeData() 
     {
         try 
         {
-            StaffEntity bigboss = new StaffEntity("manager", "lee", AccessRightEnum.ADMINISTRATOR, "manager", "password");
-            staffEntitySessionBeanLocal.createNewStaff(bigboss);
+            StaffEntity admin = new StaffEntity("admin", "lee", AccessRightEnum.ADMINISTRATOR, "admin", "password");
+            StaffEntity manager = new StaffEntity("manager", "lee", AccessRightEnum.MANAGER, "manager", "password");
+            UserEntity customer = new UserEntity("customer", "lee", "customer@mail.com", "customer", "password", new Date(), "NUS", RoleEnum.CUSTOMER);
+            UserEntity seller = new UserEntity("seller", "lee", "seller@mail.com", "seller", "password", new Date(), "NUS", RoleEnum.SELLER);
+            
+            staffEntitySessionBeanLocal.createNewStaff(admin);
+            staffEntitySessionBeanLocal.createNewStaff(manager);
+            userEntitySessionBeanLocal.createNewUser(customer);
+            userEntitySessionBeanLocal.createNewUser(seller);
             
             messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 1", "Message 1", new Date()));
             messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 2", "Message 2", new Date()));
             messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 3", "Message 3", new Date()));             
         }
-        catch(StaffUsernameExistException | UnknownPersistenceException | InputDataValidationException  ex) 
+        catch(StaffUsernameExistException | UserUsernameExistException | UnknownPersistenceException | InputDataValidationException  ex) 
         {
             ex.printStackTrace();
         }

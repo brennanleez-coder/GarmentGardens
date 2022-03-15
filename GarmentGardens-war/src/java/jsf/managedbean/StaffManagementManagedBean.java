@@ -61,11 +61,11 @@ public class StaffManagementManagedBean implements Serializable {
         staffEntities = staffEntitySessionBeanLocal.retrieveAllStaffs();
     }
 
-    public void viewProductDetails(ActionEvent event) throws IOException {
-        Long productIdToView = (Long) event.getComponent().getAttributes().get("staffId");
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("staffIdToView", productIdToView);
-        FacesContext.getCurrentInstance().getExternalContext().redirect("viewProductDetails.xhtml");
-    }
+//    public void viewProductDetails(ActionEvent event) throws IOException {
+//        Long productIdToView = (Long) event.getComponent().getAttributes().get("staffId");
+//        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("staffIdToView", productIdToView);
+//        FacesContext.getCurrentInstance().getExternalContext().redirect("viewProductDetails.xhtml");
+//    }
 
     public void createNewStaff(ActionEvent event) {
 //        if (categoryIdNew == 0) {

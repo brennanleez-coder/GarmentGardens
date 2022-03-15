@@ -1,0 +1,249 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/template/defaultTemplate.xhtml"
+                xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+
+        <ez:Breadcrumb pageName="userManagement" />
+
+        <div>
+            <h3>User Management</h3>
+
+        </div>
+
+        <h:form id="formAllUsers">
+
+            <p:messages id="messages" redisplay="false" closable="true" />
+
+            <p:dataTable id="dataTableAllUsers" widgetVar="dataTableAllUsers" value="#{userManagementManagedBean.userEntities}" var="userEntity" rowKey="#{userEntity.userId}" rowIndexVar="row"
+                         filteredValue="#{userManagementManagedBean.filteredUserEntities}"
+                         rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+                <f:facet name="header">
+                    <p:outputPanel style="text-align: right;">
+                        <h:outputText value="Search all fields:" />
+                        <p:inputText id="globalFilter" onkeyup="PF('dataTableAllUsers').filter()" style="width:300px" placeholder="Enter keyword"/>
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column headerText="User ID" sortBy="#{userEntity.userId}" filterBy="#{userEntity.userId}" filterMatchMode="contains">
+                    <h:outputText value="#{userEntity.userId}" />
+                </p:column>                            
+
+                <p:column headerText="First Name" sortBy="#{userEntity.firstName}" filterBy="#{userEntity.firstName}" filterMatchMode="contains">
+                    <h:outputText value="#{userEntity.firstName}" />
+                </p:column>
+
+                <p:column headerText="Last Name" sortBy="#{userEntity.lastName}" filterBy="#{userEntity.lastName}" filterMatchMode="contains">
+                    <h:outputText value="#{userEntity.lastName}" />
+                </p:column>
+
+                <p:column headerText="Email" sortBy="#{userEntity.email}" filterBy="#{userEntity.email}" filterMatchMode="contains">
+                    <h:outputText value="#{userEntity.email}" />
+                </p:column>
+                <p:column headerText="DOB" sortBy="#{userEntity.dateOfBirth}" filterBy="#{userEntity.dateOfBirth}" filterMatchMode="contains">
+                    <h:outputText value="#{userEntity.dateOfBirth}">
+                        <f:convertDateTime pattern="dd-MM-yyyy"/>
+                    </h:outputText>
+                </p:column>                
+                <p:column headerText="Username" sortBy="#{userEntity.email}" filterBy="#{userEntity.username}" filterMatchMode="contains">
+                    <h:outputText value="#{userEntity.username}" />
+                </p:column>
+                <p:column headerText="Role" sortBy="#{userEntity.role}" filterBy="#{userEntity.role}" filterMatchMode="contains">
+                    <h:outputText value="#{userEntity.role}" />
+                </p:column>
+                <p:column headerText="Tiering" sortBy="#{userEntity.tiering}" filterBy="#{userEntity.tiering}" filterMatchMode="contains">
+                    <h:outputText value="#{userEntity.tiering}" />
+                </p:column>
+                <p:column headerText="Chlorophyll" sortBy="#{userEntity.chlorophyll}" filterBy="#{userEntity.chlorophyll}" filterMatchMode="contains">
+                    <h:outputText rendered="#{userEntity.chlorophyll != null}" value="#{userEntity.chlorophyll}" />
+                    <h:outputText rendered="#{userEntity.chlorophyll == null}" value="N/A" />
+                </p:column>
+                <p:column headerText="Wallet Balance" sortBy="#{userEntity.wallet}" filterBy="#{userEntity.wallet}" filterMatchMode="contains">
+                    <h:outputText rendered="#{userEntity.wallet != null}" value="#{userEntity.wallet}" />
+                    <h:outputText rendered="#{userEntity.wallet == null}" value="N/A" />
+                </p:column>
+                <p:column headerText="Action" >
+                    <p:commandButton update="ccViewUser:formViewUser" oncomplete="PF('dialogViewUser').show()" icon="ui-icon-document" title="View">
+                        <f:setPropertyActionListener value="#{userEntity}" target="#{userManagementManagedBean.viewUserManagedBean.userEntityToView}" />
+                    </p:commandButton>
+                    <p:commandButton actionListener="#{userManagementManagedBean.doUpdateUser}" update="formUpdateUser" oncomplete="PF('dialogUpdateUser').show()" icon="ui-icon-pencil" title="Update">
+                        <f:attribute name="userEntityToUpdate" value="#{userEntity}" />
+                    </p:commandButton>
+                    <p:commandButton icon="ui-icon-trash" actionListener="#{userManagementManagedBean.deleteUser}" update="formAllUsers:dataTableAllUsers formAllUsers:messages">
+                        <f:attribute name="userEntityToDelete" value="#{userEntity}" />
+                        <p:confirm header="Confirmation" message="Are you sure you want to delete #{userEntity.username} ?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+
+        </h:form>
+
+        <ez:ViewUser id="ccViewUser" />
+
+        <h:form id="formUpdateUser">
+
+            <p:dialog id="dialogUpdateUser" widgetVar="dialogUpdateUser" header="Update User" closable="true">
+
+                <p:messages id="messagesUpdateUser" redisplay="false" />
+
+                <p:panelGrid>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="User ID: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{userManagementManagedBean.selectedUserEntityToUpdate.userId}" />
+                        </p:column>
+                        <p:column>
+                            &nbsp;
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="firstName" value="First Name: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="firstName" value="#{userManagementManagedBean.selectedUserEntityToUpdate.firstName}" placeholder="Enter First Name" required="true" requiredMessage="First name is required" />
+                        </p:column>
+                        <p:column>
+                            <p:message for="firstName" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="lastName" value="Last Name: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="lastName" value="#{userManagementManagedBean.selectedUserEntityToUpdate.lastName}" placeholder="Enter Last Name" required="true" requiredMessage="Last name is required" />
+                        </p:column>
+                        <p:column>
+                            <p:message for="lastName" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="email" value="Email: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="email" value="#{userManagementManagedBean.selectedUserEntityToUpdate.email}" placeholder="Enter Email" required="true" requiredMessage="Email is required" />
+                        </p:column>
+                        <p:column>
+                            <p:message for="email" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="username" value="Username: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="username" value="#{userManagementManagedBean.selectedUserEntityToUpdate.username}" placeholder="Enter Username" required="true" requiredMessage="Username is required" />
+                        </p:column>
+                        <p:column>
+                            <p:message for="username" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="dateOfBirth" value="Date Of Birth: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="dateOfBirth" value="#{userManagementManagedBean.selectedUserEntityToUpdate.dateOfBirth}" placeholder="Enter Date" required="true" requiredMessage="Date of Birth is required">
+                                <f:convertDateTime pattern = "dd-mm-yyyy" />
+                            </p:inputText>
+                        </p:column>
+                        <p:column>
+                            <p:message for="dateOfBirth" />
+                        </p:column>
+                    </p:row>         
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="address" value="Address: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="address" value="#{userManagementManagedBean.selectedUserEntityToUpdate.address}" placeholder="Enter Address" required="true" requiredMessage="Address is required" />
+                        </p:column>
+                        <p:column>
+                            <p:message for="address" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Role: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{userManagementManagedBean.selectedUserEntityToUpdate.role}" />
+                        </p:column>
+                        <p:column>
+                            &nbsp;
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="selTiering" value="Tiering: " />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="selTiering" value="#{userManagementManagedBean.selectedUserEntityToUpdate.tiering}">
+                                <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
+                                <f:selectItem itemValue="TIER1" itemLabel="Tier 1" />
+                                <f:selectItem itemValue="TIER2" itemLabel="Tier 2" />
+                                <f:selectItem itemValue="TIER3" itemLabel="Tier 3" />
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column>
+                            <p:message for="selTiering" />
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{userManagementManagedBean.selectedUserEntityToUpdate.chlorophyll != null}">
+                        <p:column>
+                            <h:outputLabel for="chlorophyll" value="Chlorophyll: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="chlorophyll" value="#{userManagementManagedBean.selectedUserEntityToUpdate.chlorophyll}" placeholder="Enter Chlorophyll" required="true" requiredMessage="Chlorophyll is required" />
+                        </p:column>
+                        <p:column>
+                            <p:message for="chlorophyll" />
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{userManagementManagedBean.selectedUserEntityToUpdate.wallet != null}">
+                        <p:column>
+                            <h:outputLabel value="Wallet Balance: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{userManagementManagedBean.selectedUserEntityToUpdate.wallet}" />
+                        </p:column>
+                        <p:column>
+                            &nbsp;
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column colspan="3">
+                            <p:commandButton value="Update User" update="@form formAllUsers:dataTableAllUsers" actionListener="#{userManagementManagedBean.updateUser}" oncomplete="PF('dialogUpdateUser').show();" />
+                        </p:column>
+                    </p:row>
+
+                </p:panelGrid>
+
+            </p:dialog>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

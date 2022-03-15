@@ -41,8 +41,10 @@ public class UserEntity implements Serializable {
     private String address;
     private RoleEnum role;
     private TierEnum tiering;
-    private Integer chlorophyll = RoleEnum.CUSTOMER.equals(role)? new Integer(0): null;
-    private BigDecimal wallet = RoleEnum.SELLER.equals(role)? new BigDecimal(0): null;
+    private Integer chlorophyll;
+    private BigDecimal wallet;
+    //private Integer chlorophyll = RoleEnum.CUSTOMER.equals(role)? new Integer(0): null;
+    //private BigDecimal wallet = RoleEnum.SELLER.equals(role)? new BigDecimal(0): null;
     
     @OneToMany(mappedBy = "user")
     private List<CreditCardEntity> creditCards;
@@ -63,10 +65,11 @@ public class UserEntity implements Serializable {
         this.creditCards = new ArrayList<CreditCardEntity>();
         this.rewards = new ArrayList<RewardEntity>();
         this.orders = new ArrayList<OrderEntity>();
+        this.tiering = TierEnum.TIER1;
     }
     
 
-    public UserEntity(String firstName, String lastName, String email, String username, String password, Date dateOfBirth, String address, RoleEnum role, TierEnum tiering) {
+    public UserEntity(String firstName, String lastName, String email, String username, String password, Date dateOfBirth, String address, RoleEnum role) {
         this();
         this.firstName = firstName;
         this.lastName = lastName;
@@ -76,7 +79,8 @@ public class UserEntity implements Serializable {
         this.dateOfBirth = dateOfBirth;
         this.address = address;
         this.role = role;
-        this.tiering = tiering;
+        this.chlorophyll = RoleEnum.CUSTOMER.equals(role)? new Integer(0): null;
+        this.wallet = RoleEnum.SELLER.equals(role)? new BigDecimal(0): null;
     }
    
 

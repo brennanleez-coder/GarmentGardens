@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <cc:interface>
+    </cc:interface>
+
+    <cc:implementation>
+
+        <h:form id="formViewUser">
+
+            <p:dialog id="dialogViewUser" widgetVar="dialogViewUser" header="View User" closable="true">
+
+                <p:panelGrid>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="User ID: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewUserManagedBean.userEntityToView.userId}" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="First name: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewUserManagedBean.userEntityToView.firstName}" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Last name: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewUserManagedBean.userEntityToView.lastName}" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Email: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewUserManagedBean.userEntityToView.email}" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Username: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewUserManagedBean.userEntityToView.username}" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Password: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewUserManagedBean.userEntityToView.password}" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Date of Birth: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewUserManagedBean.userEntityToView.dateOfBirth}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Address: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewUserManagedBean.userEntityToView.address}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Role: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewUserManagedBean.userEntityToView.role}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Tiering: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewUserManagedBean.userEntityToView.tiering}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Chlorophyll Collected: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText rendered="#{viewUserManagedBean.userEntityToView.chlorophyll != null}" value="#{viewUserManagedBean.userEntityToView.chlorophyll}" />
+                            <h:outputText rendered="#{viewUserManagedBean.userEntityToView.chlorophyll == null}" value="N/A" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Wallet Balance: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText rendered="#{viewUserManagedBean.userEntityToView.wallet != null}" value="#{viewUserManagedBean.userEntityToView.wallet}" />
+                            <h:outputText rendered="#{viewUserManagedBean.userEntityToView.wallet == null}" value="N/A" />
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </p:dialog>
+
+        </h:form>
+
+    </cc:implementation>
+</html>

@@ -25,7 +25,7 @@ import util.exception.UnknownPersistenceException;
 import util.exception.UpdateUserException;
 import util.exception.UserNotFoundException;
 import util.exception.UserUsernameExistException;
-//import util.security.CryptographicHelper;
+import util.security.CryptographicHelper;
 
 
 /**
@@ -131,9 +131,7 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
         try
         {
             UserEntity userEntity = retrieveUserByUsername(username);
-            //String passwordHash = CryptographicHelper.getInstance().byteArrayToHexString(CryptographicHelper.getInstance().doMD5Hashing(password + userEntity.getSalt()));
-            String passwordHash = String.valueOf(password.hashCode());
-            
+            String passwordHash = CryptographicHelper.getInstance().byteArrayToHexString(CryptographicHelper.getInstance().doMD5Hashing(password));            
             if(userEntity.getPassword().equals(passwordHash))
             {
                 userEntity.getOrders().size();                
@@ -184,10 +182,6 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
             throw new UserNotFoundException("User ID not provided for user to be updated");
         }
     }
-    
-    
-    
-    // Updated in v4.1
     
     @Override
     public void deleteUser(Long userId) throws UserNotFoundException, DeleteUserException
