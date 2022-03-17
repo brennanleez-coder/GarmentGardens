@@ -11,17 +11,18 @@ import ejb.session.stateless.TagEntitySessionBeanLocal;
 import entity.CategoryEntity;
 import entity.ProductEntity;
 import entity.TagEntity;
+
 import java.io.IOException;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.event.ActionEvent;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import util.exception.CreateNewProductException;
 import util.exception.DeleteProductException;
@@ -64,7 +65,7 @@ public class ProductManagementManagedBean implements Serializable {
     public ProductManagementManagedBean() {
         newProductEntity = new ProductEntity();
     }
-/*
+
     @PostConstruct
     public void postConstruct() {
         productEntities = productEntitySessionBeanLocal.retrieveAllProducts();
@@ -249,5 +250,5 @@ public class ProductManagementManagedBean implements Serializable {
     public void setTagIdsUpdate(List<Long> tagIdsUpdate) {
         this.tagIdsUpdate = tagIdsUpdate;
     }
-*/
+
 }
