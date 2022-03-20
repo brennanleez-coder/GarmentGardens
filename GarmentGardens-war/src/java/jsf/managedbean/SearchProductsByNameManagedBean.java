@@ -42,7 +42,6 @@ public class SearchProductsByNameManagedBean implements Serializable {
     @PostConstruct
     public void postConstruct() {
         searchString = (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("productSearchString");
-
         if (searchString == null || searchString.trim().length() == 0) {
             productEntities = productEntitySessionBeanLocal.retrieveAllProducts();
         } else {

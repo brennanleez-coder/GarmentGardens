@@ -120,7 +120,7 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
     @Override
     public List<CategoryEntity> retrieveAllRootCategories()
     {
-        Query query = entityManager.createQuery("SELECT c FROM CategoryEntity c WHERE c.parentCategoryEntity IS NULL ORDER BY c.name ASC");
+        Query query = entityManager.createQuery("SELECT c FROM CategoryEntity c WHERE c.parentCategory IS NULL ORDER BY c.name ASC");
         List<CategoryEntity> rootCategoryEntities = query.getResultList();
         
         for(CategoryEntity rootCategoryEntity:rootCategoryEntities)
