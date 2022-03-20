@@ -46,13 +46,13 @@ public class UserEntity implements Serializable {
     //private Integer chlorophyll = RoleEnum.CUSTOMER.equals(role)? new Integer(0): null;
     //private BigDecimal wallet = RoleEnum.SELLER.equals(role)? new BigDecimal(0): null;
     
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<CreditCardEntity> creditCards;
     
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private List<RewardEntity> rewards;
     
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private List<OrderEntity> orders;
     
     @OneToOne (fetch = FetchType.LAZY, optional = true, mappedBy = "customer")

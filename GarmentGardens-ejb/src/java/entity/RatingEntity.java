@@ -43,13 +43,7 @@ public class RatingEntity implements Serializable {
         this.dateOfRating = dateOfRating;
     }
 
-    public Long getRatingId() {
-        return ratingId;
-    }
-
-    public void setRatingId(Long ratingId) {
-        this.ratingId = ratingId;
-    }
+    
 
     @Override
     public int hashCode() {
@@ -74,6 +68,14 @@ public class RatingEntity implements Serializable {
     @Override
     public String toString() {
         return "entity.RatingEntity[ id=" + ratingId + " ]";
+    }
+    
+    public Long getRatingId() {
+        return ratingId;
+    }
+
+    public void setRatingId(Long ratingId) {
+        this.ratingId = ratingId;
     }
 
     public String getDescription() {

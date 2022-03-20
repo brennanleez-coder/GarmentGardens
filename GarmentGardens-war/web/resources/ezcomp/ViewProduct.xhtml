@@ -8,15 +8,15 @@
 
     <cc:interface>
     </cc:interface>
-    
+
     <cc:implementation>
-        
+
         <h:form id="formViewProduct">
-            
+
             <p:dialog id="dialogViewProduct" widgetVar="dialogViewProduct" header="View Product" closable="true">
 
                 <p:panelGrid>
-                    
+
                     <p:row>
                         <p:column>
                             <h:outputLabel value="Product ID: " />
@@ -25,7 +25,7 @@
                             <h:outputText value="#{viewProductManagedBean.productEntityToView.productId}" />
                         </p:column>
                     </p:row>
-                    
+
                     <p:row>
                         <p:column>
                             <h:outputLabel value="SKU Code: " />
@@ -34,7 +34,7 @@
                             <h:outputText value="#{viewProductManagedBean.productEntityToView.skuCode}" />
                         </p:column>
                     </p:row>
-                    
+
                     <p:row>
                         <p:column>
                             <h:outputLabel value="Name: " />
@@ -43,7 +43,7 @@
                             <h:outputText value="#{viewProductManagedBean.productEntityToView.name}" />
                         </p:column>
                     </p:row>
-                    
+
                     <p:row>
                         <p:column>
                             <h:outputLabel value="Description: " />
@@ -52,7 +52,7 @@
                             <h:outputText value="#{viewProductManagedBean.productEntityToView.description}" />
                         </p:column>
                     </p:row>
-                    
+
                     <p:row>
                         <p:column>
                             <h:outputLabel value="Quantity On Hand: " />
@@ -61,16 +61,8 @@
                             <h:outputText value="#{viewProductManagedBean.productEntityToView.quantityOnHand}" />
                         </p:column>
                     </p:row>
-                    
-                    <p:row>
-                        <p:column>
-                            <h:outputLabel value="Reorder Quantity: " />
-                        </p:column>
-                        <p:column>
-                            <h:outputText value="#{viewProductManagedBean.productEntityToView.reorderQuantity}" />
-                        </p:column>
-                    </p:row>
-                    
+
+
                     <p:row>
                         <p:column>
                             <h:outputLabel value="Unit Price: " />
@@ -81,41 +73,42 @@
                             </h:outputText>
                         </p:column>
                     </p:row>
-                    
+
                     <p:row>
                         <p:column>
-                            <h:outputLabel value="Product Rating: " />
+                            <h:outputLabel value="Listed: " />
                         </p:column>
                         <p:column>
-                            <p:rating id="productRating" value="#{viewProductManagedBean.productEntityToView.productRating}" stars="5" readonly="true" />
+                            <h:outputText value="#{viewProductManagedBean.productEntityToView.isListed}">
+                            </h:outputText>
                         </p:column>
                     </p:row>
-                    
+
                     <p:row>
                         <p:column>
                             <h:outputLabel value="Category: " />
                         </p:column>
                         <p:column>
-                            <h:outputText value="#{viewProductManagedBean.productEntityToView.categoryEntity.name}" />
+                            <h:outputText value="#{viewProductManagedBean.productEntityToView.category.name}" />
                         </p:column>
                     </p:row>
-                    
+
                     <p:row>
                         <p:column>
                             <h:outputLabel value="Tag(s): " />
                         </p:column>
                         <p:column>
-                            <p:dataList value="#{viewProductManagedBean.productEntityToView.tagEntities}" var="tag" type="unordered">
+                            <p:dataList value="#{viewProductManagedBean.productEntityToView.tags}" var="tag" type="unordered">
                                 #{tag.name}
                             </p:dataList>
                         </p:column>
                     </p:row>
-                    
+
                 </p:panelGrid>
 
             </p:dialog>
-            
+
         </h:form>
-        
+
     </cc:implementation>
 </html>

@@ -43,7 +43,7 @@ public class CartEntity implements Serializable {
     @OneToOne (fetch = FetchType.LAZY)
     private UserEntity groupOwner;
     
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private List<LineItemEntity> cartLineItems;
 
     public CartEntity() {

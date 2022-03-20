@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,7 +38,10 @@ public class StaffEntity implements Serializable {
     @Column(columnDefinition = "CHAR(32) NOT NULL")
     private String salt;
     
-    @OneToMany(mappedBy = "staff")
+    @OneToMany(mappedBy="staff", fetch = FetchType.LAZY)
+    private List<RewardEntity> createdRewards;
+            
+    @OneToMany(mappedBy = "staff",fetch = FetchType.LAZY )
     private List<DisputeEntity> disputes;
 
     public StaffEntity() {
@@ -156,6 +160,14 @@ public class StaffEntity implements Serializable {
     // Newly added in v4.5
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public List<RewardEntity> getCreatedRewards() {
+        return createdRewards;
+    }
+
+    public void setCreatedRewards(List<RewardEntity> createdRewards) {
+        this.createdRewards = createdRewards;
     }
     
 }

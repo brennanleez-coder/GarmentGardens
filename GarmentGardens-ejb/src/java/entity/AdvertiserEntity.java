@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,10 +30,10 @@ public class AdvertiserEntity implements Serializable {
     private String username;
     private String password;
     
-    @OneToMany(mappedBy= "advertiser")
+    @OneToMany(mappedBy= "advertiser", fetch = FetchType.LAZY)
     private List<AdvertisementEntity> advertisements;
     
-    @OneToMany(mappedBy= "advertiser")
+    @OneToMany(mappedBy= "advertiser", fetch = FetchType.LAZY)
     private List<CreditCardEntity> creditCards;
 
     public AdvertiserEntity() {

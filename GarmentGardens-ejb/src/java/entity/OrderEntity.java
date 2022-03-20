@@ -39,7 +39,7 @@ public class OrderEntity implements Serializable {
     private Boolean voidRefund = false;
     private DeliveryStatusEnum deliveryStatus = DeliveryStatusEnum.ONGOING;
     
-    @OneToMany
+    @OneToMany //because uni directional
     private List<LineItemEntity> lineItems;
     
     @OneToOne(mappedBy = "order", fetch = FetchType.LAZY)

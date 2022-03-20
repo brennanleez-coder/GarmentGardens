@@ -31,6 +31,16 @@ public class CategoryEntity implements Serializable {
     private String name;
     private String description;
 
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private List<ProductEntity> products;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private CategoryEntity parentCategory;
+
+    @OneToMany(mappedBy = "parentCategory", fetch = FetchType.LAZY)
+    private List<CategoryEntity> subCategories;
+
     public CategoryEntity() {
         this.products = new ArrayList<ProductEntity>();
         this.subCategories = new ArrayList<CategoryEntity>();
@@ -41,16 +51,6 @@ public class CategoryEntity implements Serializable {
         this.name = name;
         this.description = description;
     }
-
-    @OneToMany(mappedBy = "category")
-    private List<ProductEntity> products;
-    
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private CategoryEntity parentCategory;
-    
-    @OneToMany(mappedBy = "parentCategory")
-    private List<CategoryEntity> subCategories; 
 
     public Long getCategoryId() {
         return categoryId;
@@ -142,5 +142,5 @@ public class CategoryEntity implements Serializable {
     public void setSubCategories(List<CategoryEntity> subCategories) {
         this.subCategories = subCategories;
     }
-    
+
 }

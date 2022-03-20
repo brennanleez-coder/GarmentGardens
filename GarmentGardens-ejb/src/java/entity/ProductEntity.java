@@ -52,6 +52,9 @@ public class ProductEntity implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     private UserEntity seller;
 
+    @OneToMany(mappedBy="product", fetch = FetchType.LAZY)
+    private List<LineItemEntity> lineItems;
+    
     public ProductEntity() {
         this.ratings = new ArrayList<RatingEntity>();
         this.tags = new ArrayList<TagEntity>();
@@ -69,13 +72,7 @@ public class ProductEntity implements Serializable {
     
     
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
+    
 
     @Override
     public int hashCode() {
@@ -100,6 +97,14 @@ public class ProductEntity implements Serializable {
     @Override
     public String toString() {
         return "entity.ProductEntity[ id=" + productId + " ]";
+    }
+    
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public String getSkuCode() {
@@ -262,6 +267,14 @@ public class ProductEntity implements Serializable {
 
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public List<LineItemEntity> getLineItems() {
+        return lineItems;
+    }
+
+    public void setLineItems(List<LineItemEntity> lineItems) {
+        this.lineItems = lineItems;
     }
 
     

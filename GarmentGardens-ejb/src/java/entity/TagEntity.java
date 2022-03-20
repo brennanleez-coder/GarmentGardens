@@ -21,25 +21,16 @@ import javax.persistence.ManyToMany;
 @Entity
 public class TagEntity implements Serializable {
 
-    /**
-     * @return the products
-     */
-    public List<ProductEntity> getProducts() {
-        return products;
-    }
 
-    /**
-     * @param products the products to set
-     */
-    public void setProducts(List<ProductEntity> products) {
-        this.products = products;
-    }
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagId;
     private String name;
+    
+    @ManyToMany
+    private List<ProductEntity> products;
     
     public TagEntity() {
         this.products = new ArrayList<ProductEntity>();
@@ -50,8 +41,7 @@ public class TagEntity implements Serializable {
         this.name = name;
     }
     
-    @ManyToMany
-    private List<ProductEntity> products;
+    
 
     public Long getTagId() {
         return tagId;
@@ -92,6 +82,20 @@ public class TagEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+        /**
+     * @return the products
+     */
+    public List<ProductEntity> getProducts() {
+        return products;
+    }
+
+    /**
+     * @param products the products to set
+     */
+    public void setProducts(List<ProductEntity> products) {
+        this.products = products;
     }
     
 }
