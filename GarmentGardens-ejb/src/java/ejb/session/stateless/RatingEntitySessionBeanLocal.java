@@ -9,6 +9,7 @@ import entity.RatingEntity;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.InputDataValidationException;
+import util.exception.ProductNotFoundException;
 import util.exception.RatingNotFoundException;
 import util.exception.UpdateRatingException;
 
@@ -28,5 +29,7 @@ public interface RatingEntitySessionBeanLocal {
     public void updateRating(RatingEntity ratingEntity) throws InputDataValidationException, RatingNotFoundException, UpdateRatingException;
 
     public RatingEntity retrieveRatingByRatingId(Long ratingId) throws RatingNotFoundException;
+
+    public Double retrieveRatingScore(Long productId) throws ProductNotFoundException;
     
 }

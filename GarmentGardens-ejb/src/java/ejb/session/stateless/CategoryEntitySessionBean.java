@@ -138,7 +138,7 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
     @Override
     public List<CategoryEntity> retrieveAllLeafCategories()
     {
-        Query query = entityManager.createQuery("SELECT c FROM CategoryEntity c WHERE c.subCategoryEntities IS EMPTY ORDER BY c.name ASC");
+        Query query = entityManager.createQuery("SELECT c FROM CategoryEntity c WHERE c.subCategories IS EMPTY ORDER BY c.name ASC");
         List<CategoryEntity> leafCategoryEntities = query.getResultList();
         
         for(CategoryEntity leafCategoryEntity:leafCategoryEntities)

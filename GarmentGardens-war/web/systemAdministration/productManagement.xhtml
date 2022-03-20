@@ -8,14 +8,14 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="content">
-        
+
         <ez:Breadcrumb pageName="productManagement" />
-        
+
         <div>
             <h3>Product Management</h3>
-            
+
             <h:form>
-            
+
                 <p:menubar>
 
                     <p:submenu label="File" icon="ui-icon-document">
@@ -26,9 +26,8 @@
                 <br/>
 
             </h:form>
-            
             <h:form id="formAllProducts">
-            
+
                 <p:messages id="messages" redisplay="false" closable="true" />
 
                 <p:dataTable id="dataTableAllProducts" widgetVar="dataTableAllProducts" value="#{productManagementManagedBean.productEntities}" var="productEntity" rowKey="#{productEntity.productId}" rowIndexVar="row"
@@ -53,7 +52,7 @@
                     <p:column headerText="Name" sortBy="#{productEntity.name}" filterBy="#{productEntity.name}" filterMatchMode="contains">
                         <h:outputText value="#{productEntity.name}" />
                     </p:column>
-                    
+
                     <p:column headerText="Description" sortBy="#{productEntity.description}" filterBy="#{productEntity.description}" filterMatchMode="contains">
                         <h:outputText value="#{productEntity.description}" />
                     </p:column>
@@ -68,14 +67,19 @@
                         </h:outputText>
                     </p:column>
 
-                    <p:column headerText="Category" sortBy="#{productEntity.categoryEntity.name}" filterBy="#{productEntity.categoryEntity.name}" filterMatchMode="exact">
+                    <p:column headerText="Category" sortBy="#{productEntity.category.name}" filterBy="#{productEntity.category.name}" filterMatchMode="exact">
                         <f:facet name="filter">
                             <p:selectOneMenu id="selCategory" onchange="PF('dataTableAllProducts').filter()">
                                 <f:selectItem itemValue="#{null}" itemLabel="[Select One]" noSelectionOption="true" />
                                 <f:selectItems value="#{productManagementManagedBean.categoryEntities}" var="categoryEntity" itemValue="#{categoryEntity.name}" itemLabel="#{categoryEntity.name}" />
                             </p:selectOneMenu>
                         </f:facet>
-                        <h:outputText value="#{productEntity.categoryEntity.name}" />
+                        <h:outputText value="#{productEntity.category.name}" />
+                    </p:column>
+
+                    <p:column headerText="Listed" sortBy="#{productEntity.isListed}" filterBy="#{productEntity.isListed}" filterMatchMode="exact">
+                        <h:outputText value="#{productEntity.isListed}">
+                        </h:outputText>
                     </p:column>
 
                     <p:column headerText="Action" >
@@ -99,7 +103,6 @@
                 </p:confirmDialog>
 
             </h:form>
-            
             <h:form id="formCreateNewProduct">
 
                 <p:dialog id="dialogCreateNewProduct" widgetVar="dialogCreateNewProduct" header="Create New Product" closable="true">
@@ -125,7 +128,7 @@
                                 <p:outputLabel for="name" value="Name: " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:inputText id="name" value="#{productManagementManagedBean.newProductEntity.name}" placeholder="Product 1" required="true" requiredMessage="Name is required" />
+                                <p:inputText id="name" value="0" placeholder="Product 1" required="true" requiredMessage="Name is required" />
                             </p:column>
                             <p:column>
                                 <p:message for="name" />
@@ -158,18 +161,6 @@
 
                         <p:row>
                             <p:column>
-                                <p:outputLabel for="reorderQuantity" value="Reorder Quantity " style="font-weight: bold;" />
-                            </p:column>
-                            <p:column>
-                                <p:spinner id="reorderQuantity" value="#{productManagementManagedBean.newProductEntity.reorderQuantity}" placeholder="10" min="0" max="1000000" stepFactor="10" required="true" requiredMessage="Reorder Quantity is required"/>
-                            </p:column>
-                            <p:column>
-                                <p:message for="reorderQuantity" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
                                 <p:outputLabel for="unitPrice" value="Unit Price " style="font-weight: bold;" />
                             </p:column>
                             <p:column>                            
@@ -185,8 +176,7 @@
                                 <p:outputLabel for="productRating" value="Product Rating " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:rating id="productRating" value="#{productManagementManagedBean.newProductEntity.productRating}" stars="5" required="true" requiredMessage="Product Rating is required" cancel="false">
-                                    <f:validateLongRange minimum="1" maximum="5" />
+                                <p:rating id="productRating" stars="0" cancel="false">
                                 </p:rating>
                             </p:column>
                             <p:column>
@@ -235,7 +225,6 @@
                 </p:dialog>
 
             </h:form>
-
             <ez:ViewProduct id="ccViewProduct" />
 
             <h:form id="formUpdateProduct">
@@ -308,18 +297,6 @@
 
                         <p:row>
                             <p:column>
-                                <p:outputLabel for="reorderQuantity" value="Reorder Quantity " />
-                            </p:column>
-                            <p:column>
-                                <p:spinner id="reorderQuantity" value="#{productManagementManagedBean.selectedProductEntityToUpdate.reorderQuantity}" placeholder="10" min="0" max="1000000" stepFactor="10" required="true" requiredMessage="Reorder Quantity is required"/>
-                            </p:column>
-                            <p:column>
-                                <p:message for="reorderQuantity" />
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
                                 <p:outputLabel for="unitPrice" value="Unit Price " />
                             </p:column>
                             <p:column>
@@ -335,9 +312,7 @@
                                 <p:outputLabel for="productRating" value="Product Rating " />
                             </p:column>
                             <p:column>
-                                <p:rating id="productRating" value="#{productManagementManagedBean.selectedProductEntityToUpdate.productRating}" stars="5" required="true" requiredMessage="Product Rating is required" cancel="false">
-                                    <f:validateLongRange minimum="1" maximum="5" />
-                                </p:rating>
+                              
                             </p:column>
                             <p:column>
                                 <p:message for="productRating" />
@@ -386,7 +361,7 @@
             </h:form>
 
         </div>
-        
+
     </ui:define>
 
 </ui:composition>
