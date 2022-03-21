@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/template/defaultTemplate.xhtml"
+                xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="content">
+        
+        <ez:Breadcrumb pageName="categoryManagement" />
+        
+        <div>
+            <h3>Category Management</h3>
+            
+            <h:form>
+                
+                <p:menubar>
+                    <p:submenu label='File' icon="ui-icon-document">
+                        <p:menuitem value="Create New Category" onclick="PF('dialogCreateNewCategory').show()" icon="pi pi-plus"/>
+                    </p:submenu>
+                </p:menubar>
+                <br/>
+                
+            </h:form>
+                
+            <h:form id="formAllCategories">
+                
+                <p:messages id="messages" redisplay="false" closable="true" />
+                
+                <p:dataTable id="dataTableAllCategories" widgetVar="dataTableAllCategories" value="#{categoryManagementManagedBean.categoryEntities}" var="categoryEntity" rowKey="#{categoryEntity.categoryId}" rowIndexVar="row"
+                             filteredValue="#{categoryManagementManagedBean.filteredCategoryEntities}"
+                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+                
+                    <f:facet name="header">
+                            <p:outputPanel style="text-align: right;">
+                                <h:outputText value="Search all fields:" />
+                                <p:inputText id="globalFilter" onkeyup="PF('dataTableAllCategories').filter()" style="width:300px" placeholder="Enter keyword"/>
+                            </p:outputPanel>
+                    </f:facet>
+                    
+                    <p:column headerText="Category" sortBy="#{categoryEntity.name}" filterBy="#{categoryEntity.name}" filterMatchMode="exact">
+                        <f:facet name="filter">
+                            <p:selectOneMenu id="selCategory" onchange="PF('dataTableAllCategories').filter()">
+                                <f:selectItem itemValue="#{null}" itemLabel="[Select One]" noSelectionOption="true" />
+                                <f:selectItems value="#{categoryManagementManagedBean.categoryEntities}" var="categoryEntity" itemValue="#{categoryEntity.name}" itemLabel="#{categoryEntity.name}" />
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{categoryEntity.name}" />
+                    </p:column>
+                    
+                    <p:column headerText="Category Description" sortBy="#{categoryEntity.description}" filterBy="#{categoryEntity.description}" filterMatchMode="contains">
+                        <h:outputText value="#{categoryEntity.description}" />
+                    </p:column>
+                    
+                    <p:column headerText="Action" >
+                        <p:commandButton update="ccViewCategory:formViewCategory" oncomplete="PF('dialogViewCategory').show()" icon="ui-icon-document" title="View">
+                            <f:setPropertyActionListener value="#{categoryEntity}" target="#{categoryManagementManagedBean.viewCategoryManagedBean.categoryEntityToView}" />
+                        </p:commandButton>
+                        <p:commandButton actionListener="#{categoryManagementManagedBean.doUpdateCategory}" update="formUpdateCategory" oncomplete="PF('dialogUpdateCategory').show()" icon="ui-icon-pencil" title="Update">
+                            <f:attribute name="categoryEntityToUpdate" value="#{categoryEntity}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{categoryManagementManagedBean.deleteCategory}" update="formAllCategories:dataTableAllCategories formAllCategories:messages">
+                            <f:attribute name="categoryEntityToDelete" value="#{categoryEntity}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{categoryEntity.name}?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+                
+                    
+                </p:dataTable>
+                
+                
+                
+                
+                
+                
+            </h:form>
+     
+        </div>
+
+    </ui:define>
+
+</ui:composition>
