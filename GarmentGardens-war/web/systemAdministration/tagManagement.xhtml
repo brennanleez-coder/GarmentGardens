@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/template/defaultTemplate.xhtml"
+                xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <ez:Breadcrumb pageName="tagManagement" />
+        
+        <div>
+            <h3>Tag Management</h3>
+            
+            <h:form>
+                
+                <p:menubar>
+                    <p:submenu label='File' icon="ui-icon-document">
+                        <p:menuitem value="Create New Tag" onclick="PF('dialogCreateNewTag').show()" icon="pi pi-plus"/>
+                    </p:submenu>
+                </p:menubar>
+                <br/>
+                
+            </h:form>
+                
+            <h:form id="formAllTags">
+                
+                <p:messages id="messages" redisplay="false" closable="true" />
+                
+                <p:dataTable id="dataTableAllTags" widgetVar="dataTableAllTags" value="#{tagManagementManagedBean.tagEntities}" var="tagEntity" rowKey="#{tagEntity.tagId}" rowIndexVar="row"
+                             filteredValue="#{tagManagementManagedBean.filteredTagEntities}"
+                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+                                             
+                    <f:facet name="header">
+                            <p:outputPanel style="text-align: right;">
+                                <h:outputText value="Search all fields:" />
+                                <p:inputText id="globalFilter" onkeyup="PF('dataTableAllTags').filter()" style="width:300px" placeholder="Enter keyword"/>
+                            </p:outputPanel>
+                    </f:facet>
+                    
+                    <p:column headerText="Tag ID" sortBy="#{tagEntity.tagId}" filterBy="#{tagEntity.tagId}" filterMatchMode="contains">
+                        <h:outputText value="#{tagEntity.tagId}" />
+                    </p:column>                            
+
+                    <p:column headerText="Name" sortBy="#{tagEntity.name}" filterBy="#{tagEntity.name}" filterMatchMode="contains">
+                        <h:outputText value="#{tagEntity.name}" />
+                    </p:column>
+                    
+                    <p:column headerText="Action" >
+                        <p:commandButton update="ccViewTag:formViewTag" oncomplete="PF('dialogViewTag').show()" icon="ui-icon-document" title="View">
+                            <f:setPropertyActionListener value="#{tagEntity}" target="#{tagManagementManagedBean.viewTagManagedBean.tagEntityToView}" />
+                        </p:commandButton>
+                        <p:commandButton actionListener="#{tagManagementManagedBean.doUpdateTag}" update="formUpdateTag" oncomplete="PF('dialogUpdateTag').show()" icon="ui-icon-pencil" title="Update">
+                            <f:attribute name="tagEntityToUpdate" value="#{tagEntity}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{tagManagementManagedBean.deleteTag}" update="formAllTags:dataTableAllTags formAllTags:messages">
+                            <f:attribute name="tagEntityToDelete" value="#{tagEntity}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{tagEntity.name}?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+                
+            </h:form>
+            
+            <h:form id="formCreateNewTag">
+                
+                <p:dialog id="dialogCreateNewTag" widgetVar="dialogCreateNewTag" header="Create New Tag" closable="true">
+                    <p:messages id="messagesCreateNewTag" redisplay="false" />
+                    
+                    <p:panelGrid>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Name: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{tagManagementManagedBean.newTagEntity.name}" placeholder="Tag A" required="true" requiredMessage="Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="name" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton  value="Create New Tag" update="@form formAllTags:dataTableAllTags" actionListener="#{tagManagementManagedBean.createNewTag}" oncomplete="PF('dialogCreateNewTag').show();" />
+                            </p:column>
+                        </p:row>
+                        
+                    </p:panelGrid>
+                    
+                </p:dialog>
+            </h:form>
+            
+            <ez:ViewTag id="ccViewTag" />
+            
+            <h:form id="formUpdateTag">
+                
+                <p:dialog id="dialogUpdateTag" widgetVar="dialogUpdateTag" header="Update Tag" closable="true">
+                    <p:messages id="messagesUpdateTag" redisplay="false" />
+                    
+                    <p:panelGrid>
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Tag ID: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{tagManagementManagedBean.selectedTagEntityToUpdate.tagId}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="name" value="Name: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="name" value="#{tagManagementManagedBean.selectedTagEntityToUpdate.name}" placeholder="Tag A" required="true" requiredMessage="Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="name" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton value="Update Tag" update="@form formAllTags:dataTableAllTags" actionListener="#{tagManagementManagedBean.updateTag}" oncomplete="PF('dialogUpdateTag').show();" />
+                            </p:column>
+                        </p:row>
+                        
+                        
+                    </p:panelGrid>
+                    
+                </p:dialog>
+            </h:form>
+           
+     
+        </div>
+    </ui:define>
+
+</ui:composition>
