@@ -78,6 +78,17 @@ public class TagManagementManagedBean implements Serializable {
         }
     }
     
+    public void doUpdateTag(ActionEvent event) {
+        selectedTagEntityToUpdate = (TagEntity) event.getComponent().getAttributes().get("tagEntityToUpdate");
+
+//        categoryIdUpdate = selectedProductEntityToUpdate.getCategory().getCategoryId();
+//        tagIdsUpdate = new ArrayList<>();
+
+//        for (TagEntity tagEntity : selectedProductEntityToUpdate.getTags()) {
+//            tagIdsUpdate.add(tagEntity.getTagId());
+//        }
+    }
+    
     public void updateTag(ActionEvent event) {
         
         try {
