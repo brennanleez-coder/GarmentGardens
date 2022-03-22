@@ -11,8 +11,11 @@ import ejb.session.stateless.TagEntitySessionBeanLocal;
 import entity.CategoryEntity;
 import entity.ProductEntity;
 import entity.TagEntity;
+import java.io.File;
+import java.io.FileOutputStream;
 
 import java.io.IOException;
+import java.io.InputStream;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
@@ -24,6 +27,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
+import org.primefaces.event.FileUploadEvent;
 import util.exception.CreateNewProductException;
 import util.exception.DeleteProductException;
 import util.exception.InputDataValidationException;
@@ -38,6 +42,8 @@ import util.exception.UnknownPersistenceException;
 @Named(value = "productManagementManagedBean")
 @ViewScoped
 public class ProductManagementManagedBean implements Serializable {
+
+    
 
     @EJB
     private ProductEntitySessionBeanLocal productEntitySessionBeanLocal;
@@ -61,6 +67,8 @@ public class ProductManagementManagedBean implements Serializable {
     private ProductEntity selectedProductEntityToUpdate;
     private Long categoryIdUpdate;
     private List<Long> tagIdsUpdate;
+    
+    private String newName;
 
     public ProductManagementManagedBean() {
         newProductEntity = new ProductEntity();
@@ -162,6 +170,78 @@ public class ProductManagementManagedBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
     }
+    
+    public void createNewProductTemp() {
+        if (categoryIdNew == 0) {
+            categoryIdNew = null;
+        }
+
+        try {
+            ProductEntity pe = productEntitySessionBeanLocal.createNewProduct(newProductEntity, categoryIdNew, tagIdsNew);
+            productEntities.add(pe);
+
+            if (filteredProductEntities != null) {
+                filteredProductEntities.add(pe);
+            }
+
+            newProductEntity = new ProductEntity();
+            categoryIdNew = null;
+            tagIdsNew = null;
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New product created successfully (Product ID: " + pe.getProductId() + ")", null));
+        } catch (InputDataValidationException | CreateNewProductException | ProductSkuCodeExistException | UnknownPersistenceException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new product: " + ex.getMessage(), null));
+        }
+    }
+    
+    public void doUpload(ActionEvent event)
+    {
+        newName = (String) event.getComponent().getAttributes().get("productName");
+    }
+    
+    public void handleFileUpload(FileUploadEvent event)
+    {
+        try
+        {
+            String newFilePath = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("alternatedocroot_1") + System.getProperty("file.separator") + this.newName + ".jpg";
+
+            System.err.println("********** Demo03ManagedBean.handleFileUpload(): File name: " + event.getFile().getFileName());
+            System.err.println("********** Demo03ManagedBean.handleFileUpload(): newFilePath: " + newFilePath);
+
+            File file = new File(newFilePath);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+
+            int a;
+            int BUFFER_SIZE = 8192;
+            byte[] buffer = new byte[BUFFER_SIZE];
+
+            InputStream inputStream = event.getFile().getInputStream();
+
+            while (true)
+            {
+                a = inputStream.read(buffer);
+
+                if (a < 0)
+                {
+                    break;
+                }
+
+                fileOutputStream.write(buffer, 0, a);
+                fileOutputStream.flush();
+            }
+
+            fileOutputStream.close();
+            inputStream.close();
+            
+            this.createNewProductTemp();
+            
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,  "File uploaded successfully", ""));
+        }
+        catch(IOException ex)
+        {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,  "File upload error: " + ex.getMessage(), ""));
+        }
+    }
 
     public ViewProductManagedBean getViewProductManagedBean() {
         return viewProductManagedBean;
@@ -249,6 +329,14 @@ public class ProductManagementManagedBean implements Serializable {
 
     public void setTagIdsUpdate(List<Long> tagIdsUpdate) {
         this.tagIdsUpdate = tagIdsUpdate;
+    }
+    
+    public String getNewName() {
+        return newName;
+    }
+
+    public void setNewName(String newName) {
+        this.newName = newName;
     }
 
 }

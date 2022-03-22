@@ -216,11 +216,33 @@
                         <p:row>
                             <p:column colspan="3">
                                 <p:commandButton type="reset" value="Clear" />&nbsp;
-                                <p:commandButton  value="Create New Product" update="@form formAllProducts:dataTableAllProducts" actionListener="#{productManagementManagedBean.createNewProduct}" oncomplete="PF('dialogCreateNewProduct').show();" />
+                                <p:commandButton  value="Create New Product" update="@form formAllProducts:dataTableAllProducts" actionListener="#{productManagementManagedBean.doUpload}" oncomplete="PF('dialogUploadPhoto').show();" />
                             </p:column>
                         </p:row>
 
                     </p:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+            
+            <h:form id="formUploadPhoto">
+
+                <p:dialog id="dialogUploadPhoto" widgetVar="dialogUploadPhoto" header="Upload Photo" closable="true">
+
+                    <p:messages id="messagesUploadPhoto" redisplay="false" />
+
+                    <div class="card">
+                        <h:form id="formFileUpload" enctype="multipart/form-data">
+                            <p:messages  redisplay="false">
+                                <p:autoUpdate />
+                            </p:messages>
+                            <p:fileUpload listener="#{productManagementManagedBean.handleFileUpload}" 
+                                          update="@form formAllProducts:dataTableAllProducts messages" />
+
+                            <p:growl id="messages" showDetail="true"/>
+                        </h:form>
+                    </div>
 
                 </p:dialog>
 
