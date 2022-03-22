@@ -55,6 +55,10 @@
                                     <p:inputText id="globalFilter" onkeyup="PF('dataTableAllCategories').filter()" style="width:300px" placeholder="Enter keyword"/>
                                 </p:outputPanel>
                             </f:facet>
+                            
+                            <p:column headerText="Category ID" sortBy="#{categoryEntity.categoryId}" filterBy="#{categoryEntity.categoryId}" filterMatchMode="contains">
+                                <h:outputText value="#{categoryEntity.categoryId}" />
+                            </p:column>
 
                             <p:column headerText="Category" sortBy="#{categoryEntity.name}" filterBy="#{categoryEntity.name}" filterMatchMode="exact">
                                 <f:facet name="filter">

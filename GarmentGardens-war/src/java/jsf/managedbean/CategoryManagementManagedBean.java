@@ -58,13 +58,9 @@ public class CategoryManagementManagedBean implements Serializable {
 
     public void createNewCategory(ActionEvent event) {
 
-        if (getCategoryIdNew() == 0) {
-            setCategoryIdNew(null);
-        }
-
         try {
-            CategoryEntity ce = categoryEntitySessionBeanLocal.createNewCategoryEntity(getNewCategoryEntity(), getCategoryIdNew());
-            getCategoryEntities().add(ce);
+            CategoryEntity ce = categoryEntitySessionBeanLocal.createNewCategoryEntity(newCategoryEntity, categoryIdNew);
+            categoryEntities.add(ce);
 
             if (filteredCategoryEntities != null) {
                 filteredCategoryEntities.add(ce);
