@@ -132,6 +132,9 @@ public class DataInitSessionBean {
             CategoryEntity categoryEntityX = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category X", "Category X"), categoryEntityFashions.getCategoryId());
             CategoryEntity categoryEntityY = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Y", "Category Y"), categoryEntityFashions.getCategoryId());
             CategoryEntity categoryEntityZ = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Z", "Category Z"), categoryEntityFashions.getCategoryId());
+            CategoryEntity categoryEntityM = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category M", "Category M"), categoryEntityX.getCategoryId());
+            CategoryEntity categoryEntityN = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category N", "Category N"), categoryEntityY.getCategoryId());
+            CategoryEntity categoryEntityO = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category O", "Category O"), categoryEntityZ.getCategoryId());
 
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD001", "Product A1", "Product A1", 100, new BigDecimal("10.00"), true), categoryEntityA.getCategoryId(), tagIdsPopular);
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD002", "Product A2", "Product A2", 100, new BigDecimal("25.50"), true), categoryEntityA.getCategoryId(), tagIdsDiscount);
@@ -151,7 +154,10 @@ public class DataInitSessionBean {
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD016", "Product Z1", "Product Z1", 100, new BigDecimal("95.00"), true), categoryEntityZ.getCategoryId(), tagIdsEmpty);
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD017", "Product Z2", "Product Z2", 100, new BigDecimal("19.05"), true), categoryEntityZ.getCategoryId(), tagIdsEmpty);
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD018", "Product Z3", "Product Z3", 100, new BigDecimal("10.50"), true), categoryEntityZ.getCategoryId(), tagIdsEmpty);
-
+            productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD019", "Product M1", "Product M1", 100, new BigDecimal("5.50"), true), categoryEntityM.getCategoryId(), tagIdsEmpty);
+            productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD020", "Product N1", "Product N1", 100, new BigDecimal("4.50"), true), categoryEntityN.getCategoryId(), tagIdsEmpty);
+            productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD021", "Product O1", "Product O1", 100, new BigDecimal("7.50"), true), categoryEntityO.getCategoryId(), tagIdsEmpty);
+   
         } catch (StaffUsernameExistException | UserUsernameExistException | CreateNewTagException | CreateNewProductException | ProductSkuCodeExistException | CreateNewCategoryException | UnknownPersistenceException | InputDataValidationException ex) {
             ex.printStackTrace();
         }
@@ -186,12 +192,21 @@ public class DataInitSessionBean {
 
             CategoryEntity categoryEntityElectronics = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Electronics", "Electronics"), null);
             CategoryEntity categoryEntityFashions = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Fashions", "Fashions"), null);
+            
+            // UNDER ELECTRONICS
             CategoryEntity categoryEntityA = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category A", "Category A"), categoryEntityElectronics.getCategoryId());
             CategoryEntity categoryEntityB = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category B", "Category B"), categoryEntityElectronics.getCategoryId());
             CategoryEntity categoryEntityC = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category C", "Category C"), categoryEntityElectronics.getCategoryId());
+            
+            // UNDER FASHIONS
             CategoryEntity categoryEntityX = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category X", "Category X"), categoryEntityFashions.getCategoryId());
             CategoryEntity categoryEntityY = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Y", "Category Y"), categoryEntityFashions.getCategoryId());
             CategoryEntity categoryEntityZ = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Z", "Category Z"), categoryEntityFashions.getCategoryId());
+            
+            // UNDER FASHIONS => X,Y,Z
+            CategoryEntity categoryEntityM = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category M", "Category M"), categoryEntityX.getCategoryId());
+            CategoryEntity categoryEntityN = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category N", "Category N"), categoryEntityY.getCategoryId());
+            CategoryEntity categoryEntityO = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category O", "Category O"), categoryEntityZ.getCategoryId());
 
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD001", "Product A1", "Product A1", 100, new BigDecimal("10.00"), true), categoryEntityA.getCategoryId(), tagIdsPopular);
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD002", "Product A2", "Product A2", 100, new BigDecimal("25.50"), true), categoryEntityA.getCategoryId(), tagIdsDiscount);
@@ -211,6 +226,11 @@ public class DataInitSessionBean {
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD016", "Product Z1", "Product Z1", 100, new BigDecimal("95.00"), true), categoryEntityZ.getCategoryId(), tagIdsEmpty);
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD017", "Product Z2", "Product Z2", 100, new BigDecimal("19.05"), true), categoryEntityZ.getCategoryId(), tagIdsEmpty);
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD018", "Product Z3", "Product Z3", 100, new BigDecimal("10.50"), true), categoryEntityZ.getCategoryId(), tagIdsEmpty);
+
+            productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD019", "Product M1", "Product M1", 100, new BigDecimal("5.50"), true), categoryEntityM.getCategoryId(), tagIdsEmpty);
+            productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD020", "Product N1", "Product N1", 100, new BigDecimal("4.50"), true), categoryEntityN.getCategoryId(), tagIdsEmpty);
+            productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD021", "Product O1", "Product O1", 100, new BigDecimal("7.50"), true), categoryEntityO.getCategoryId(), tagIdsEmpty);
+        
         } catch (CreateNewTagException | CreateNewProductException | ProductSkuCodeExistException | CreateNewCategoryException | UnknownPersistenceException | InputDataValidationException ex) {
             ex.printStackTrace();
         }

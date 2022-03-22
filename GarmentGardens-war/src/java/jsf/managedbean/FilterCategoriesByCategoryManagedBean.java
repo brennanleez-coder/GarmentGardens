@@ -1,12 +1,11 @@
 package jsf.managedbean;
 
 import ejb.session.stateless.CategoryEntitySessionBeanLocal;
-import ejb.session.stateless.ProductEntitySessionBeanLocal;
 import entity.CategoryEntity;
-import entity.ProductEntity;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
@@ -16,25 +15,23 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import util.exception.CategoryNotFoundException;
 
-@Named(value = "filterProductsByCategoryManagedBean")
+@Named(value = "filterCategoriesByCategoryManagedBean")
 @ViewScoped
 
-public class FilterProductsByCategoryManagedBean implements Serializable {
+public class FilterCategoriesByCategoryManagedBean implements Serializable {
 
     @EJB
     private CategoryEntitySessionBeanLocal categoryEntitySessionBeanLocal;
-    @EJB
-    private ProductEntitySessionBeanLocal productEntitySessionBeanLocal;
 
     @Inject
-    private ViewProductManagedBean viewProductManagedBean;
+    private ViewCategoryManagedBean viewCategoryManagedBean;
 
     private TreeNode treeNode;
     private TreeNode selectedTreeNode;
 
-    private List<ProductEntity> productEntities;
+    private List<CategoryEntity> categoryEntities;
 
-    public FilterProductsByCategoryManagedBean() {
+    public FilterCategoriesByCategoryManagedBean() {
     }
 
     @PostConstruct
@@ -46,8 +43,7 @@ public class FilterProductsByCategoryManagedBean implements Serializable {
             createTreeNode(categoryEntity, treeNode);
         }
 
-        Long selectedCategoryId = (Long) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("productFilterCategory");
-
+        Long selectedCategoryId = (Long) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("categoryFilterCategory");
         if (selectedCategoryId != null) {
             for (TreeNode tn : treeNode.getChildren()) {
                 CategoryEntity ce = (CategoryEntity) tn.getData();
@@ -61,34 +57,34 @@ public class FilterProductsByCategoryManagedBean implements Serializable {
             }
         }
 
-        filterProduct();
+        filterCategory();
     }
 
-    public void filterProduct() {
+    public void resetFilter() {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("categoryFilterCategory", null);
+        categoryEntities = categoryEntitySessionBeanLocal.retrieveAllCategories();
+    }
+
+    public void filterCategory() {
         if (selectedTreeNode != null) {
             try {
                 CategoryEntity ce = (CategoryEntity) selectedTreeNode.getData();
 
-                productEntities = productEntitySessionBeanLocal.filterProductsByCategory(ce.getCategoryId());
+                categoryEntities = categoryEntitySessionBeanLocal.filterCategoriesByCategory(ce.getCategoryId());
             } catch (CategoryNotFoundException ex) {
-                productEntities = productEntitySessionBeanLocal.retrieveAllProducts();
+                categoryEntities = categoryEntitySessionBeanLocal.retrieveAllCategories();
             }
         } else {
-            productEntities = productEntitySessionBeanLocal.retrieveAllProducts();
+            categoryEntities = categoryEntitySessionBeanLocal.retrieveAllCategories();
         }
-    }
-
-    public void resetFilter() {
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("productFilterCategory", null);
-        productEntities = productEntitySessionBeanLocal.retrieveAllProducts();
     }
 
 //    public void viewProductDetails(ActionEvent event) throws IOException
 //    {
-//        Long productIdToView = (Long)event.getComponent().getAttributes().get("productId");
-//        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("productIdToView", productIdToView);
-//        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("backMode", "filterProductsByCategory");
-//        FacesContext.getCurrentInstance().getExternalContext().redirect("viewProductDetails.xhtml");
+//        Long categoryIdToView = (Long)event.getComponent().getAttributes().get("categoryId");
+//        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("categoryIdToView", categoryIdToView);
+//        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("backMode", "categoryProductsByCategory");
+//        FacesContext.getCurrentInstance().getExternalContext().redirect("viewCategoryDetails.xhtml");
 //    }
     private void createTreeNode(CategoryEntity categoryEntity, TreeNode parentTreeNode) {
         TreeNode treeNode = new DefaultTreeNode(categoryEntity, parentTreeNode);
@@ -112,14 +108,6 @@ public class FilterProductsByCategoryManagedBean implements Serializable {
         return null;
     }
 
-    public ViewProductManagedBean getViewProductManagedBean() {
-        return viewProductManagedBean;
-    }
-
-    public void setViewProductManagedBean(ViewProductManagedBean viewProductManagedBean) {
-        this.viewProductManagedBean = viewProductManagedBean;
-    }
-
     public TreeNode getTreeNode() {
         return treeNode;
     }
@@ -136,15 +124,15 @@ public class FilterProductsByCategoryManagedBean implements Serializable {
         this.selectedTreeNode = selectedTreeNode;
 
         if (selectedTreeNode != null) {
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("productFilterCategory", ((CategoryEntity) selectedTreeNode.getData()).getCategoryId());
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("categoryFilterCategory", ((CategoryEntity) selectedTreeNode.getData()).getCategoryId());
         }
     }
 
-    public List<ProductEntity> getProductEntities() {
-        return productEntities;
+    public List<CategoryEntity> getCategoryEntities() {
+        return categoryEntities;
     }
 
-    public void setProductEntities(List<ProductEntity> productEntities) {
-        this.productEntities = productEntities;
+    public void setCategoryEntities(List<CategoryEntity> categoryEntities) {
+        this.categoryEntities = categoryEntities;
     }
 }

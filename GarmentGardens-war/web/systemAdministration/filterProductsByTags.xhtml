@@ -8,18 +8,18 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="content">
-        
+
         <ez:Breadcrumb pageName="filterProductsByTags" />
-        
-        <div>
+
+        <div style="width: 80%">
             <h3>Filter Products by Tags</h3>                       
-            
+
             <h:form id="formMain">
-                
+
                 <p:layout>
-                
+
                     <p:layoutUnit position="west" resizable="true">
-                        
+
                         <p:outputLabel for="selCondition" value="Condition: " style="font-weight: bold;" />
                         <p:selectOneMenu id="selCondition" value="#{filterProductsByTagsManagedBean.condition}">
 
@@ -38,15 +38,20 @@
 
                             <p:ajax process="@form" update="formMain:dataTableMain" listener="#{filterProductsByTagsManagedBean.filterProduct}" />
 
-                        </p:selectManyMenu>                                
+                        </p:selectManyMenu>   
+
+                        <div style="text-align: center; margin-top: 20px">
+                            <p:commandButton icon="ui-icon-refresh" actionListener="#{filterProductsByTagsManagedBean.resetFilter}" update="formMain:dataTableMain formMain:selCondition formMain:selTags" value="Reset">
+                            </p:commandButton>
+                        </div>
 
                     </p:layoutUnit>
 
                     <p:layoutUnit position="center">
-                        
+
                         <p:dataTable id="dataTableMain" widgetVar="dataTableMain" value="#{filterProductsByTagsManagedBean.productEntities}" var="productEntity" rowKey="#{productEntity.productId}" rowIndexVar="row"                             
-                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
-                    
+                                     rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
                             <p:column headerText="SKU Code" sortBy="#{productEntity.skuCode}">
                                 <h:outputText value="#{productEntity.skuCode}" />
                             </p:column>
@@ -91,12 +96,12 @@
                     </p:layoutUnit>
 
                 </p:layout>                                               
-                
+
             </h:form>
-            
+
             <ez:ViewProduct id="ccViewProduct" />
         </div>
-        
+
     </ui:define>
 
 </ui:composition>

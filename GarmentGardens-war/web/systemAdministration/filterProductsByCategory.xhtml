@@ -11,22 +11,25 @@
         
         <ez:Breadcrumb pageName="filterProductsByCategory" />
         
-        <div>
+        <div style="width: 80%">
             <h3>Filter Products by Category</h3>
             
             <h:form id="formMain">
                 
                 <p:layout>
                 
-                    <p:layoutUnit position="west" resizable="true">
+                    <p:layoutUnit position="west" resizable="true" size="20%">
                         
-                        <p:tree value="#{filterProductsByCategoryManagedBean.treeNode}" var="node" selectionMode="single" selection="#{filterProductsByCategoryManagedBean.selectedTreeNode}">
+                        <p:tree id="categoryTree" style="border: none" value="#{filterProductsByCategoryManagedBean.treeNode}" var="node" selectionMode="single" selection="#{filterProductsByCategoryManagedBean.selectedTreeNode}">
                             <p:treeNode>
                                 <h:outputText value="#{node.name}" />
                             </p:treeNode>
                             <p:ajax event="select" process="@form" update="formMain:dataTableMain" listener="#{filterProductsByCategoryManagedBean.filterProduct}" />
                         </p:tree>                                                   
-
+                        <div style="text-align: center; margin-top: 20px">
+                            <p:commandButton icon="ui-icon-refresh" actionListener="#{filterProductsByCategoryManagedBean.resetFilter}" update="formMain:dataTableMain formMain:categoryTree" value="Reset">
+                            </p:commandButton>
+                        </div>
                     </p:layoutUnit>
 
                     <p:layoutUnit position="center">
