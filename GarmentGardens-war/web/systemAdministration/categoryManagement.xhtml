@@ -73,6 +73,10 @@
                             <p:column headerText="Category Description" sortBy="#{categoryEntity.description}" filterBy="#{categoryEntity.description}" filterMatchMode="contains">
                                 <h:outputText value="#{categoryEntity.description}" />
                             </p:column>
+                            
+                            <p:column headerText="Parent Category" sortBy="#{categoryEntity.parentCategory.name}" filterBy="#{categoryEntity.parentCategory.name}" filterMatchMode="contains">
+                                <h:outputText value="#{categoryEntity.parentCategory.name}" />
+                            </p:column>
 
                             <p:column headerText="Action" >
                                 <p:commandButton update="ccViewCategory:formViewCategory" oncomplete="PF('dialogViewCategory').show()" icon="ui-icon-document" title="View">
@@ -127,6 +131,22 @@
                                 <p:message for="description" />
                             </p:column>
                         </p:row>
+         
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="selParentCategory" value="Parent Category " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="selParentCategory" value="#{categoryManagementManagedBean.rootCategoryEntities}">
+                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
+                                    <f:selectItems value="#{categoryManagementManagedBean.rootCategoryEntities}" var="categoryEntity" itemValue="#{categoryEntity.categoryId}" itemLabel="#{categoryEntity.name}" />
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="selParentCategory" />
+                            </p:column>
+                        </p:row>       
+                        
 
                         <p:row>
                             <p:column colspan="3">
@@ -180,6 +200,18 @@
                             </p:column>
                             <p:column>
                                 <p:message for="description" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Parent Category: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{categoryManagementManagedBean.selectedCategoryEntityToUpdate.parentCategory.name}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
                             </p:column>
                         </p:row>
 

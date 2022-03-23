@@ -34,6 +34,15 @@
                             <h:outputText value="#{viewCategoryManagedBean.categoryEntityToView.description}" />
                         </p:column>
                     </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Parent Category: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewCategoryManagedBean.categoryEntityToView.parentCategory.name}" />
+                        </p:column>
+                    </p:row>
 
                 </p:panelGrid>
 

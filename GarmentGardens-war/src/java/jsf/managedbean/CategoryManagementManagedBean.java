@@ -28,6 +28,8 @@ public class CategoryManagementManagedBean implements Serializable {
 
     private List<CategoryEntity> categoryEntities;
     private List<CategoryEntity> filteredCategoryEntities;
+    
+    private List<CategoryEntity> rootCategoryEntities;
 
     private CategoryEntity newCategoryEntity;
     private Long categoryIdNew;
@@ -48,6 +50,7 @@ public class CategoryManagementManagedBean implements Serializable {
     @PostConstruct
     public void postConstruct() {
         categoryEntities = categoryEntitySessionBeanLocal.retrieveAllLeafCategories();
+        setRootCategoryEntities(categoryEntitySessionBeanLocal.retrieveAllRootCategories());
     }
 
     public void viewCategoryDetails(ActionEvent event) throws IOException {
@@ -76,13 +79,13 @@ public class CategoryManagementManagedBean implements Serializable {
 
     public void doUpdateCategory(ActionEvent event) {
         setSelectedCategoryEntityToUpdate((CategoryEntity) event.getComponent().getAttributes().get("categoryEntityToUpdate"));
-        categoryIdUpdate = getSelectedCategoryEntityToUpdate().getCategoryId();
+        setCategoryIdUpdate(getSelectedCategoryEntityToUpdate().getCategoryId());
 
     }
 
     public void updateCategory(ActionEvent event) {
-        if (categoryIdUpdate == 0) {
-            categoryIdUpdate = null;
+        if (getCategoryIdUpdate() == 0) {
+            setCategoryIdUpdate(null);
         }
 
         try {            
@@ -192,6 +195,34 @@ public class CategoryManagementManagedBean implements Serializable {
 
     public void setSelectedCategoryEntityToUpdate(CategoryEntity selectedCategoryEntityToUpdate) {
         this.selectedCategoryEntityToUpdate = selectedCategoryEntityToUpdate;
+    }
+
+    /**
+     * @return the rootCategoryEntities
+     */
+    public List<CategoryEntity> getRootCategoryEntities() {
+        return rootCategoryEntities;
+    }
+
+    /**
+     * @param rootCategoryEntities the rootCategoryEntities to set
+     */
+    public void setRootCategoryEntities(List<CategoryEntity> rootCategoryEntities) {
+        this.rootCategoryEntities = rootCategoryEntities;
+    }
+
+    /**
+     * @return the categoryIdUpdate
+     */
+    public Long getCategoryIdUpdate() {
+        return categoryIdUpdate;
+    }
+
+    /**
+     * @param categoryIdUpdate the categoryIdUpdate to set
+     */
+    public void setCategoryIdUpdate(Long categoryIdUpdate) {
+        this.categoryIdUpdate = categoryIdUpdate;
     }
 
 
