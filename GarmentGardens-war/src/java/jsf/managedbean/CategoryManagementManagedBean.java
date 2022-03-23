@@ -50,7 +50,7 @@ public class CategoryManagementManagedBean implements Serializable {
     @PostConstruct
     public void postConstruct() {
         categoryEntities = categoryEntitySessionBeanLocal.retrieveAllLeafCategories();
-        setRootCategoryEntities(categoryEntitySessionBeanLocal.retrieveAllRootCategories());
+        rootCategoryEntities = categoryEntitySessionBeanLocal.retrieveAllRootCategories();
     }
 
     public void viewCategoryDetails(ActionEvent event) throws IOException {
@@ -78,16 +78,13 @@ public class CategoryManagementManagedBean implements Serializable {
     }
 
     public void doUpdateCategory(ActionEvent event) {
-        setSelectedCategoryEntityToUpdate((CategoryEntity) event.getComponent().getAttributes().get("categoryEntityToUpdate"));
-        setCategoryIdUpdate(getSelectedCategoryEntityToUpdate().getCategoryId());
+        selectedCategoryEntityToUpdate =((CategoryEntity) event.getComponent().getAttributes().get("categoryEntityToUpdate"));
+        categoryIdUpdate = selectedCategoryEntityToUpdate.getCategoryId();
 
     }
 
     public void updateCategory(ActionEvent event) {
-        if (getCategoryIdUpdate() == 0) {
-            setCategoryIdUpdate(null);
-        }
-
+        
         try {            
             categoryEntitySessionBeanLocal.updateCategory(newCategoryEntity, categoryIdNew);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Category updated successfully", null));
