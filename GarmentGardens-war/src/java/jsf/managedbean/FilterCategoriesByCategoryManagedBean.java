@@ -125,6 +125,7 @@ public class FilterCategoriesByCategoryManagedBean implements Serializable {
 
         if (selectedTreeNode != null) {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("categoryFilterCategory", ((CategoryEntity) selectedTreeNode.getData()).getCategoryId());
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("parentCategorySelected", (CategoryEntity) selectedTreeNode.getData());
         }
     }
 

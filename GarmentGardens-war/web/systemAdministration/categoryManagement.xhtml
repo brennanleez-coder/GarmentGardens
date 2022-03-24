@@ -25,7 +25,7 @@
                             <p:treeNode>
                                 <h:outputText value="#{node.name}" />
                             </p:treeNode>
-                            <p:ajax event="select" process="@form" update="formAllCategories:dataTableAllCategories" listener="#{filterCategoriesByCategoryManagedBean.filterCategory}" />
+                            <p:ajax event="select" process="@form" update="formAllCategories:dataTableAllCategories formCreateNewCategory:createCategoryPanel" listener="#{filterCategoriesByCategoryManagedBean.filterCategory}" />
                         </p:tree> 
                         <div style="text-align: center; margin-top: 20px">
                             <p:commandButton icon="ui-icon-refresh" actionListener="#{filterCategoriesByCategoryManagedBean.resetFilter}" update="formAllCategories:dataTableAllCategories formAllCategories:categoryTree" value="Reset">
@@ -40,7 +40,7 @@
 
                             <f:facet name="header">
                                 <p:outputPanel style="display: flex; justify-content: space-between">
-                                    <p:commandButton value="Create" icon="ui-icon-plus" onclick="PF('dialogCreateNewCategory').show()">
+                                    <p:commandButton value="Create" icon="ui-icon-plus" onclick="PF('dialogCreateNewCategory').show()" >
                                     </p:commandButton>
                                     <div>
                                     <h:outputText value="Search all fields:" />
@@ -78,7 +78,7 @@
                                 <p:commandButton actionListener="#{categoryManagementManagedBean.doUpdateCategory}" update="formUpdateCategory" oncomplete="PF('dialogUpdateCategory').show()" icon="ui-icon-pencil" title="Update">
                                     <f:attribute name="categoryEntityToUpdate" value="#{categoryEntity}" />
                                 </p:commandButton>
-                                <p:commandButton icon="ui-icon-trash" actionListener="#{categoryManagementManagedBean.deleteCategory}" update="formAllCategories:dataTableAllCategories formAllCategories:messages">
+                                <p:commandButton icon="ui-icon-trash" actionListener="#{categoryManagementManagedBean.deleteCategory}" update="formAllCategories:categoryTree formAllCategories:dataTableAllCategories formAllCategories:messages">
                                     <f:attribute name="categoryEntityToDelete" value="#{categoryEntity}" />
                                     <p:confirm header="Confirmation" message="Are you sure you want to delete #{categoryEntity.name}?" icon="ui-icon-alert" />
                                 </p:commandButton>
@@ -100,7 +100,7 @@
                 <p:dialog id="dialogCreateNewCategory" widgetVar="dialogCreateNewCategory" header="Create New Category" closable="true">
                     <p:messages id="messagesCreateNewCategory" redisplay="false" />
 
-                    <p:panelGrid>
+                    <p:panelGrid id="createCategoryPanel">
                         <p:row>
                             <p:column>
                                 <p:outputLabel for="name" value="Name: " style="font-weight: bold;" />
@@ -127,16 +127,13 @@
 
                         <p:row>
                             <p:column>
-                                <p:outputLabel for="selParentCategory" value="Parent Category " style="font-weight: bold;" />
+                                <p:outputLabel for="parentCategory" value="Parent Category " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:selectOneMenu id="selParentCategory" value="#{categoryManagementManagedBean.rootCategoryEntities}">
-                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
-                                    <f:selectItems value="#{categoryManagementManagedBean.rootCategoryEntities}" var="categoryEntity" itemValue="#{categoryEntity.categoryId}" itemLabel="#{categoryEntity.name}" />
-                                </p:selectOneMenu>
+                                <h:outputText id="parentCategory" value="#{sessionScope.parentCategorySelected.getName()}" />
                             </p:column>
                             <p:column>
-                                <p:message for="selParentCategory" />
+                                <p:message for="parentCategory" />
                             </p:column>
                         </p:row>       
 

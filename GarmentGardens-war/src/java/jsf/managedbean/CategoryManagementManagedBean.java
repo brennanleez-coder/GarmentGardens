@@ -15,6 +15,7 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import util.exception.CreateNewCategoryException;
 import util.exception.InputDataValidationException;
+
 /**
  *
  * @author rilwa
@@ -28,7 +29,7 @@ public class CategoryManagementManagedBean implements Serializable {
 
     private List<CategoryEntity> categoryEntities;
     private List<CategoryEntity> filteredCategoryEntities;
-    
+
     private List<CategoryEntity> rootCategoryEntities;
 
     private CategoryEntity newCategoryEntity;
@@ -39,7 +40,6 @@ public class CategoryManagementManagedBean implements Serializable {
 
     @Inject
     private ViewCategoryManagedBean viewCategoryManagedBean;
-
 
     public CategoryManagementManagedBean() {
         this.newCategoryEntity = new CategoryEntity();
@@ -59,8 +59,9 @@ public class CategoryManagementManagedBean implements Serializable {
 
     public void createNewCategory(ActionEvent event) {
 
-        try {
-            CategoryEntity ce = categoryEntitySessionBeanLocal.createNewCategoryEntity(newCategoryEntity, categoryIdNew);
+        try {        
+            CategoryEntity parentCategory =(CategoryEntity) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("parentCategorySelected");
+            CategoryEntity ce = categoryEntitySessionBeanLocal.createNewCategoryEntity(newCategoryEntity, parentCategory.getCategoryId());
             categoryEntities.add(ce);
 
             if (filteredCategoryEntities != null) {
@@ -77,20 +78,18 @@ public class CategoryManagementManagedBean implements Serializable {
 
     // SET THE SELECTED CATEGORY TO UPDATE ATTRIBUTE ON CLICKING ON THE UPDATE BUTTON
     public void doUpdateCategory(ActionEvent event) {
-        selectedCategoryEntityToUpdate =((CategoryEntity) event.getComponent().getAttributes().get("categoryEntityToUpdate"));
+        selectedCategoryEntityToUpdate = ((CategoryEntity) event.getComponent().getAttributes().get("categoryEntityToUpdate"));
         categoryIdUpdate = selectedCategoryEntityToUpdate.getCategoryId();
 
     }
 
     // CALL UPDATE ON THE SELECTED CATEGORY TO UPDATE
     public void updateCategory(ActionEvent event) {
-        
-        try {       
+
+        try {
             categoryEntitySessionBeanLocal.updateCategory(selectedCategoryEntityToUpdate);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Category updated successfully", null));
-        }
-
-        catch (Exception ex) {
+        } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
     }
@@ -107,14 +106,10 @@ public class CategoryManagementManagedBean implements Serializable {
             }
 
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Category deleted successfully", null));
-        }  
-
-        catch (Exception ex) {
+        } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
     }
-
-
 
     /**
      * @return the categoryEntities
@@ -221,6 +216,5 @@ public class CategoryManagementManagedBean implements Serializable {
     public void setCategoryIdUpdate(Long categoryIdUpdate) {
         this.categoryIdUpdate = categoryIdUpdate;
     }
-
 
 }
