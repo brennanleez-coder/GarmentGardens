@@ -6,11 +6,11 @@
                 template="/template/defaultTemplate.xhtml"
                 xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
                 xmlns:p="http://primefaces.org/ui">
-    
+
     <ui:define name="content">
-        
+
         <ez:Breadcrumb pageName="index" />
-        
+
         <h:panelGroup rendered="#{sessionScope.isLogin == false}">
             <article>
                 <h3>Welcome</h3>
@@ -28,20 +28,86 @@
 
         <h:panelGroup rendered="#{sessionScope.isLogin == true}">
             <article>
-                <h3>Message Of The Day</h3>                    
-                <p>                    
-                    <ui:repeat value="#{indexManagedBean.messageOfTheDayEntities}" var="motd">
-                        
-                        <p:panel header="#{utilManagedBean.formatMotdHeader(motd.messageDate)} - #{motd.title}" toggleable="true">
-                            <h:outputText value="#{motd.message}" />
-                        </p:panel>
-                        <br/>                
+                <h3>Message Of The Day</h3>
+                <h:form id="createMotd">
+                    <p:menubar>
 
-                    </ui:repeat>                                                              
+                        <p:submenu label="Create" icon="ui-icon-document">
+                            <p:menuitem value="Create New Message Of The Day" onclick="PF('dialogCreateNewMotd').show()" icon="pi pi-plus" />
+                        </p:submenu>                                        
+
+                    </p:menubar>
+                </h:form>
+                <h:form id="formCreateNewMotd">
+
+                    <p:dialog id="dialogCreateNewMotd" widgetVar="dialogCreateNewMotd" header="Create New Motd" closable="true">
+                        <p:messages id="messagesCreateNewMotd" redisplay="false" />
+                        <p:panelGrid id="createMotdPanel">
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel for="title" value="Title: " style="font-weight: bold;" />
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="title" value="#{motdManagement.newMessageOfTheDay.title}" placeholder="Enter Title" required="true" requiredMessage="Title is required" />
+                                </p:column>
+                                <p:column>
+                                    <p:message for="title" />
+                                </p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel for="message" value="Message: " style="font-weight: bold;" />
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="message" value="#{motdManagement.newMessageOfTheDay.message}" placeholder="Enter Message" required="true" requiredMessage="Message is required" />
+                                </p:column>
+                                <p:column>
+                                    <p:message for="message" />
+                                </p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel for="messageDate" value="Date: " style="font-weight: bold;" />
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="messageDate"  value="#{motdManagement.newMessageOfTheDay.messageDate}" placeholder="dd-MM-yyyy" required="true" requiredMessage="Date is required">
+                                        <f:convertDateTime pattern="dd-MM-yyyy" />
+                                    </p:inputText>
+                                </p:column>
+                                <p:message for="messageDate"/>
+
+                            </p:row>
+
+                            <p:row>
+                                <p:column colspan="3">
+                                    <p:commandButton type="reset" value="Clear" />&nbsp;
+                                    <p:commandButton  value="Create New Message Of The Day" update="repeatingMotd" actionListener="#{motdManagement.createNewMotd}" oncomplete="PF('dialogCreateNewCategory').show();" />
+                                </p:column>
+                            </p:row>
+
+                        </p:panelGrid>
+
+                    </p:dialog>
+                </h:form>
+                <p>
+                    <h:form id="repeatingMotd">
+                        <ui:repeat value="#{indexManagedBean.messageOfTheDayEntities}" var="motd">
+
+                            <p:panel header="#{utilManagedBean.formatMotdHeader(motd.messageDate)} - #{motd.title}" toggleable="true">
+                                <h:outputText value="#{motd.message}" />
+                            </p:panel>
+                            <br/>                
+
+                        </ui:repeat>
+                    </h:form>
                 </p>
             </article>
+
+
         </h:panelGroup>
-        
+
     </ui:define>
 
 </ui:composition>
