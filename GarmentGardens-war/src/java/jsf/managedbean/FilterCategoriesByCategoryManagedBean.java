@@ -5,19 +5,17 @@ import entity.CategoryEntity;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import util.exception.CategoryNotFoundException;
 
 @Named(value = "filterCategoriesByCategoryManagedBean")
-@ViewScoped
-
+@RequestScoped
 public class FilterCategoriesByCategoryManagedBean implements Serializable {
 
     @EJB
@@ -62,7 +60,9 @@ public class FilterCategoriesByCategoryManagedBean implements Serializable {
 
     public void resetFilter() {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("categoryFilterCategory", null);
-        categoryEntities = categoryEntitySessionBeanLocal.retrieveAllCategories();
+        selectedTreeNode = null;
+        // RESET ENTIRE TREE
+        postConstruct();
     }
 
     public void filterCategory() {

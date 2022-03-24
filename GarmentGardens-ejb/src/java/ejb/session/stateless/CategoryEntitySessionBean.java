@@ -145,7 +145,7 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
     }
 
     @Override
-    public void updateCategory(CategoryEntity categoryEntity, Long parentCategoryId) throws InputDataValidationException, CategoryNotFoundException, UpdateCategoryException {
+    public void updateCategory(CategoryEntity categoryEntity) throws InputDataValidationException, CategoryNotFoundException, UpdateCategoryException {
         Set<ConstraintViolation<CategoryEntity>> constraintViolations = validator.validate(categoryEntity);
 
         if (constraintViolations.isEmpty()) {
@@ -163,21 +163,21 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
                 categoryEntityToUpdate.setName(categoryEntity.getName());
                 categoryEntityToUpdate.setDescription(categoryEntity.getDescription());
 
-                if (parentCategoryId != null) {
-                    if (categoryEntityToUpdate.getCategoryId().equals(parentCategoryId)) {
-                        throw new UpdateCategoryException("Category cannot be its own parent");
-                    } else if (categoryEntityToUpdate.getParentCategory() == null || (!categoryEntityToUpdate.getParentCategory().getCategoryId().equals(parentCategoryId))) {
-                        CategoryEntity parentCategoryEntityToUpdate = retrieveCategoryByCategoryId(parentCategoryId);
-
-                        if (!parentCategoryEntityToUpdate.getProducts().isEmpty()) {
-                            throw new UpdateCategoryException("Parent category cannot have any product associated with it");
-                        }
-
-                        categoryEntityToUpdate.setParentCategory(parentCategoryEntityToUpdate);
-                    }
-                } else {
-                    categoryEntityToUpdate.setParentCategory(null);
-                }
+//                if (parentCategoryId != null) {
+//                    if (categoryEntityToUpdate.getCategoryId().equals(parentCategoryId)) {
+//                        throw new UpdateCategoryException("Category cannot be its own parent");
+//                    } else if (categoryEntityToUpdate.getParentCategory() == null || (!categoryEntityToUpdate.getParentCategory().getCategoryId().equals(parentCategoryId))) {
+//                        CategoryEntity parentCategoryEntityToUpdate = retrieveCategoryByCategoryId(parentCategoryId);
+//
+//                        if (!parentCategoryEntityToUpdate.getProducts().isEmpty()) {
+//                            throw new UpdateCategoryException("Parent category cannot have any product associated with it");
+//                        }
+//
+//                        categoryEntityToUpdate.setParentCategory(parentCategoryEntityToUpdate);
+//                    }
+//                } else {
+//                    categoryEntityToUpdate.setParentCategory(null);
+//                }
             } else {
                 throw new CategoryNotFoundException("Category ID not provided for category to be updated");
             }

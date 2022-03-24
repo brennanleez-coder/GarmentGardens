@@ -10,16 +10,6 @@
     <ui:define name="content">
 
         <ez:Breadcrumb pageName="categoryManagement" />
-        <h:form>
-
-            <p:menubar>
-                <p:submenu label='File' icon="ui-icon-document">
-                    <p:menuitem value="Create New Category" onclick="PF('dialogCreateNewCategory').show()" icon="pi pi-plus"/>
-                </p:submenu>
-            </p:menubar>
-            <br/>
-
-        </h:form>
 
         <div style="width: 80%">
             <h3>Category Management</h3>
@@ -28,7 +18,7 @@
 
                 <p:messages id="messages" redisplay="false" closable="true" />
 
-                <p:layout>
+                <p:layout id="layout">
 
                     <p:layoutUnit position="west" resizable="true" size="200">
                         <p:tree id="categoryTree" style="border: none" value="#{filterCategoriesByCategoryManagedBean.treeNode}" var="node" selectionMode="single" selection="#{filterCategoriesByCategoryManagedBean.selectedTreeNode}">
@@ -44,18 +34,21 @@
                     </p:layoutUnit>
 
                     <p:layoutUnit position="center">
-
                         <p:dataTable id="dataTableAllCategories" widgetVar="dataTableAllCategories" value="#{filterCategoriesByCategoryManagedBean.categoryEntities}" var="categoryEntity" rowKey="#{categoryEntity.categoryId}" rowIndexVar="row"
                                      filteredValue="#{categoryManagementManagedBean.filteredCategoryEntities}"
                                      rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
 
                             <f:facet name="header">
-                                <p:outputPanel style="text-align: right;">
+                                <p:outputPanel style="display: flex; justify-content: space-between">
+                                    <p:commandButton value="Create" icon="ui-icon-plus" onclick="PF('dialogCreateNewCategory').show()">
+                                    </p:commandButton>
+                                    <div>
                                     <h:outputText value="Search all fields:" />
                                     <p:inputText id="globalFilter" onkeyup="PF('dataTableAllCategories').filter()" style="width:300px" placeholder="Enter keyword"/>
+                                    </div>
                                 </p:outputPanel>
                             </f:facet>
-                            
+
                             <p:column headerText="Category ID" sortBy="#{categoryEntity.categoryId}" filterBy="#{categoryEntity.categoryId}" filterMatchMode="contains">
                                 <h:outputText value="#{categoryEntity.categoryId}" />
                             </p:column>
@@ -73,7 +66,7 @@
                             <p:column headerText="Category Description" sortBy="#{categoryEntity.description}" filterBy="#{categoryEntity.description}" filterMatchMode="contains">
                                 <h:outputText value="#{categoryEntity.description}" />
                             </p:column>
-                            
+
                             <p:column headerText="Parent Category" sortBy="#{categoryEntity.parentCategory.name}" filterBy="#{categoryEntity.parentCategory.name}" filterMatchMode="contains">
                                 <h:outputText value="#{categoryEntity.parentCategory.name}" />
                             </p:column>
@@ -131,7 +124,7 @@
                                 <p:message for="description" />
                             </p:column>
                         </p:row>
-         
+
                         <p:row>
                             <p:column>
                                 <p:outputLabel for="selParentCategory" value="Parent Category " style="font-weight: bold;" />
@@ -146,7 +139,7 @@
                                 <p:message for="selParentCategory" />
                             </p:column>
                         </p:row>       
-                        
+
 
                         <p:row>
                             <p:column colspan="3">
@@ -202,7 +195,7 @@
                                 <p:message for="description" />
                             </p:column>
                         </p:row>
-                        
+
                         <p:row>
                             <p:column>
                                 <h:outputLabel value="Parent Category: " />
@@ -217,7 +210,7 @@
 
                         <p:row>
                             <p:column colspan="3">
-                                <p:commandButton value="Update Category" update="@form formAllCategories:dataTableAllCategories" actionListener="#{categoryManagementManagedBean.updateCategory}" oncomplete="PF('dialogUpdateCategory').show();" />
+                                <p:commandButton value="Update Category" update="@form formAllCategories:categoryTree formAllCategories:dataTableAllCategories" actionListener="#{categoryManagementManagedBean.updateCategory}" oncomplete="PF('dialogUpdateCategory').show();" />
                             </p:column>
                         </p:row>
 

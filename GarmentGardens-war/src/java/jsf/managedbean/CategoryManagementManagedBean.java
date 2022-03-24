@@ -40,9 +40,7 @@ public class CategoryManagementManagedBean implements Serializable {
     @Inject
     private ViewCategoryManagedBean viewCategoryManagedBean;
 
-    /**
-     * Creates a new instance of categoryManagementManagedBean
-     */
+
     public CategoryManagementManagedBean() {
         this.newCategoryEntity = new CategoryEntity();
     }
@@ -77,16 +75,18 @@ public class CategoryManagementManagedBean implements Serializable {
         }
     }
 
+    // SET THE SELECTED CATEGORY TO UPDATE ATTRIBUTE ON CLICKING ON THE UPDATE BUTTON
     public void doUpdateCategory(ActionEvent event) {
         selectedCategoryEntityToUpdate =((CategoryEntity) event.getComponent().getAttributes().get("categoryEntityToUpdate"));
         categoryIdUpdate = selectedCategoryEntityToUpdate.getCategoryId();
 
     }
 
+    // CALL UPDATE ON THE SELECTED CATEGORY TO UPDATE
     public void updateCategory(ActionEvent event) {
         
-        try {            
-            categoryEntitySessionBeanLocal.updateCategory(newCategoryEntity, categoryIdNew);
+        try {       
+            categoryEntitySessionBeanLocal.updateCategory(selectedCategoryEntityToUpdate);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Category updated successfully", null));
         }
 

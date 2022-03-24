@@ -25,7 +25,7 @@ public interface CategoryEntitySessionBeanLocal {
 
     public void deleteCategory(Long categoryId) throws CategoryNotFoundException, DeleteCategoryException;
 
-    public void updateCategory(CategoryEntity categoryEntity, Long parentCategoryId) throws InputDataValidationException, CategoryNotFoundException, UpdateCategoryException;
+    public void updateCategory(CategoryEntity categoryEntity) throws InputDataValidationException, CategoryNotFoundException, UpdateCategoryException;
 
     public CategoryEntity retrieveCategoryByCategoryId(Long categoryId) throws CategoryNotFoundException;
 
