@@ -83,6 +83,7 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
 
                 entityManager.persist(newProductEntity);
                 newProductEntity.setCategory(categoryEntity);
+                newProductEntity.setIsListed(Boolean.TRUE);
 
                 if (tagIds != null && (!tagIds.isEmpty())) {
                     for (Long tagId : tagIds) {
@@ -311,7 +312,7 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
         if (productEntityToRemove == null) {
             throw new ProductNotFoundException("Product is not found in database, ID: " + productId);
         } else {
-            if (productEntityToRemove.getLineItems().isEmpty())
+            if (!productEntityToRemove.getLineItems().isEmpty())
             {
                 throw new DeleteProductException("Product ID " + productId + " is associated with existing sale transaction line item(s) and cannot be deleted!");
             } else {

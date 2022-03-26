@@ -128,7 +128,7 @@
                                 <p:outputLabel for="name" value="Name: " style="font-weight: bold;" />
                             </p:column>
                             <p:column>
-                                <p:inputText id="name" value="0" placeholder="Product 1" required="true" requiredMessage="Name is required" />
+                                <p:inputText id="name" value="#{productManagementManagedBean.newProductEntity.name}" placeholder="Product 1" required="true" requiredMessage="Name is required" />
                             </p:column>
                             <p:column>
                                 <p:message for="name" />

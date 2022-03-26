@@ -58,6 +58,7 @@ public class ProductEntity implements Serializable {
     public ProductEntity() {
         this.ratings = new ArrayList<RatingEntity>();
         this.tags = new ArrayList<TagEntity>();
+        this.lineItems = new ArrayList<LineItemEntity>();
     }
 
     public ProductEntity(String skuCode, String name, String description, Integer quantityOnHand, BigDecimal unitPrice, Boolean isListed) {
