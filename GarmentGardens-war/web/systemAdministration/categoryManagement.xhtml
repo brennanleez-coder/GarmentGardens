@@ -11,14 +11,14 @@
 
         <ez:Breadcrumb pageName="categoryManagement" />
 
-        <div style="width: 80%">
+        <div>
             <h3>Category Management</h3>
 
             <h:form id="formAllCategories">
 
                 <p:messages id="messages" redisplay="false" closable="true" />
 
-                <p:layout id="layout">
+                <p:layout id="layout" style="width: 80%">
 
                     <p:layoutUnit position="west" resizable="true" size="200">
                         <p:tree id="categoryTree" style="border: none" value="#{filterCategoriesByCategoryManagedBean.treeNode}" var="node" selectionMode="single" selection="#{filterCategoriesByCategoryManagedBean.selectedTreeNode}">
@@ -141,7 +141,7 @@
                         <p:row>
                             <p:column colspan="3">
                                 <p:commandButton type="reset" value="Clear" />&nbsp;
-                                <p:commandButton  value="Create New Category" update="@form formAllCategories:dataTableAllCategories" actionListener="#{categoryManagementManagedBean.createNewCategory}" oncomplete="PF('dialogCreateNewCategory').show();" />
+                                <p:commandButton  value="Create New Category" update="@form formAllCategories:categoryTree formAllCategories:dataTableAllCategories" actionListener="#{categoryManagementManagedBean.createNewCategory}" oncomplete="PF('dialogCreateNewCategory').show();" />
                             </p:column>
                         </p:row>
 

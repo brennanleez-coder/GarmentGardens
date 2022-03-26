@@ -10,7 +10,7 @@
         <nav>
             <h:form>
                     
-                <p:menu style="width:200px; background-color: #8FBC8F">
+                <p:menu style="width:200px;">
 
                     <p:submenu label="System">
                         <p:menuitem value="Home" outcome="/index" icon="pi pi-home" />
@@ -18,14 +18,14 @@
                     </p:submenu>
 
                     <p:submenu label="Cashier Operation" rendered="#{sessionScope.isLogin == true}">
-                        <p:menuitem value="Checkout" outcome="/index" icon="pi pi-shopping-cart" />
-                        <p:menuitem value="Void/Refund" outcome="/index" icon="pi pi-arrow-circle-right" />
-                        <p:menuitem value="View My Sale Transactions" outcome="/index" icon="pi pi-list" />
+                        <p:menuitem value="Order Management" outcome="/cashierOperation/orderManagement.xhtml" icon="pi pi-list" />
+                        <p:menuitem value="Reward Management" outcome="/cashierOperation/rewardManagement.xhtml" icon="pi pi-list" />
                     </p:submenu>
                     
                     <p:submenu label="System Administration" rendered="#{sessionScope.isLogin == true}">
                         <p:menuitem value="Staff Management" outcome="/systemAdministration/staffManagement.xhtml" icon="pi pi-users" />
                         <p:menuitem value="User Management" outcome="/systemAdministration/userManagement.xhtml" icon="pi pi-users" />
+                        <p:menuitem value="Advertiser Management" outcome="/systemAdministration/advertiserManagement.xhtml" icon="pi pi-users" />
                         <p:menuitem value="Product Management" outcome="/systemAdministration/productManagement.xhtml" icon="pi pi-tags" />
                         <p:menuitem value="Search Products by Name" outcome="/systemAdministration/searchProductsByName.xhtml" icon="pi pi-search" />
                         <p:menuitem value="Filter Products by Category" outcome="/systemAdministration/filterProductsByCategory.xhtml" icon="pi pi-filter" />

@@ -72,10 +72,11 @@ public class SecurityFilter implements Filter {
 //        }
         if (accessRight.equals(AccessRightEnum.MANAGER) || accessRight.equals(AccessRightEnum.ADMINISTRATOR)) {
             if (path.equals("/cashierOperation/checkout.xhtml")
-                    || path.equals("/cashierOperation/voidRefund.xhtml")
-                    || path.equals("/cashierOperation/viewMySaleTransactions.xhtml")
+                    || path.equals("/cashierOperation/orderManagement.xhtml")
+                    || path.equals("/cashierOperation/rewardManagement.xhtml")
                     || path.equals("/systemAdministration/staffManagement.xhtml")
                     || path.equals("/systemAdministration/userManagement.xhtml")
+                    || path.equals("/systemAdministration/advertiserManagement.xhtml")
                     || path.equals("/systemAdministration/productManagement.xhtml")
                     || path.equals("/systemAdministration/searchProductsByName.xhtml")
                     || path.equals("/systemAdministration/filterProductsByCategory.xhtml")

@@ -17,11 +17,11 @@
                 <br></br>
 
                 <div style="text-align: center;">
-                    <p:inputText id="txtSearchString" value="#{searchProductsByNameManagedBean.searchString}" style="font-size: x-large;">
+                    <p:inputText id="txtSearchString" value="#{searchProductsByNameManagedBean.searchString}" style="width: 80%">
                         <p:ajax event="keyup" process="@this" update="formMain:dataTableMain" listener="#{searchProductsByNameManagedBean.searchProduct}" />
                     </p:inputText>
 
-                    <p:commandButton value="Search" style="font-size:x-large;">
+                    <p:commandButton value="Search">
                         <p:ajax event="click" process="@this formMain:txtSearchString" update="formMain:dataTableMain" listener="#{searchProductsByNameManagedBean.searchProduct}" />
                     </p:commandButton>
                 </div>
