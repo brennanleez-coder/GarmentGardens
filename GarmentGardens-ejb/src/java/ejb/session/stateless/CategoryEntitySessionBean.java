@@ -45,20 +45,22 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
     }
 
     @Override
-    public CategoryEntity createNewCategoryEntity(CategoryEntity newCategoryEntity, Long parentCategoryId) throws InputDataValidationException, CreateNewCategoryException {
+    public CategoryEntity createNewCategoryEntity(CategoryEntity newCategoryEntity, CategoryEntity parent) throws InputDataValidationException, CreateNewCategoryException {
         Set<ConstraintViolation<CategoryEntity>> constraintViolations = validator.validate(newCategoryEntity);
 
         if (constraintViolations.isEmpty()) {
             try {
-                if (parentCategoryId != null) {
-                    CategoryEntity parentCategoryEntity = retrieveCategoryByCategoryId(parentCategoryId);
-
+                if (parent != null) {
+                    CategoryEntity parentCategoryEntity = retrieveCategoryByCategoryId(parent.getCategoryId());
+                    
                     if (!parentCategoryEntity.getProducts().isEmpty()) {
                         throw new CreateNewCategoryException("Parent category cannot be associated with any product");
                     }
-
+                    
+                    // ASSOCIATION
+                    parentCategoryEntity.getSubCategories().add(newCategoryEntity);
                     newCategoryEntity.setParentCategory(parentCategoryEntity);
-                }
+                } 
 
                 entityManager.persist(newCategoryEntity);
                 entityManager.flush();
@@ -137,6 +139,10 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
     public CategoryEntity retrieveCategoryByCategoryId(Long categoryId) throws CategoryNotFoundException {
         CategoryEntity categoryEntity = entityManager.find(CategoryEntity.class, categoryId);
 
+        categoryEntity.getParentCategory();
+        categoryEntity.getSubCategories().size();
+        categoryEntity.getProducts().size();
+        
         if (categoryEntity != null) {
             return categoryEntity;
         } else {
@@ -163,21 +169,6 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
                 categoryEntityToUpdate.setName(categoryEntity.getName());
                 categoryEntityToUpdate.setDescription(categoryEntity.getDescription());
 
-//                if (parentCategoryId != null) {
-//                    if (categoryEntityToUpdate.getCategoryId().equals(parentCategoryId)) {
-//                        throw new UpdateCategoryException("Category cannot be its own parent");
-//                    } else if (categoryEntityToUpdate.getParentCategory() == null || (!categoryEntityToUpdate.getParentCategory().getCategoryId().equals(parentCategoryId))) {
-//                        CategoryEntity parentCategoryEntityToUpdate = retrieveCategoryByCategoryId(parentCategoryId);
-//
-//                        if (!parentCategoryEntityToUpdate.getProducts().isEmpty()) {
-//                            throw new UpdateCategoryException("Parent category cannot have any product associated with it");
-//                        }
-//
-//                        categoryEntityToUpdate.setParentCategory(parentCategoryEntityToUpdate);
-//                    }
-//                } else {
-//                    categoryEntityToUpdate.setParentCategory(null);
-//                }
             } else {
                 throw new CategoryNotFoundException("Category ID not provided for category to be updated");
             }
@@ -195,9 +186,14 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
         } else if (!categoryEntityToRemove.getProducts().isEmpty()) {
             throw new DeleteCategoryException("Category ID " + categoryId + " is associated with existing products and cannot be deleted!");
         } else {
+            CategoryEntity parent = categoryEntityToRemove.getParentCategory();
+            if (parent != null) {
+                parent.getSubCategories().remove(categoryEntityToRemove);
+            }
             categoryEntityToRemove.setParentCategory(null);
-
+            
             entityManager.remove(categoryEntityToRemove);
+            entityManager.flush();
         }
     }
 

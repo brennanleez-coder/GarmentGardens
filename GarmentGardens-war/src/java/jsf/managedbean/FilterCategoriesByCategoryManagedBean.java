@@ -3,11 +3,12 @@ package jsf.managedbean;
 import ejb.session.stateless.CategoryEntitySessionBeanLocal;
 import entity.CategoryEntity;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.inject.Inject;
 import org.primefaces.model.DefaultTreeNode;
@@ -15,7 +16,7 @@ import org.primefaces.model.TreeNode;
 import util.exception.CategoryNotFoundException;
 
 @Named(value = "filterCategoriesByCategoryManagedBean")
-@RequestScoped
+@ViewScoped
 public class FilterCategoriesByCategoryManagedBean implements Serializable {
 
     @EJB
@@ -34,6 +35,10 @@ public class FilterCategoriesByCategoryManagedBean implements Serializable {
 
     @PostConstruct
     public void postConstruct() {
+        resetTree();
+    }
+
+    public void resetTree() {
         List<CategoryEntity> categoryEntities = categoryEntitySessionBeanLocal.retrieveAllRootCategories();
         treeNode = new DefaultTreeNode("Root", null);
 
@@ -60,6 +65,7 @@ public class FilterCategoriesByCategoryManagedBean implements Serializable {
 
     public void resetFilter() {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("categoryFilterCategory", null);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("parentCategorySelected", null);
         selectedTreeNode = null;
         // RESET ENTIRE TREE
         postConstruct();
@@ -79,13 +85,6 @@ public class FilterCategoriesByCategoryManagedBean implements Serializable {
         }
     }
 
-//    public void viewProductDetails(ActionEvent event) throws IOException
-//    {
-//        Long categoryIdToView = (Long)event.getComponent().getAttributes().get("categoryId");
-//        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("categoryIdToView", categoryIdToView);
-//        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("backMode", "categoryProductsByCategory");
-//        FacesContext.getCurrentInstance().getExternalContext().redirect("viewCategoryDetails.xhtml");
-//    }
     private void createTreeNode(CategoryEntity categoryEntity, TreeNode parentTreeNode) {
         TreeNode treeNode = new DefaultTreeNode(categoryEntity, parentTreeNode);
 
@@ -127,6 +126,7 @@ public class FilterCategoriesByCategoryManagedBean implements Serializable {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("categoryFilterCategory", ((CategoryEntity) selectedTreeNode.getData()).getCategoryId());
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("parentCategorySelected", (CategoryEntity) selectedTreeNode.getData());
         }
+
     }
 
     public List<CategoryEntity> getCategoryEntities() {

@@ -41,6 +41,9 @@ public class CategoryManagementManagedBean implements Serializable {
     @Inject
     private ViewCategoryManagedBean viewCategoryManagedBean;
 
+    @Inject
+    private FilterCategoriesByCategoryManagedBean filterCategoriesByCategoryManagedBean;
+
     public CategoryManagementManagedBean() {
         this.newCategoryEntity = new CategoryEntity();
     }
@@ -51,17 +54,18 @@ public class CategoryManagementManagedBean implements Serializable {
         rootCategoryEntities = categoryEntitySessionBeanLocal.retrieveAllRootCategories();
     }
 
-    public void viewCategoryDetails(ActionEvent event) throws IOException {
-        Long categoryIdToView = (Long) event.getComponent().getAttributes().get("categoryId");
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("categoryIdToView", categoryIdToView);
-        FacesContext.getCurrentInstance().getExternalContext().redirect("viewCategoryDetails.xhtml");
-    }
+//    public void viewCategoryDetails(ActionEvent event) throws IOException {
+//        Long categoryIdToView = (Long) event.getComponent().getAttributes().get("categoryId");
+//        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("categoryIdToView", categoryIdToView);
+//        FacesContext.getCurrentInstance().getExternalContext().redirect("viewCategoryDetails.xhtml");
+//    }
 
     public void createNewCategory(ActionEvent event) {
 
-        try {        
-            CategoryEntity parentCategory =(CategoryEntity) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("parentCategorySelected");
-            CategoryEntity ce = categoryEntitySessionBeanLocal.createNewCategoryEntity(newCategoryEntity, parentCategory.getCategoryId());
+        try {
+            CategoryEntity parentCategoryEntity = (CategoryEntity) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("parentCategorySelected");
+            
+            CategoryEntity ce = categoryEntitySessionBeanLocal.createNewCategoryEntity(newCategoryEntity, parentCategoryEntity);
             categoryEntities.add(ce);
 
             if (filteredCategoryEntities != null) {
@@ -74,6 +78,9 @@ public class CategoryManagementManagedBean implements Serializable {
         } catch (InputDataValidationException | CreateNewCategoryException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new Category: " + ex.getMessage(), null));
         }
+
+        // update category tree
+        filterCategoriesByCategoryManagedBean.resetTree();
     }
 
     // SET THE SELECTED CATEGORY TO UPDATE ATTRIBUTE ON CLICKING ON THE UPDATE BUTTON
@@ -92,13 +99,16 @@ public class CategoryManagementManagedBean implements Serializable {
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
+
+        // update category tree
+        filterCategoriesByCategoryManagedBean.resetTree();
     }
 
     public void deleteCategory(ActionEvent event) {
         try {
             CategoryEntity categoryEntityToDelete = (CategoryEntity) event.getComponent().getAttributes().get("categoryEntityToDelete");
             categoryEntitySessionBeanLocal.deleteCategory(categoryEntityToDelete.getCategoryId());
-
+            
             categoryEntities.remove(categoryEntityToDelete);
 
             if (filteredCategoryEntities != null) {
@@ -109,74 +119,47 @@ public class CategoryManagementManagedBean implements Serializable {
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
+
+        // update category tree
+        filterCategoriesByCategoryManagedBean.resetTree();
     }
 
-    /**
-     * @return the categoryEntities
-     */
     public List<CategoryEntity> getCategoryEntities() {
         return categoryEntities;
     }
 
-    /**
-     * @param categoryEntities the categoryEntities to set
-     */
     public void setCategoryEntities(List<CategoryEntity> categoryEntities) {
         this.categoryEntities = categoryEntities;
     }
 
-    /**
-     * @return the filteredCategoryEntities
-     */
     public List<CategoryEntity> getFilteredCategoryEntities() {
         return filteredCategoryEntities;
     }
 
-    /**
-     * @param filteredCategoryEntities the filteredCategoryEntities to set
-     */
     public void setFilteredCategoryEntities(List<CategoryEntity> filteredCategoryEntities) {
         this.filteredCategoryEntities = filteredCategoryEntities;
     }
 
-    /**
-     * @return the newCategoryEntity
-     */
     public CategoryEntity getNewCategoryEntity() {
         return newCategoryEntity;
     }
 
-    /**
-     * @param newCategoryEntity the newCategoryEntity to set
-     */
     public void setNewCategoryEntity(CategoryEntity newCategoryEntity) {
         this.newCategoryEntity = newCategoryEntity;
     }
 
-    /**
-     * @return the categoryIdNew
-     */
     public Long getCategoryIdNew() {
         return categoryIdNew;
     }
 
-    /**
-     * @param categoryIdNew the categoryIdNew to set
-     */
     public void setCategoryIdNew(Long categoryIdNew) {
         this.categoryIdNew = categoryIdNew;
     }
 
-    /**
-     * @return the viewCategoryManagedBean
-     */
     public ViewCategoryManagedBean getViewCategoryManagedBean() {
         return viewCategoryManagedBean;
     }
 
-    /**
-     * @param viewCategoryManagedBean the viewCategoryManagedBean to set
-     */
     public void setViewCategoryManagedBean(ViewCategoryManagedBean viewCategoryManagedBean) {
         this.viewCategoryManagedBean = viewCategoryManagedBean;
     }
@@ -189,30 +172,18 @@ public class CategoryManagementManagedBean implements Serializable {
         this.selectedCategoryEntityToUpdate = selectedCategoryEntityToUpdate;
     }
 
-    /**
-     * @return the rootCategoryEntities
-     */
     public List<CategoryEntity> getRootCategoryEntities() {
         return rootCategoryEntities;
     }
 
-    /**
-     * @param rootCategoryEntities the rootCategoryEntities to set
-     */
     public void setRootCategoryEntities(List<CategoryEntity> rootCategoryEntities) {
         this.rootCategoryEntities = rootCategoryEntities;
     }
 
-    /**
-     * @return the categoryIdUpdate
-     */
     public Long getCategoryIdUpdate() {
         return categoryIdUpdate;
     }
 
-    /**
-     * @param categoryIdUpdate the categoryIdUpdate to set
-     */
     public void setCategoryIdUpdate(Long categoryIdUpdate) {
         this.categoryIdUpdate = categoryIdUpdate;
     }

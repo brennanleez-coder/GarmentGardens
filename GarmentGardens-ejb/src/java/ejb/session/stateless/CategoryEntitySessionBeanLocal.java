@@ -21,7 +21,7 @@ import util.exception.UpdateCategoryException;
 @Local
 public interface CategoryEntitySessionBeanLocal {
 
-    public CategoryEntity createNewCategoryEntity(CategoryEntity newCategoryEntity, Long parentCategoryId) throws InputDataValidationException, CreateNewCategoryException;
+    public CategoryEntity createNewCategoryEntity(CategoryEntity newCategoryEntity, CategoryEntity parentCategoryEntity) throws InputDataValidationException, CreateNewCategoryException;
 
     public void deleteCategory(Long categoryId) throws CategoryNotFoundException, DeleteCategoryException;
 

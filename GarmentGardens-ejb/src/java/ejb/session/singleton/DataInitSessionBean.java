@@ -126,15 +126,15 @@ public class DataInitSessionBean {
 
             CategoryEntity categoryEntityElectronics = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Electronics", "Electronics"), null);
             CategoryEntity categoryEntityFashions = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Fashions", "Fashions"), null);
-            CategoryEntity categoryEntityA = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category A", "Category A"), categoryEntityElectronics.getCategoryId());
-            CategoryEntity categoryEntityB = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category B", "Category B"), categoryEntityElectronics.getCategoryId());
-            CategoryEntity categoryEntityC = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category C", "Category C"), categoryEntityElectronics.getCategoryId());
-            CategoryEntity categoryEntityX = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category X", "Category X"), categoryEntityFashions.getCategoryId());
-            CategoryEntity categoryEntityY = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Y", "Category Y"), categoryEntityFashions.getCategoryId());
-            CategoryEntity categoryEntityZ = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Z", "Category Z"), categoryEntityFashions.getCategoryId());
-            CategoryEntity categoryEntityM = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category M", "Category M"), categoryEntityX.getCategoryId());
-            CategoryEntity categoryEntityN = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category N", "Category N"), categoryEntityY.getCategoryId());
-            CategoryEntity categoryEntityO = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category O", "Category O"), categoryEntityZ.getCategoryId());
+            CategoryEntity categoryEntityA = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category A", "Category A"), categoryEntityElectronics);
+            CategoryEntity categoryEntityB = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category B", "Category B"), categoryEntityElectronics);
+            CategoryEntity categoryEntityC = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category C", "Category C"), categoryEntityElectronics);
+            CategoryEntity categoryEntityX = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category X", "Category X"), categoryEntityFashions);
+            CategoryEntity categoryEntityY = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Y", "Category Y"), categoryEntityFashions);
+            CategoryEntity categoryEntityZ = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Z", "Category Z"), categoryEntityFashions);
+            CategoryEntity categoryEntityM = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category M", "Category M"), categoryEntityX);
+            CategoryEntity categoryEntityN = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category N", "Category N"), categoryEntityY);
+            CategoryEntity categoryEntityO = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category O", "Category O"), categoryEntityZ);
 
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD001", "Product A1", "Product A1", 100, new BigDecimal("10.00"), true), categoryEntityA.getCategoryId(), tagIdsPopular);
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD002", "Product A2", "Product A2", 100, new BigDecimal("25.50"), true), categoryEntityA.getCategoryId(), tagIdsDiscount);
@@ -193,20 +193,15 @@ public class DataInitSessionBean {
             CategoryEntity categoryEntityElectronics = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Electronics", "Electronics"), null);
             CategoryEntity categoryEntityFashions = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Fashions", "Fashions"), null);
             
-            // UNDER ELECTRONICS
-            CategoryEntity categoryEntityA = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category A", "Category A"), categoryEntityElectronics.getCategoryId());
-            CategoryEntity categoryEntityB = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category B", "Category B"), categoryEntityElectronics.getCategoryId());
-            CategoryEntity categoryEntityC = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category C", "Category C"), categoryEntityElectronics.getCategoryId());
-            
-            // UNDER FASHIONS
-            CategoryEntity categoryEntityX = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category X", "Category X"), categoryEntityFashions.getCategoryId());
-            CategoryEntity categoryEntityY = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Y", "Category Y"), categoryEntityFashions.getCategoryId());
-            CategoryEntity categoryEntityZ = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Z", "Category Z"), categoryEntityFashions.getCategoryId());
-            
-            // UNDER FASHIONS => X,Y,Z
-            CategoryEntity categoryEntityM = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category M", "Category M"), categoryEntityX.getCategoryId());
-            CategoryEntity categoryEntityN = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category N", "Category N"), categoryEntityY.getCategoryId());
-            CategoryEntity categoryEntityO = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category O", "Category O"), categoryEntityZ.getCategoryId());
+            CategoryEntity categoryEntityA = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category A", "Category A"), categoryEntityElectronics);
+            CategoryEntity categoryEntityB = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category B", "Category B"), categoryEntityElectronics);
+            CategoryEntity categoryEntityC = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category C", "Category C"), categoryEntityElectronics);
+            CategoryEntity categoryEntityX = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category X", "Category X"), categoryEntityFashions);
+            CategoryEntity categoryEntityY = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Y", "Category Y"), categoryEntityFashions);
+            CategoryEntity categoryEntityZ = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category Z", "Category Z"), categoryEntityFashions);
+            CategoryEntity categoryEntityM = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category M", "Category M"), categoryEntityX);
+            CategoryEntity categoryEntityN = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category N", "Category N"), categoryEntityY);
+            CategoryEntity categoryEntityO = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category O", "Category O"), categoryEntityZ);
 
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD001", "Product A1", "Product A1", 100, new BigDecimal("10.00"), true), categoryEntityA.getCategoryId(), tagIdsPopular);
             productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD002", "Product A2", "Product A2", 100, new BigDecimal("25.50"), true), categoryEntityA.getCategoryId(), tagIdsDiscount);

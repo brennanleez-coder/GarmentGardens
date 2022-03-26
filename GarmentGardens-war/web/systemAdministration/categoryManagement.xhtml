@@ -18,23 +18,23 @@
 
                 <p:messages id="messages" redisplay="false" closable="true" />
 
-                <p:layout id="layout" style="width: 80%">
+                <p:layout id="layout" style="width:80%">
 
                     <p:layoutUnit position="west" resizable="true" size="200">
-                        <p:tree id="categoryTree" style="border: none" value="#{filterCategoriesByCategoryManagedBean.treeNode}" var="node" selectionMode="single" selection="#{filterCategoriesByCategoryManagedBean.selectedTreeNode}">
+                        <p:tree id="categoryTree" style="border: none; " value="#{filterCategoriesByCategoryManagedBean.treeNode}" var="node" selectionMode="single" selection="#{filterCategoriesByCategoryManagedBean.selectedTreeNode}">
                             <p:treeNode>
                                 <h:outputText value="#{node.name}" />
                             </p:treeNode>
                             <p:ajax event="select" process="@form" update="formAllCategories:dataTableAllCategories formCreateNewCategory:createCategoryPanel" listener="#{filterCategoriesByCategoryManagedBean.filterCategory}" />
                         </p:tree> 
                         <div style="text-align: center; margin-top: 20px">
-                            <p:commandButton icon="ui-icon-refresh" actionListener="#{filterCategoriesByCategoryManagedBean.resetFilter}" update="formAllCategories:dataTableAllCategories formAllCategories:categoryTree" value="Reset">
+                            <p:commandButton icon="ui-icon-refresh" actionListener="#{filterCategoriesByCategoryManagedBean.resetFilter}" update="formAllCategories:dataTableAllCategories formAllCategories:categoryTree formCreateNewCategory:createCategoryPanel" value="Reset">
                             </p:commandButton>
                         </div>
                     </p:layoutUnit>
 
-                    <p:layoutUnit position="center">
-                        <p:dataTable id="dataTableAllCategories" widgetVar="dataTableAllCategories" value="#{filterCategoriesByCategoryManagedBean.categoryEntities}" var="categoryEntity" rowKey="#{categoryEntity.categoryId}" rowIndexVar="row"
+                    <p:layoutUnit position="center" resizable="true" >
+                             <p:dataTable id="dataTableAllCategories" widgetVar="dataTableAllCategories" value="#{filterCategoriesByCategoryManagedBean.categoryEntities}" var="categoryEntity" rowKey="#{categoryEntity.categoryId}" rowIndexVar="row"
                                      filteredValue="#{categoryManagementManagedBean.filteredCategoryEntities}"
                                      rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
 
@@ -84,7 +84,7 @@
                                 </p:commandButton>
                             </p:column>
 
-                        </p:dataTable>
+                        </p:dataTable>                       
                     </p:layoutUnit>
 
                 </p:layout> 
@@ -98,7 +98,7 @@
             <h:form id="formCreateNewCategory">
 
                 <p:dialog id="dialogCreateNewCategory" widgetVar="dialogCreateNewCategory" header="Create New Category" closable="true">
-                    <p:messages id="messagesCreateNewCategory" redisplay="false" />
+                    <p:messages id="messagesCreateNewCategory" redisplay="false" closable="true"/>
 
                     <p:panelGrid id="createCategoryPanel">
                         <p:row>
@@ -129,8 +129,9 @@
                             <p:column>
                                 <p:outputLabel for="parentCategory" value="Parent Category " style="font-weight: bold;" />
                             </p:column>
-                            <p:column>
-                                <h:outputText id="parentCategory" value="#{sessionScope.parentCategorySelected.getName()}" />
+                            <p:column id="parentCategory">
+                                <h:outputText rendered="#{sessionScope.parentCategorySelected != null}" value="#{sessionScope.parentCategorySelected.getName()}" />
+                                <h:outputText rendered="#{sessionScope.parentCategorySelected == null}" value="Create as Root Category" />
                             </p:column>
                             <p:column>
                                 <p:message for="parentCategory" />
@@ -155,7 +156,7 @@
             <h:form id="formUpdateCategory">
 
                 <p:dialog id="dialogUpdateCategory" widgetVar="dialogUpdateCategory" header="Update Category" closable="true">
-                    <p:messages id="messagesUpdateCategory" redisplay="false" />
+                    <p:messages id="messagesUpdateCategory" redisplay="false" closable="true" />
 
                     <p:panelGrid>
                         <p:row>
@@ -206,7 +207,7 @@
                         </p:row>
 
                         <p:row>
-                            <p:column colspan="3">
+                            <p:column colspan="3" style="text-align: center">
                                 <p:commandButton value="Update Category" update="@form formAllCategories:categoryTree formAllCategories:dataTableAllCategories" actionListener="#{categoryManagementManagedBean.updateCategory}" oncomplete="PF('dialogUpdateCategory').show();" />
                             </p:column>
                         </p:row>
