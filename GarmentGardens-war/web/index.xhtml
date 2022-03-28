@@ -8,7 +8,6 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="content">
-
         <ez:Breadcrumb pageName="index" />
 
         <h:panelGroup rendered="#{sessionScope.isLogin == false}">
@@ -39,32 +38,47 @@
 
         <h:panelGroup rendered="#{sessionScope.isLogin == true}">
             <h1>Welcome, #{sessionScope.currentStaffEntity.accessRightEnum}! 🙇‍♂️</h1>
-<div class="card">
-    <h:form>
 
-            <p:panel id="sports" header="Sports">
-                <h:outputText value="Sports Content"/>
-            </p:panel>
+            <div class="card">
 
-            <p:panel id="finance" header="Finance">
-                <h:outputText value="Finance Content"/>
-            </p:panel>
+                <h:form>
 
-            <p:panel id="lifestyle" header="Lifestyle">
-                <h:outputText value="Lifestyle Content"/>
-            </p:panel>
 
-            <p:panel id="weather" header="Weather">
-                <h:outputText value="Weather Content"/>
-            </p:panel>
+                    <h2>Product Report</h2>
 
-            <p:panel id="politics" header="Politics">
-                <h:outputText value="Politics Content"/>
-            </p:panel>
+                    <h:form id="formReport">
 
-        <div style="clear:both"/>
-    </h:form>
-</div>
+                        <p:panel header="Report">
+
+                            <p:commandButton value="Generate" actionListener="#{reportManagedBean.generateReport}" ajax="false" />
+
+                        </p:panel>
+
+                    </h:form>
+
+                    <p:panel id="sports" header="Sports">
+                        <h:outputText value="Sports Content"/>
+                    </p:panel>
+
+                    <p:panel id="finance" header="Finance">
+                        <h:outputText value="Finance Content"/>
+                    </p:panel>
+
+                    <p:panel id="lifestyle" header="Lifestyle">
+                        <h:outputText value="Lifestyle Content"/>
+                    </p:panel>
+
+                    <p:panel id="weather" header="Weather">
+                        <h:outputText value="Weather Content"/>
+                    </p:panel>
+
+                    <p:panel id="politics" header="Politics">
+                        <h:outputText value="Politics Content"/>
+                    </p:panel>
+
+                    <div style="clear:both"/>
+                </h:form>
+            </div>
 
         </h:panelGroup>
 
