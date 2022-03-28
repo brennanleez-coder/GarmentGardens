@@ -23,7 +23,6 @@ public class SecurityFilter implements Filter {
     private static final String CONTEXT_ROOT = "/GarmentGardens-war";
 
     public void init(FilterConfig filterConfig) throws ServletException {
-        System.out.println("Filter Init");
         this.filterConfig = filterConfig;
     }
 
@@ -82,7 +81,8 @@ public class SecurityFilter implements Filter {
                     || path.equals("/systemAdministration/filterProductsByCategory.xhtml")
                     || path.equals("/systemAdministration/filterProductsByTags.xhtml")
                     || path.equals("/systemAdministration/categoryManagement.xhtml")
-                    || path.equals("/systemAdministration/tagManagement.xhtml")) {
+                    || path.equals("/systemAdministration/tagManagement.xhtml")
+                    || path.equals("/systemAdministration/motdManagement.xhtml")) {
                 return true;
             } else {
                 return false;

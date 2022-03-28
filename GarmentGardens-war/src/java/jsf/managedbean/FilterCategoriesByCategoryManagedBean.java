@@ -68,7 +68,7 @@ public class FilterCategoriesByCategoryManagedBean implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("parentCategorySelected", null);
         selectedTreeNode = null;
         // RESET ENTIRE TREE
-        postConstruct();
+        resetTree();
     }
 
     public void filterCategory() {

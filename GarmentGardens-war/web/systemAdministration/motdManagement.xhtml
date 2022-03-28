@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/template/defaultTemplate.xhtml"
+                xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <ez:Breadcrumb pageName="Message of the Day Management" />
+
+        <div>
+            <h3>Message of the Day Management</h3>
+
+            <h:form>
+
+                <p:menubar>
+                    <p:submenu label='File' icon="ui-icon-document">
+                        <p:menuitem value="Create New Message" onclick="PF('dialogCreateNewMotd').show()" icon="pi pi-plus"/>
+                    </p:submenu>
+                </p:menubar>
+                <br/>
+
+            </h:form>
+
+            <h:form id="formAllMotds">
+
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="dataTableAllMotds" widgetVar="dataTableAllMotds" value="#{motdManagementManagedBean.motdEntities}" var="motdEntity" rowKey="#{motdEntity.motdId}" rowIndexVar="row"
+                             filteredValue="#{motdManagementManagedBean.filteredMotdEntities}"
+                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: right;">
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllMotds').filter()" style="width:300px" placeholder="Enter keyword"/>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column headerText="Message ID" style="width: 100px" sortBy="#{motdEntity.motdId}" filterBy="#{motdEntity.motdId}" filterMatchMode="contains">
+                        <h:outputText value="#{motdEntity.motdId}" />
+                    </p:column>                            
+
+                    <p:column headerText="Title" sortBy="#{motdEntity.title}" filterBy="#{motdEntity.title}" filterMatchMode="contains">
+                        <h:outputText value="#{motdEntity.title}" />
+                    </p:column>
+                    <p:column headerText="Message" sortBy="#{motdEntity.message}" filterBy="#{motdEntity.message}" filterMatchMode="contains">
+                        <h:outputText value="#{motdEntity.message}" />
+                    </p:column>         
+                    <p:column headerText="Date" sortBy="#{motdEntity.messageDate}" filterBy="#{motdEntity.messageDate}" filterMatchMode="contains">
+                        <h:outputText value="#{motdEntity.messageDate}" />
+                    </p:column>   
+
+                    <p:column headerText="Delete" style="width: 50px">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{motdManagementManagedBean.deleteMotd}" update="formAllMotds:dataTableAllMotds formAllMotds:messages">
+                            <f:attribute name="motdEntityToDelete" value="#{motdEntity}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{motdEntity.title}?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </h:form>
+
+            <h:form id="formCreateNewMotd">
+
+                <p:dialog id="dialogCreateNewMotd" widgetVar="dialogCreateNewMotd" header="Create New Motd" closable="true">
+                    <p:messages id="messagesCreateNewMotd" redisplay="false" />
+
+                    <p:panelGrid>
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="title" value="Title: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="title" value="#{motdManagementManagedBean.newMessageOfTheDay.title}" placeholder="Enter Title" required="true" requiredMessage="Title is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="title" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="message" value="Message: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="message" value="#{motdManagementManagedBean.newMessageOfTheDay.message}" placeholder="Enter Message" required="true" requiredMessage="Message is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="message" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="messageDate" value="Date: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="messageDate"  value="#{motdManagementManagedBean.newMessageOfTheDay.messageDate}" placeholder="dd-MM-yyyy" required="true" requiredMessage="Date is required">
+                                    <f:convertDateTime pattern="dd-MM-yyyy" />
+                                </p:inputText>
+                            </p:column>
+                            <p:message for="messageDate"/>
+
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton  value="Create New Message" update="@form formAllMotds:dataTableAllMotds" actionListener="#{motdManagementManagedBean.createNewMotd}" oncomplete="PF('dialogCreateNewMotd').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+            </h:form>
+
+
+
+        </div>
+    </ui:define>
+
+</ui:composition>

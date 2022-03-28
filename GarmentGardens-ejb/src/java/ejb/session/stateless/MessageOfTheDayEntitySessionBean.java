@@ -53,7 +53,8 @@ public class MessageOfTheDayEntitySessionBean implements MessageOfTheDayEntitySe
 
     @Override
     public MessageOfTheDayEntity deleteMessageOfTheDay(MessageOfTheDayEntity motd) {
-        entityManager.remove(motd);
+        MessageOfTheDayEntity motdEntityToRemove = entityManager.find(MessageOfTheDayEntity.class, motd.getMotdId());
+        entityManager.remove(motdEntityToRemove);
         return motd;
     }
 
