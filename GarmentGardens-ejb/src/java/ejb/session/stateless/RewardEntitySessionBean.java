@@ -125,7 +125,7 @@ public class RewardEntitySessionBean implements RewardEntitySessionBeanLocal {
             if(rewardEntity.getRewardId()!= null)
             {
                 RewardEntity rewardEntityToUpdate = retrieveRewardByRewardId(rewardEntity.getRewardId());
-                
+                rewardEntityToUpdate.setRewardName(rewardEntity.getRewardName());
                 rewardEntityToUpdate.setCustomer(rewardEntity.getCustomer());
                 rewardEntityToUpdate.setExpiryDate(rewardEntity.getExpiryDate());
                 rewardEntityToUpdate.setStaff(rewardEntity.getStaff());
