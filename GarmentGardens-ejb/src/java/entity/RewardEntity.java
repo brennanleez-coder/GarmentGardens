@@ -23,25 +23,28 @@ import util.enumeration.RewardEnum;
 @Entity
 public class RewardEntity implements Serializable {
 
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rewardId;
+    private String rewardName;
     private RewardEnum rewardEnum;
     private Date expiryDate;
     
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    //@JoinColumn(nullable = false)
     private StaffEntity staff;
     
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    //@JoinColumn(nullable = false)
     private UserEntity customer;
 
     public RewardEntity() {
     }
 
-    public RewardEntity(RewardEnum rewardEnum, Date expiryDate) {
+    public RewardEntity(String rewardName, RewardEnum rewardEnum, Date expiryDate) {
+        this.rewardName = rewardName;
         this.rewardEnum = rewardEnum;
         this.expiryDate = expiryDate;
     }
@@ -49,6 +52,15 @@ public class RewardEntity implements Serializable {
     public Long getRewardId() {
         return rewardId;
     }
+    
+    public String getRewardName() {
+        return rewardName;
+    }
+
+    public void setRewardName(String rewardName) {
+        this.rewardName = rewardName;
+    }
+
 
     public void setRewardId(Long rewardId) {
         this.rewardId = rewardId;

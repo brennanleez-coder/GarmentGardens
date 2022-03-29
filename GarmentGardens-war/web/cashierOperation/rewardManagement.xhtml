@@ -13,6 +13,204 @@
         
         <div>
             <h3 style="padding-left:15px">Reward Management</h3>
+            
+            <h:form>
+                
+                <p:menubar>
+                    <p:submenu label='File' icon="ui-icon-document">
+                        <p:menuitem value="Create New Reward" onclick="PF('dialogCreateNewReward').show()" icon="pi pi-plus"/>
+                    </p:submenu>
+                </p:menubar>
+                <br/>
+                
+            </h:form>
+                
+            <h:form id="formAllRewards">
+                
+                <p:messages id="messages" redisplay="false" closable="true" />
+                
+                <p:dataTable id="dataTableAllRewards" widgetVar="dataTableAllTags" value="#{rewardManagementManagedBean.rewardEntities}" var="rewardEntity" rowKey="#{rewardEntity.rewardId}" rowIndexVar="row"
+                             filteredValue="#{rewardManagementManagedBean.filteredRewardEntities}"
+                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+                                             
+                    <f:facet name="header">
+                            <p:outputPanel style="text-align: right;">
+                                <h:outputText value="Search all fields:" />
+                                <p:inputText id="globalFilter" onkeyup="PF('dataTableAllRewards').filter()" style="width:300px" placeholder="Enter keyword"/>
+                            </p:outputPanel>
+                    </f:facet>
+                    
+                    <p:column headerText="Reward ID" sortBy="#{rewardEntity.rewardId}" filterBy="#{rewardEntity.rewardId}" filterMatchMode="contains">
+                        <h:outputText value="#{rewardEntity.rewardId}" />
+                    </p:column>  
+                    
+                    <p:column headerText="Reward Name" sortBy="#{rewardEntity.rewardName}" filterBy="#{rewardEntity.rewardName}" filterMatchMode="contains">
+                        <h:outputText value="#{rewardEntity.rewardName}" />
+                    </p:column>   
+
+                    <p:column headerText="Reward Enum" sortBy="#{rewardEntity.rewardEnum}" filterBy="#{rewardEntity.rewardEnum}" filterMatchMode="contains">
+                        <h:outputText value="#{rewardEntity.rewardEnum}" />
+                    </p:column>
+                    
+                    <p:column headerText="Expiry Date" sortBy="#{rewardEntity.expiryDate}" filterBy="#{rewardEntity.expiryDate}" filterMatchMode="contains">
+                        <h:outputText value="#{rewardEntity.expiryDate}" />
+                    </p:column>
+                    
+                    <p:column headerText="Action" >
+                        <p:commandButton update="ccViewReward:formViewReward" oncomplete="PF('dialogViewReward').show()" icon="ui-icon-document" title="View">
+                            <f:setPropertyActionListener value="#{rewardEntity}" target="#{rewardManagementManagedBean.viewRewardManagedBean.rewardEntityToView}" />
+                        </p:commandButton>
+                        <p:commandButton actionListener="#{rewardManagementManagedBean.doUpdateReward}" update="formUpdateReward" oncomplete="PF('dialogUpdateReward').show()" icon="ui-icon-pencil" title="Update">
+                            <f:attribute name="rewardEntityToUpdate" value="#{rewardEntity}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{rewardManagementManagedBean.deleteReward}" update="formAllRewards:dataTableAllRewards formAllRewards:messages">
+                            <f:attribute name="rewardEntityToDelete" value="#{rewardEntity}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{rewardEntity.rewardId}?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+                
+            </h:form>
+            
+            <h:form id="formCreateNewReward">
+                
+                <p:dialog id="dialogCreateNewReward" widgetVar="dialogCreateNewReward" header="Create New Reward" closable="true">
+                    <p:messages id="messagesCreateNewReward" redisplay="false" />
+                    
+                    <p:panelGrid>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="rewardName" value="Reward Name: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="rewardName" value="#{rewardManagementManagedBean.newRewardEntity.rewardName}" placeholder="Enter Reward name" required="true" requiredMessage="Reward Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="rewardName" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="selRewardEnum" value="Reward Enum: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="selRewardEnum" value="#{rewardManagementManagedBean.newRewardEntity.rewardEnum}">
+                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
+                                    <f:selectItem itemValue="PROMOCODE10" itemLabel="PROMOCODE10" />
+                                    <f:selectItem itemValue="PROMOCODE35" itemLabel="PROMOCODE35" />
+                                    <f:selectItem itemValue="PROMOCODE60" itemLabel="PROMOCODE60" />
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="selRewardEnum" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="date" value="Expiry Date: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:calendar id="date" value="#{rewardManagementManagedBean.newRewardEntity.expiryDate}" required="true" requiredMessage="Date is required"/>
+                            </p:column>
+                            <p:column>
+                                <p:message for="date" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton  value="Create New Reward" update="@form formAllRewards:dataTableAllRewards" actionListener="#{rewardManagementManagedBean.createNewReward}" oncomplete="PF('dialogCreateNewReward').show();" />
+                            </p:column>
+                        </p:row>
+                        
+                    </p:panelGrid>
+                    
+                </p:dialog>
+            </h:form>
+            
+            <ez:ViewReward id="ccViewReward" />
+            
+            <h:form id="formUpdateReward">
+                
+                <p:dialog id="dialogUpdateReward" widgetVar="dialogUpdateReward" header="Update Reward" closable="true">
+                    <p:messages id="messagesUpdateReward" redisplay="false" />
+                    
+                    <p:panelGrid>
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Reward ID: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{rewardManagementManagedBean.selectedRewardEntityToUpdate.rewardId}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="rewardName" value="Reward Name: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="rewardName" value="#{rewardManagementManagedBean.selectedRewardEntityToUpdate.rewardName}" placeholder="Enter Reward name" required="true" requiredMessage="Reward Name is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="rewardName" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="selRewardEnum" value="Reward Enum: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="selRewardEnum" value="#{rewardManagementManagedBean.selectedRewardEntityToUpdate.rewardEnum}">
+                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
+                                    <f:selectItem itemValue="PROMOCODE10" itemLabel="PROMOCODE10" />
+                                    <f:selectItem itemValue="PROMOCODE35" itemLabel="PROMOCODE35" />
+                                    <f:selectItem itemValue="PROMOCODE60" itemLabel="PROMOCODE60" />
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="selRewardEnum" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="date" value="Expiry Date: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:calendar id="date" value="#{rewardManagementManagedBean.selectedRewardEntityToUpdate.expiryDate}" required="true" requiredMessage="Date is required"/>
+                                
+                            </p:column>
+                            <p:column>
+                                <p:message for="date" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton value="Update Reward" update="@form formAllRewards:dataTableAllRewards" actionListener="#{rewardManagementManagedBean.updateReward}" oncomplete="PF('dialogUpdateReward').show();" />
+                            </p:column>
+                        </p:row>
+                        
+                        
+                    </p:panelGrid>
+                    
+                </p:dialog>
+            </h:form>
 
         </div>
         
