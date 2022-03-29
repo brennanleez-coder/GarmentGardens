@@ -5,12 +5,26 @@
  */
 package jsf.managedbean;
 
+import ejb.session.stateless.OrderEntitySessionBeanLocal;
+import entity.OrderEntity;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
 import javax.inject.Inject;
+import javax.enterprise.context.RequestScoped;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.axes.cartesian.CartesianScaleLabel;
+import org.primefaces.model.charts.axes.cartesian.CartesianScales;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
+import org.primefaces.model.charts.line.LineChartDataSet;
+import org.primefaces.model.charts.line.LineChartModel;
+import org.primefaces.model.charts.line.LineChartOptions;
+import org.primefaces.model.charts.optionconfig.title.Title;
 
 /**
  *
@@ -20,19 +34,124 @@ import javax.inject.Inject;
 @RequestScoped
 public class IndexManagedBean implements Serializable {
 
+    @EJB(name = "OrderEntitySessionBeanLocal")
+    private OrderEntitySessionBeanLocal orderEntitySessionBeanLocal;
+
     @Inject
     private ReportManagedBean reportManagedBean;
-    
+
+    private String salesLineModelHex1;
+    private LineChartModel salesLineModel;
+    private List<List<OrderEntity>> orderEntitiesList;
+
     public IndexManagedBean() {
+        salesLineModelHex1 = "#2AECFF";
+
     }
 
     @PostConstruct
     public void postConstruct() {
+        orderEntitiesList = orderEntitySessionBeanLocal.retrieveAllOrdersInPastYear();
+        //createSalesLineChartModel();
     }
-    
+
     public void generateReport(ActionEvent event) {
         reportManagedBean.generateReport(event);
     }
 
-    
+    public void createSalesLineChartModel() {
+        salesLineModel = new LineChartModel();
+        ChartData data = new ChartData();
+
+        LineChartDataSet dataSet = new LineChartDataSet();
+        List<Object> values = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+
+        if (!getOrderEntitiesList().isEmpty()) {
+            for (List<OrderEntity> orderEntities : getOrderEntitiesList()) {
+                labels.add(orderEntities.get(0).getTransactionDateTime().getMonth() + " " + orderEntities.get(0).getTransactionDateTime().getYear());
+
+                BigDecimal totalSales = BigDecimal.ZERO;
+
+                for (OrderEntity orderEntity : orderEntities) {
+                    totalSales = totalSales.add(orderEntity.getTotalAmount());
+                }
+
+                values.add(totalSales);
+            }
+
+            dataSet.setData(values);
+            dataSet.setFill(false);
+            dataSet.setLabel("");
+            dataSet.setBorderColor(salesLineModelHex1);
+            dataSet.setLineTension(0.1);
+            data.addChartDataSet(dataSet);
+
+            data.setLabels(labels);
+
+            //Options
+            LineChartOptions options = new LineChartOptions();
+
+            Title title = new Title();
+            title.setDisplay(true);
+            title.setText("Monthly Revenue Report Chart");
+            options.setTitle(title);
+
+            CartesianScales cScales = new CartesianScales();
+
+            CartesianLinearAxes xLinearAxes = new CartesianLinearAxes();
+            xLinearAxes.setStacked(true);
+            xLinearAxes.setOffset(true);
+
+            CartesianLinearAxes yLinearAxes = new CartesianLinearAxes();
+            yLinearAxes.setStacked(true);
+            yLinearAxes.setOffset(true);
+
+            CartesianScaleLabel xScaleLabel = new CartesianScaleLabel();
+            xScaleLabel.setDisplay(true);
+            xScaleLabel.setLabelString("Month Year");
+
+            CartesianScaleLabel yScaleLabel = new CartesianScaleLabel();
+            yScaleLabel.setDisplay(true);
+            yScaleLabel.setLabelString("Amount ($)");
+
+            xLinearAxes.setScaleLabel(xScaleLabel);
+            yLinearAxes.setScaleLabel(yScaleLabel);
+
+            cScales.addXAxesData(xLinearAxes);
+            cScales.addYAxesData(yLinearAxes);
+
+            options.setScales(cScales);
+
+            salesLineModel.setOptions(options);
+            salesLineModel.setData(data);
+        }
+
+    }
+
+    //getters and setters
+    public String getSalesLineModelHex1() {
+        return salesLineModelHex1;
+    }
+
+    public void setSalesLineModelHex1(String salesLineModelHex1) {
+        this.salesLineModelHex1 = salesLineModelHex1;
+    }
+
+    public LineChartModel getSalesLineModel() {
+        return salesLineModel;
+    }
+
+    public void setSalesLineModel(LineChartModel salesLineModel) {
+        this.salesLineModel = salesLineModel;
+    }
+
+    public List<List<OrderEntity>> getOrderEntitiesList() {
+        return orderEntitiesList;
+    }
+
+    public void setOrderEntitiesList(List<List<OrderEntity>> orderEntitiesList) {
+        this.orderEntitiesList = orderEntitiesList;
+    }
+
 }

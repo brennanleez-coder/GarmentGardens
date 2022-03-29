@@ -2,7 +2,6 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 template="/template/defaultTemplate.xhtml"
                 xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
                 xmlns:p="http://primefaces.org/ui">
@@ -53,7 +52,7 @@
                         </p:panel>
 
                     </h:form>
-                    
+
                     <h:form id="formCategoryReport">
 
                         <p:panel header="Category Report">
@@ -63,7 +62,7 @@
                         </p:panel>
 
                     </h:form>
-                    
+
                     <h:form id="formRewardReport">
 
                         <p:panel header="Reward Report">
@@ -73,6 +72,10 @@
                         </p:panel>
 
                     </h:form>
+
+<!--                    <div class="chartCard">
+                        <p:lineChart model="#{indexManagedBean.salesLineModel}" />
+                    </div>-->
 
                     <p:panel id="sports" header="Sports">
                         <h:outputText value="Sports Content"/>

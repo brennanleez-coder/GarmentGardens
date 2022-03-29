@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +36,7 @@ public class OrderEntity implements Serializable {
     private Integer totalOrderItem;
     private Integer totalQuantity;
     private BigDecimal totalAmount;
-    private Date transactionDateTime;
+    private LocalDateTime transactionDateTime;
     private Boolean voidRefund = false;
     private DeliveryStatusEnum deliveryStatus = DeliveryStatusEnum.ONGOING;
     
@@ -53,7 +54,7 @@ public class OrderEntity implements Serializable {
         this.lineItems = new ArrayList<LineItemEntity>();
     }
 
-    public OrderEntity(Integer totalOrderItem, Integer totalQuantity, BigDecimal totalAmount, Date transactionDateTime) {
+    public OrderEntity(Integer totalOrderItem, Integer totalQuantity, BigDecimal totalAmount, LocalDateTime transactionDateTime) {
         this();
         this.totalOrderItem = totalOrderItem;
         this.totalQuantity = totalQuantity;
@@ -119,11 +120,11 @@ public class OrderEntity implements Serializable {
         this.totalAmount = totalAmount;
     }
 
-    public Date getTransactionDateTime() {
+    public LocalDateTime getTransactionDateTime() {
         return transactionDateTime;
     }
 
-    public void setTransactionDateTime(Date transactionDateTime) {
+    public void setTransactionDateTime(LocalDateTime transactionDateTime) {
         this.transactionDateTime = transactionDateTime;
     }
 

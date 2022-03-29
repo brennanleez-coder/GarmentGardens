@@ -35,4 +35,6 @@ public interface OrderEntitySessionBeanLocal {
 
     public void deleteOrder(OrderEntity orderEntity);
 
+    public List<List<OrderEntity>> retrieveAllOrdersInPastYear();
+
 }

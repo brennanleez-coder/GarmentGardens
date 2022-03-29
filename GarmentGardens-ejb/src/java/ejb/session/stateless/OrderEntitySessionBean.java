@@ -8,6 +8,8 @@ package ejb.session.stateless;
 import entity.LineItemEntity;
 import entity.OrderEntity;
 import entity.UserEntity;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -169,7 +171,27 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
     }
     
     
-    
+    public List<List<OrderEntity>> retrieveAllOrdersInPastYear() {
+        List<List<OrderEntity>> orderEntities = new ArrayList<>(12);
+        for (int i = 0; i < 12; i++) {
+            orderEntities.add(new ArrayList<>());
+        }
+        
+        LocalDateTime now = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0);
+
+        for (int i = 11; i >= 0; i--)
+        {
+            Query query = entityManager.createQuery("SELECT o FROM OrderEntity o WHERE o.transactionDateTime BETWEEN :inStartDate AND :inEndDate ORDER BY o.transactionDateTime ASC");
+            query.setParameter("inStartDate", now);
+            query.setParameter("inEndDate", now.plusMonths(1));
+            orderEntities.set(i, query.getResultList());
+
+            now = now.minusMonths(1);
+        }
+
+        return orderEntities;
+        
+    }
     @Override
     public void deleteOrder(OrderEntity orderEntity)
     {
