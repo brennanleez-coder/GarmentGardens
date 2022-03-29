@@ -13,6 +13,73 @@
         
         <div>
             <h3 style="padding-left:15px">Order Management</h3>
+            
+            <br/>
+            <h:form id="formAllOrders">
+
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="dataTableAllOrder" widgetVar="dataTableAllOrders" value="#{orderManagementManagedBean.orderEntities}" var="orderEntity" rowKey="#{orderEntity.orderId}" rowIndexVar="row"
+                             filteredValue="#{orderManagementManagedBean.filteredOrderEntities}"
+                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: right;">
+                            <h:outputText value="Search all fields:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllOrders').filter()" style="width:300px" placeholder="Enter keyword"/>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column headerText="Order ID" sortBy="#{orderEntity.orderId}" filterBy="#{orderEntity.orderId}" filterMatchMode="contains">
+                        <h:outputText value="#{orderEntity.orderId}" />
+                    </p:column>  
+                    
+                    <p:column headerText="Customer ID" sortBy="#{orderEntity.customer.userId}" filterBy="#{orderEntity.customer.userId}" filterMatchMode="contains">
+                        <h:outputText value="#{orderEntity.customer.userId}" />
+                    </p:column>  
+
+                    <p:column headerText="Delivery Status" sortBy="#{orderEntity.deliveryStatus}" filterBy="#{orderEntity.deliveryStatus}" filterMatchMode="contains">
+                        <h:outputText value="#{orderEntity.deliveryStatus}" />
+                    </p:column>
+
+                    <p:column headerText="Total Amount" sortBy="#{orderEntity.totalAmount}" filterBy="#{orderEntity.totalAmount}" filterMatchMode="contains">
+                        <h:outputText value="#{orderEntity.totalAmount}" />
+                    </p:column>
+
+                    <p:column headerText="Total Order Items" sortBy="#{orderEntity.totalOrderItem}" filterBy="#{orderEntity.totalOrderItem}" filterMatchMode="contains">
+                        <h:outputText value="#{orderEntity.totalOrderItem}" />
+                    </p:column>
+
+                    <p:column headerText="Total Quantity" sortBy="#{orderEntity.totalQuantity}" filterBy="#{orderEntity.totalQuantity}" filterMatchMode="contains" style="text-align: right;">
+                        <h:outputText value="#{orderEntity.totalQuantity}"/>
+                    </p:column>
+
+                    <p:column headerText="Transaction Time" sortBy="#{orderEntity.transactionDateTime}" filterBy="#{orderEntity.transactionDateTime}" filterMatchMode="exact">
+                        <h:outputText value="#{orderEntity.transactionDateTime}"/>
+                    </p:column>
+                    
+                    <p:column headerText="Void Refund (T/F)" sortBy="#{orderEntity.voidRefund}" filterBy="#{orderEntity.voidRefund}" filterMatchMode="exact">
+                        <h:outputText value="#{orderEntity.voidRefund}"/>
+                    </p:column>
+
+                    <p:column headerText="Action" >
+                        <p:commandButton icon="ui-icon-pencil" title="Void">
+                            <f:attribute name="orderEntityToVoid" value="#{orderEntity}" />
+                        </p:commandButton>
+                    </p:column>
+                    
+                </p:dataTable>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </h:form>
+            
+            
+            
+            
 
         </div>
         
