@@ -85,7 +85,7 @@ public class DataInitSessionBean {
 
     private void initializeData() {
         try {
-            System.out.println("Initialising database...");
+            System.out.println("Initialising database......");
             StaffEntity admin = new StaffEntity("admin", "lee", AccessRightEnum.ADMINISTRATOR, "admin", "password");
             StaffEntity manager = new StaffEntity("manager", "lee", AccessRightEnum.MANAGER, "manager", "password");
             UserEntity customer = new UserEntity("customer", "lee", "customer@mail.com", "customer", "password", new Date(), "NUS", RoleEnum.CUSTOMER);
