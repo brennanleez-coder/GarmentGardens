@@ -54,9 +54,19 @@
 
                     </h:form>
                     
-                    <h:form id="formReport">
+                    <h:form id="formCategoryReport">
 
                         <p:panel header="Category Report">
+
+                            <p:commandButton value="Generate" actionListener="#{reportManagedBean.generateCategoryReport}" ajax="false" />
+
+                        </p:panel>
+
+                    </h:form>
+                    
+                    <h:form id="formRewardReport">
+
+                        <p:panel header="Reward Report">
 
                             <p:commandButton value="Generate" actionListener="#{reportManagedBean.generateCategoryReport}" ajax="false" />
 
