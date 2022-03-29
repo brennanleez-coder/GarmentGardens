@@ -60,20 +60,17 @@ public class SecurityFilter implements Filter {
     }
 
     private Boolean checkAccessRight(String path, AccessRightEnum accessRight) {
-//        if (accessRight.equals(AccessRightEnum.CASHIER)) {
-//            if (path.equals("/cashierOperation/checkout.xhtml")
-//                    || path.equals("/cashierOperation/voidRefund.xhtml")
-//                    || path.equals("/cashierOperation/viewMySaleTransactions.xhtml")) {
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        }
+
+        if (accessRight.equals(AccessRightEnum.ADMINISTRATOR)) {
+            if (path.equals("/systemAdministration/staffManagement.xhtml")) {
+                return true;
+            }
+        }
+
         if (accessRight.equals(AccessRightEnum.MANAGER) || accessRight.equals(AccessRightEnum.ADMINISTRATOR)) {
-            if (path.equals("/cashierOperation/checkout.xhtml")
-                    || path.equals("/cashierOperation/orderManagement.xhtml")
+            if (path.equals("/cashierOperation/orderManagement.xhtml")
                     || path.equals("/cashierOperation/rewardManagement.xhtml")
-                    || path.equals("/systemAdministration/staffManagement.xhtml")
+//                    || path.equals("/systemAdministration/staffManagement.xhtml")
                     || path.equals("/systemAdministration/userManagement.xhtml")
                     || path.equals("/systemAdministration/advertiserManagement.xhtml")
                     || path.equals("/systemAdministration/productManagement.xhtml")
@@ -94,6 +91,7 @@ public class SecurityFilter implements Filter {
 
     private Boolean excludeLoginCheck(String path) {
         if (path.equals("/index.xhtml")
+                || path.equals("/testPage.xhtml")
                 || path.equals("/register.xhtml")
                 || path.equals("/accessRightError.xhtml")
                 || path.startsWith("/javax.faces.resource")) {

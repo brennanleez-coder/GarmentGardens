@@ -6,10 +6,8 @@
 package ejb.session.stateless;
 
 import entity.AdvertisementEntity;
-import static entity.AdvertisementEntity_.advertisementId;
 import entity.AdvertiserEntity;
 import entity.CreditCardEntity;
-import entity.ProductEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -27,9 +25,9 @@ import javax.validation.ValidatorFactory;
 import util.exception.AdvertiserEntityExistException;
 import util.exception.AdvertiserEntityNotFoundException;
 import util.exception.CreateNewAdvertiserEntityException;
+import util.exception.DeleteAdvertiserEntityException;
 import util.exception.InputDataValidationException;
 import util.exception.UnknownPersistenceException;
-import util.exception.UpdateAdvertiserEntityException;
 
 /**
  *
@@ -128,18 +126,25 @@ public class AdvertiserEntitySessionBean implements AdvertiserEntitySessionBeanL
         }
     }
 
-    
-    /*
-    public AdvertiserEntity deleteAdvertiserEntity(AdvertiserEntity advertiserEntity) {
-        AdvertiserEntity advertiserEntityToDelete = entityManager.find(AdvertiserEntity.class, advertiserEntity.getAdvertiserId());
-        for (AdvertiserEntity advertisementEntity: advertiserEntity.getAdvertisements()) {
-            advertisementEntity.
+    public AdvertiserEntity deleteAdvertiserEntity(AdvertiserEntity advertiserEntity) throws AdvertiserEntityNotFoundException, DeleteAdvertiserEntityException {
+        try {
+            AdvertiserEntity advertiserEntityToDelete = entityManager.find(AdvertiserEntity.class, advertiserEntity.getAdvertiserId());
+            try {
+                for (AdvertisementEntity advertisementEntity : advertiserEntity.getAdvertisements()) {
+                    advertisementEntity.setApprovedByStaff(null);
+                    entityManager.remove(advertisementEntity);
+                }
+                advertiserEntity.setAdvertisements(null);
+                entityManager.remove(advertiserEntityToDelete);
+            } catch (Exception ex) {
+                throw new DeleteAdvertiserEntityException("Error deleting advertiser, ID: " + advertiserEntity.getAdvertiserId());
+            }
+            return advertiserEntityToDelete;
+        } catch (NoResultException | NonUniqueResultException ex) {
+            throw new AdvertiserEntityNotFoundException("Advertiser Entity cannot be found, ID: " + advertiserEntity.getAdvertiserId());
         }
-        advertiserEntity.setAdvertisements(null);
     }
 
-    */
-    
     @Override
     public AdvertiserEntity updateAdvertiserEntity(AdvertiserEntity advertiserEntity) throws AdvertiserEntityNotFoundException {
         if (advertiserEntity != null && advertiserEntity.getAdvertiserId() != null) {

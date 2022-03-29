@@ -21,7 +21,7 @@
                 <p:menubar>
 
                     <p:submenu label="File" icon="ui-icon-document">
-                        <p:menuitem value="Create New Staff" onclick="PF('dialogCreateNewStaff').show()" icon="pi pi-plus" />
+                        <p:menuitem value="Create New Manager" onclick="PF('dialogCreateNewStaff').show()" icon="pi pi-plus" />
                     </p:submenu>                                        
 
                 </p:menubar>
@@ -88,7 +88,7 @@
             
             <h:form id="formCreateNewStaff">
 
-                <p:dialog id="dialogCreateNewStaff" widgetVar="dialogCreateNewStaff" header="Create New Staff" closable="true">
+                <p:dialog id="dialogCreateNewStaff" widgetVar="dialogCreateNewStaff" header="Create New Manager" closable="true">
 
                     <p:messages id="messagesCreateNewStaff" redisplay="false" />
 
@@ -118,7 +118,7 @@
                             </p:column>
                         </p:row>
                         
-                        <p:row>
+<!--                        <p:row>
                             <p:column>
                                 <p:outputLabel for="selAccessRights" value="Access Rights: " style="font-weight: bold;" />
                             </p:column>
@@ -132,7 +132,7 @@
                             <p:column>
                                 <p:message for="selAccessRights" />
                             </p:column>
-                        </p:row>
+                        </p:row>-->
                         
                         <p:row>
                             <p:column>
@@ -162,7 +162,7 @@
                         <p:row>
                             <p:column colspan="3">
                                 <p:commandButton type="reset" value="Clear" />&nbsp;
-                                <p:commandButton  value="Create New Staff" update="@form formAllStaffs:dataTableAllStaffs" actionListener="#{staffManagementManagedBean.createNewStaff}" oncomplete="PF('dialogCreateNewStaff').show();" />
+                                <p:commandButton  value="Create New Manager" update="@form formAllStaffs:dataTableAllStaffs" actionListener="#{staffManagementManagedBean.createNewStaff}" oncomplete="PF('dialogCreateNewStaff').show();" />
                             </p:column>
                         </p:row>
 
@@ -218,7 +218,7 @@
                             </p:column>
                         </p:row>
                         
-                         <p:row>
+<!--                         <p:row>
                             <p:column>
                                 <p:outputLabel for="selAccessRights" value="Access Rights " style="font-weight: bold;" />
                             </p:column>
@@ -232,7 +232,7 @@
                             <p:column>
                                 <p:message for="selAccessRights" />
                             </p:column>
-                        </p:row>
+                        </p:row>-->
 
                         <p:row>
                             <p:column>
@@ -260,7 +260,7 @@
 
                         <p:row>
                             <p:column colspan="3">
-                                <p:commandButton value="Update Staff" update="@form formAllStaffs:dataTableAllStaffs" actionListener="#{staffManagementManagedBean.updateStaff}" oncomplete="PF('dialogUpdateStaff').show();" />
+                                <p:commandButton value="Update Manager" update="@form formAllStaffs:dataTableAllStaffs" actionListener="#{staffManagementManagedBean.updateStaff}" oncomplete="PF('dialogUpdateStaff').show();" />
                             </p:column>
                         </p:row>
 

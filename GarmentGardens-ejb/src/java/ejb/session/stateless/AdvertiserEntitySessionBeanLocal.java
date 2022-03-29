@@ -11,6 +11,7 @@ import javax.ejb.Local;
 import util.exception.AdvertiserEntityExistException;
 import util.exception.AdvertiserEntityNotFoundException;
 import util.exception.CreateNewAdvertiserEntityException;
+import util.exception.DeleteAdvertiserEntityException;
 import util.exception.InputDataValidationException;
 import util.exception.UnknownPersistenceException;
 
@@ -28,6 +29,8 @@ public interface AdvertiserEntitySessionBeanLocal {
     public AdvertiserEntity retrieveAdvertiserEntityByAdvertiserId(Long advertiserId) throws AdvertiserEntityNotFoundException;
 
     public AdvertiserEntity updateAdvertiserEntity(AdvertiserEntity advertiserEntity) throws AdvertiserEntityNotFoundException;
+
+    public AdvertiserEntity deleteAdvertiserEntity(AdvertiserEntity advertiserEntity) throws AdvertiserEntityNotFoundException, DeleteAdvertiserEntityException;
 
     
     

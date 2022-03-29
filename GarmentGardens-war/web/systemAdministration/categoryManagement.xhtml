@@ -12,7 +12,7 @@
         <ez:Breadcrumb pageName="categoryManagement" />
 
         <div>
-            <h3>Category Management</h3>
+            <h3 style="padding-left:15px">Category Management</h3>
 
             <h:form id="formAllCategories">
 
@@ -62,13 +62,13 @@
                                 </f:facet>
                                 <h:outputText value="#{categoryEntity.name}" />
                             </p:column>
-
-                            <p:column headerText="Category Description" sortBy="#{categoryEntity.description}" filterBy="#{categoryEntity.description}" filterMatchMode="contains">
-                                <h:outputText value="#{categoryEntity.description}" />
-                            </p:column>
-
+                                 
                             <p:column headerText="Parent Category" sortBy="#{categoryEntity.parentCategory.name}" filterBy="#{categoryEntity.parentCategory.name}" filterMatchMode="contains">
                                 <h:outputText value="#{categoryEntity.parentCategory.name}" />
+                            </p:column>
+                                 
+                            <p:column headerText="Category Description" sortBy="#{categoryEntity.description}" filterBy="#{categoryEntity.description}" filterMatchMode="contains">
+                                <h:outputText value="#{categoryEntity.description}" />
                             </p:column>
 
                             <p:column headerText="Action" >

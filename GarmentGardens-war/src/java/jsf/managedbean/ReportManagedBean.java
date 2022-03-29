@@ -40,16 +40,19 @@ public class ReportManagedBean {
         try {
             HashMap parameters = new HashMap();
             //parameters.put("Description", "This is a placeholder description");
-
-            InputStream reportStream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/jasperreport/Blank_A4.jasper");
+            InputStream reportStream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/jasperreport/report.jasper");
             OutputStream outputStream = FacesContext.getCurrentInstance().getExternalContext().getResponseOutputStream();
-            System.out.println(outputStream);
             JasperRunManager.runReportToPdfStream(reportStream, outputStream, parameters, garmentGardensDataSource.getConnection());
         } catch (JRException ex) {
             ex.printStackTrace();
         } catch (SQLException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
         }
     }
 }

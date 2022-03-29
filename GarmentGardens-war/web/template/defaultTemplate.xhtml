@@ -46,7 +46,7 @@
 
             </p:layoutUnit>
 
-            <p:layoutUnit minSize="200" position="east" header="Advertisements" collapsible="true" collapsed="true">
+            <p:layoutUnit minSize="200" position="east" header="Profile" collapsible="true" collapsed="true" rendered="#{sessionScope.isLogin == true}">
 
                 <ui:insert name="sidebar">
                     <ui:include src="/sidebar.xhtml" />

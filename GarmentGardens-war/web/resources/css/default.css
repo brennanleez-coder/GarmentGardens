@@ -64,3 +64,7 @@ a:hover {
 div.ui-growl {
     left: 10;
 }
+
+.test {
+    color: red;
+}

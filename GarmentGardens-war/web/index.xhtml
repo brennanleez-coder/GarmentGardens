@@ -37,18 +37,16 @@
         </h:panelGroup>
 
         <h:panelGroup rendered="#{sessionScope.isLogin == true}">
-            <h1>Welcome, #{sessionScope.currentStaffEntity.accessRightEnum}! 🙇‍♂️</h1>
+            <h1 style="padding-left:15px">Welcome, #{sessionScope.currentStaffEntity.accessRightEnum}! 🙇‍♂️</h1>
 
-            <div class="card">
+            <div>
 
                 <h:form>
-
-
-                    <h2>Product Report</h2>
+                    <h2 style="padding-left:15px">Reports</h2>
 
                     <h:form id="formReport">
 
-                        <p:panel header="Report">
+                        <p:panel header="Product Report">
 
                             <p:commandButton value="Generate" actionListener="#{reportManagedBean.generateReport}" ajax="false" />
 

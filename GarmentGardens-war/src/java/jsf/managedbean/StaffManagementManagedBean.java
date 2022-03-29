@@ -18,6 +18,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
+import util.enumeration.AccessRightEnum;
 import util.exception.CreateNewProductException;
 import util.exception.CreateNewStaffException;
 import util.exception.DeleteStaffException;
@@ -73,6 +74,7 @@ public class StaffManagementManagedBean implements Serializable {
 //        }
 
         try {
+            newStaffEntity.setAccessRightEnum(AccessRightEnum.MANAGER);
             Long seId = staffEntitySessionBeanLocal.createNewStaff(newStaffEntity);
             StaffEntity se = staffEntitySessionBeanLocal.retrieveStaffByStaffId(seId);
             staffEntities.add(se);
@@ -83,7 +85,7 @@ public class StaffManagementManagedBean implements Serializable {
 
             newStaffEntity = new StaffEntity();
 
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New staff created successfully (Staff ID: " + se.getStaffId() + ")", null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New Manager created successfully (Staff ID: " + se.getStaffId() + ")", null));
         } catch (InputDataValidationException | StaffUsernameExistException | StaffNotFoundException | UnknownPersistenceException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new staff: " + ex.getMessage(), null));
         }
@@ -106,6 +108,7 @@ public class StaffManagementManagedBean implements Serializable {
 //        }
 
         try {
+            selectedStaffEntityToUpdate.setAccessRightEnum(AccessRightEnum.MANAGER);
             staffEntitySessionBeanLocal.updateStaff(selectedStaffEntityToUpdate);
 
 //            for (CategoryEntity ce : categoryEntities) {

@@ -6,19 +6,13 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <aside style="text-align: center;">
-        <h3>Advertisement</h3>			
-        <figure class="advertisement">
-            <p:graphicImage library="images" name="300x300.png" height="120" width="120" alt="Advertisement 1" />
-            <figcaption>Advertisement 1</figcaption>
+        <h3>#{sessionScope.currentStaffEntity.accessRightEnum}</h3>			
+        <figure>
+            <p:graphicImage library="images" name="300x300.png" height="120" width="120" alt="Profile Picture" />
+            <figcaption><h2>#{sessionScope.currentStaffEntity.firstName} #{sessionScope.currentStaffEntity.lastName}</h2></figcaption>
         </figure>
-        <figure class="advertisement">
-            <p:graphicImage library="images" name="300x300.png" height="120" width="120" alt="Advertisement 2" />
-            <figcaption>Advertisement 2</figcaption>
-        </figure>
-        <figure class="advertisement">
-            <p:graphicImage library="images" name="300x300.png" height="120" width="120" alt="Advertisement 3" />
-            <figcaption>Advertisement 3</figcaption>
-        </figure>
+        <h3></h3>			
+        
     </aside>
 
 </ui:composition>

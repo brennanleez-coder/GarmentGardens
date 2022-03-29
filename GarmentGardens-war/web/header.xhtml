@@ -31,7 +31,6 @@
 
         <h:panelGroup rendered="#{sessionScope.isLogin == true}">
             <h:form id="logoutForm">
-                <h:outputText value="You are logged in as #{sessionScope.currentStaffEntity.firstName} #{sessionScope.currentStaffEntity.lastName}" />&nbsp;
                 <p:commandButton value="Logout" actionListener="#{loginManagedBean.logout}" icon="pi pi-sign-out" />
             </h:form>
         </h:panelGroup>
