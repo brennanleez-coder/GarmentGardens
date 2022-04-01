@@ -6,10 +6,14 @@
 package jsf.managedbean;
 
 import entity.ProductEntity;
+import java.io.IOException;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.inject.Inject;
 
 /**
  *
@@ -22,6 +26,11 @@ public class ViewProductManagedBean implements Serializable {
     /**
      * Creates a new instance of ViewProductManagedBean
      */
+    
+    @Inject
+    private ViewProductInNewPageManagedBean viewProductInNewPageManagedBean;
+    
+    
     private ProductEntity productEntityToView;
 
     public ViewProductManagedBean() {
@@ -30,6 +39,11 @@ public class ViewProductManagedBean implements Serializable {
 
     @PostConstruct
     public void postConstruct() {
+    }
+    
+    public void viewProductInNewPage() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("ProductToView", productEntityToView);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("viewProductInNewPage.xhtml"); 
     }
 
     public ProductEntity getProductEntityToView() {

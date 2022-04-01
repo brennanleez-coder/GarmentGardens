@@ -79,7 +79,8 @@ public class SecurityFilter implements Filter {
                     || path.equals("/systemAdministration/filterProductsByTags.xhtml")
                     || path.equals("/systemAdministration/categoryManagement.xhtml")
                     || path.equals("/systemAdministration/tagManagement.xhtml")
-                    || path.equals("/systemAdministration/motdManagement.xhtml")) {
+                    || path.equals("/systemAdministration/motdManagement.xhtml")
+                    || path.equals("/systemAdministration/viewProductInNewPage.xhtml")) {
                 return true;
             } else {
                 return false;
