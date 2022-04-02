@@ -18,14 +18,14 @@
 
                 <p:menu style="width:200px;">
                     <p:submenu label="Role Administration" rendered="#{sessionScope.isLogin == true}">
-                        <p:menuitem value="Staff Management" outcome="/systemAdministration/staffManagement.xhtml" icon="pi pi-users" />
-                        <p:menuitem value="User Management" outcome="/systemAdministration/userManagement.xhtml" icon="pi pi-users" />
-                        <p:menuitem value="Advertiser Management" outcome="/systemAdministration/advertiserManagement.xhtml" icon="pi pi-users" />
+                        <p:menuitem value="Staff Management" outcome="/roleAdministration/staffManagement.xhtml" icon="pi pi-users" />
+                        <p:menuitem value="User Management" outcome="/roleAdministration/userManagement.xhtml" icon="pi pi-users" />
+                        <p:menuitem value="Advertiser Management" outcome="/roleAdministration/advertiserManagement.xhtml" icon="pi pi-users" />
                     </p:submenu>                        
 
                     <p:submenu label="System Administration" rendered="#{sessionScope.isLogin == true}">
-                        <p:menuitem value="Order Management" outcome="/cashierOperation/orderManagement.xhtml" icon="pi pi-list" />
-                        <p:menuitem value="Reward Management" outcome="/cashierOperation/rewardManagement.xhtml" icon="pi pi-list" />
+                        <p:menuitem value="Order Management" outcome="/systemAdministration/orderManagement.xhtml" icon="pi pi-list" />
+                        <p:menuitem value="Reward Management" outcome="/systemAdministration/rewardManagement.xhtml" icon="pi pi-list" />
                         <p:menuitem value="Product Management" outcome="/systemAdministration/productManagement.xhtml" icon="pi pi-tags" />
                         <p:menuitem value="Category Management" outcome="/systemAdministration/categoryManagement.xhtml" icon="pi pi-tags" />
                         <p:menuitem value="Tag Management" outcome="/systemAdministration/tagManagement.xhtml" icon="pi pi-tags" />
@@ -33,9 +33,9 @@
                     </p:submenu>  
 
                     <p:submenu label="Operations" rendered="#{sessionScope.isLogin == true}">
-                        <p:menuitem value="Search Products by Name" outcome="/systemAdministration/searchProductsByName.xhtml" icon="pi pi-search" />
-                        <p:menuitem value="Filter Products by Category" outcome="/systemAdministration/filterProductsByCategory.xhtml" icon="pi pi-filter" />
-                        <p:menuitem value="Filter Products by Tags" outcome="/systemAdministration/filterProductsByTags.xhtml" icon="pi pi-filter" />
+                        <p:menuitem value="Search Products by Name" outcome="/operations/searchProductsByName.xhtml" icon="pi pi-search" />
+                        <p:menuitem value="Filter Products by Category" outcome="/operations/filterProductsByCategory.xhtml" icon="pi pi-filter" />
+                        <p:menuitem value="Filter Products by Tags" outcome="/operations/filterProductsByTags.xhtml" icon="pi pi-filter" />
                     </p:submenu>  
                 </p:menu>
 

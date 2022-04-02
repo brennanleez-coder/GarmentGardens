@@ -11,7 +11,7 @@
 
     <cc:implementation>
 
-        <h:form id="formViewProduct">
+        <h:form id="formViewProduct" style="text-align: center">
 
             <p:dialog id="dialogViewProduct" widgetVar="dialogViewProduct" header="View Product" closable="true">
 
@@ -104,9 +104,13 @@
                         </p:column>
                     </p:row>
                 </p:panelGrid>
-                <p:commandButton actionListener="viewProductManagedBean.viewProductInNewPage" title="View Comments and Ratings"/>
+                <h:form id="viewMore">
+                    <p:commandButton style="margin: 10px" actionListener="viewProductManagedBean.viewProductInNewPage" value="View Comments and Ratings"/>
+                </h:form>
+
+
             </p:dialog>
         </h:form>
-        
+
     </cc:implementation>
 </html>

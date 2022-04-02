@@ -62,24 +62,23 @@ public class SecurityFilter implements Filter {
     private Boolean checkAccessRight(String path, AccessRightEnum accessRight) {
 
         if (accessRight.equals(AccessRightEnum.ADMINISTRATOR)) {
-            if (path.equals("/systemAdministration/staffManagement.xhtml")) {
+            if (path.equals("/roleAdministration/staffManagement.xhtml")) {
                 return true;
             }
         }
 
         if (accessRight.equals(AccessRightEnum.MANAGER) || accessRight.equals(AccessRightEnum.ADMINISTRATOR)) {
-            if (path.equals("/cashierOperation/orderManagement.xhtml")
-                    || path.equals("/cashierOperation/rewardManagement.xhtml")
-//                    || path.equals("/systemAdministration/staffManagement.xhtml")
-                    || path.equals("/systemAdministration/userManagement.xhtml")
-                    || path.equals("/systemAdministration/advertiserManagement.xhtml")
+            if (path.equals("/roleAdministration/userManagement.xhtml")
+                    || path.equals("/roleAdministration/advertiserManagement.xhtml")
+                    || path.equals("/systemAdministration/orderManagement.xhtml")
+                    || path.equals("/systemAdministration/rewardManagement.xhtml")
                     || path.equals("/systemAdministration/productManagement.xhtml")
-                    || path.equals("/systemAdministration/searchProductsByName.xhtml")
-                    || path.equals("/systemAdministration/filterProductsByCategory.xhtml")
-                    || path.equals("/systemAdministration/filterProductsByTags.xhtml")
                     || path.equals("/systemAdministration/categoryManagement.xhtml")
                     || path.equals("/systemAdministration/tagManagement.xhtml")
                     || path.equals("/systemAdministration/motdManagement.xhtml")
+                    || path.equals("/operations/searchProductsByName.xhtml")
+                    || path.equals("/operations/filterProductsByCategory.xhtml")
+                    || path.equals("/operations/filterProductsByTags.xhtml")
                     || path.equals("/systemAdministration/viewProductInNewPage.xhtml")) {
                 return true;
             } else {
