@@ -53,17 +53,16 @@ public class AdvertiserEntitySessionBean implements AdvertiserEntitySessionBeanL
 
         if (constraintViolations.isEmpty()) {
             try {
+
                 List<CreditCardEntity> listOfCreditCards = new ArrayList<>();
                 List<AdvertisementEntity> listOfAdvertisements = new ArrayList<>();
 
-                if (entityManager.find(AdvertiserEntity.class, advertiserEntity.getAdvertiserId()) != null) {
-                    throw new AdvertiserEntityExistException("AdvertiserEntity already exists, ID: " + advertiserEntity.getAdvertiserId());
-                }
-                for (Long advertisementId : advertisementIds) {
-                    AdvertisementEntity advertisementEntityToAssociate = entityManager.find(AdvertisementEntity.class, advertisementId);
+                advertisementIds.stream().map(advertisementId -> entityManager.find(AdvertisementEntity.class, advertisementId)).map(advertisementEntityToAssociate -> {
                     listOfAdvertisements.add(advertisementEntityToAssociate);
+                    return advertisementEntityToAssociate;
+                }).forEachOrdered(advertisementEntityToAssociate -> {
                     advertisementEntityToAssociate.setAdvertiser(advertiserEntity);
-                }
+                });
 
                 creditCardIds.stream().map(creditCardId -> entityManager.find(CreditCardEntity.class, creditCardId)).map(creditCardToAssociate -> {
                     creditCardToAssociate.setAdvertiser(advertiserEntity);
@@ -73,7 +72,8 @@ public class AdvertiserEntitySessionBean implements AdvertiserEntitySessionBeanL
                 });
 
                 advertiserEntity.setCreditCards(listOfCreditCards);
-                advertiserEntity.setAdvertisements(listOfAdvertisements);
+                advertiserEntity.setAdvertisements(listOfAdvertisements); 
+
 
                 entityManager.persist(advertiserEntity);
                 entityManager.flush();
@@ -111,12 +111,12 @@ public class AdvertiserEntitySessionBean implements AdvertiserEntitySessionBeanL
 
     @Override
     public AdvertiserEntity retrieveAdvertiserEntityByAdvertiserId(Long advertiserId) throws AdvertiserEntityNotFoundException {
-        Query query = entityManager.createQuery("Select a FROM AdvertiserEntity WHERE a.advertiserId = :inAdvertiserId");
+        Query query = entityManager.createQuery("SELECT a FROM AdvertiserEntity a WHERE a.advertiserId = :inAdvertiserId");
         query.setParameter("inAdvertiserId", advertiserId);
 
         try {
             AdvertiserEntity advertiserEntity = (AdvertiserEntity) query.getSingleResult();
-
+            System.out.println(advertiserEntity);
             advertiserEntity.getAdvertisements().size();
             advertiserEntity.getCreditCards().size();
 
@@ -156,6 +156,7 @@ public class AdvertiserEntitySessionBean implements AdvertiserEntitySessionBeanL
                 advertiserEntityToUpdate.setCompanyName(advertiserEntity.getCompanyName());
                 advertiserEntityToUpdate.setUsername(advertiserEntity.getUsername());
                 advertiserEntityToUpdate.setPassword(advertiserEntity.getPassword());
+                advertiserEntityToUpdate.setEmail(advertiserEntity.getEmail());
                 advertiserEntityToUpdate.setCreditCards(advertiserEntity.getCreditCards());
                 advertiserEntityToUpdate.setAdvertisements(advertiserEntity.getAdvertisements());
                 return advertiserEntityToUpdate;

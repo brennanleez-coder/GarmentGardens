@@ -5,12 +5,14 @@
  */
 package ejb.session.singleton;
 
+import ejb.session.stateless.AdvertiserEntitySessionBeanLocal;
 import ejb.session.stateless.CategoryEntitySessionBeanLocal;
 import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
 import ejb.session.stateless.ProductEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
 import ejb.session.stateless.TagEntitySessionBeanLocal;
 import ejb.session.stateless.UserEntitySessionBeanLocal;
+import entity.AdvertiserEntity;
 import entity.CategoryEntity;
 import entity.MessageOfTheDayEntity;
 import entity.ProductEntity;
@@ -31,6 +33,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.AccessRightEnum;
 import util.enumeration.RoleEnum;
+import util.exception.AdvertiserEntityExistException;
+import util.exception.CreateNewAdvertiserEntityException;
 import util.exception.CreateNewCategoryException;
 import util.exception.CreateNewProductException;
 import util.exception.CreateNewTagException;
@@ -68,6 +72,9 @@ public class DataInitSessionBean {
     @EJB(name = "StaffEntitySessionBeanLocal")
     private StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
 
+    @EJB(name = "AdvertiserEntitySessionBeanLocal")
+    private AdvertiserEntitySessionBeanLocal advertiserEntitySessionBeanLocal;
+
     @PersistenceContext(unitName = "GarmentGardens-ejbPU")
     private EntityManager em;
 
@@ -90,8 +97,9 @@ public class DataInitSessionBean {
             initialiseStaffCustomersSellers();
 
             initaliseCategoriesTags();
+            initialiseAdvertisers();
 
-        } catch (StaffUsernameExistException | UserUsernameExistException | CreateNewTagException | CreateNewProductException | ProductSkuCodeExistException | CreateNewCategoryException | UnknownPersistenceException | InputDataValidationException ex) {
+        } catch (CreateNewAdvertiserEntityException | AdvertiserEntityExistException | StaffUsernameExistException | UserUsernameExistException | CreateNewTagException | CreateNewProductException | ProductSkuCodeExistException | CreateNewCategoryException | UnknownPersistenceException | InputDataValidationException ex) {
             ex.printStackTrace();
         }
 
@@ -190,6 +198,17 @@ public class DataInitSessionBean {
             userEntitySessionBeanLocal.createNewUser(sellerToMake);
         }
 
+    }
+
+    private void initialiseAdvertisers() throws CreateNewAdvertiserEntityException, AdvertiserEntityExistException, UnknownPersistenceException, InputDataValidationException {
+
+        String[] surnames = {"lim", "tan", "lee", "leck", "wong", "ong", "wei", "lee", "wee", "yong", "leao", "chen", "chee", "chong", "alec", "teo", "lin", "meng", "chua", "eng", "leong"};
+
+        for (int i = 1; i < 20; i++) {
+            int rng = getRandom(surnames);
+            AdvertiserEntity advertiser = new AdvertiserEntity("advertiser " + i, "advertiser" + surnames[rng], "password", "advertiser" + surnames[rng] + "@mail.com");
+            advertiserEntitySessionBeanLocal.createNewAdvertiserEntity(advertiser, new ArrayList<>(), new ArrayList<>());
+        }
     }
 
     public int getRandom(String[] arr) {

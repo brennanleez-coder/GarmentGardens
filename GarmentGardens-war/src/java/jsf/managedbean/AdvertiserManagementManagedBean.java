@@ -45,11 +45,11 @@ public class AdvertiserManagementManagedBean implements Serializable {
 
     @PostConstruct
     public void postConstruct() {
-        advertiserEntities = advertiserEntitySessionBeanLocal.retrieveAllAdvertiserEntity();
+        setAdvertiserEntities(advertiserEntitySessionBeanLocal.retrieveAllAdvertiserEntity());
     }
 
     public void doUpdateAdvertiser(ActionEvent event) {
-        selectedAdvertiserEntityToUpdate = (AdvertiserEntity) event.getComponent().getAttributes().get("advertiserEntityToUpdate");
+        setSelectedAdvertiserEntityToUpdate((AdvertiserEntity) event.getComponent().getAttributes().get("advertiserEntityToUpdate"));
 
 //        categoryIdUpdate = selectedProductEntityToUpdate.getCategory().getCategoryId();
 //        tagIdsUpdate = new ArrayList<>();
@@ -60,7 +60,7 @@ public class AdvertiserManagementManagedBean implements Serializable {
 
     public void updateAdvertiser(ActionEvent event) {
         try {
-            advertiserEntitySessionBeanLocal.updateAdvertiserEntity(selectedAdvertiserEntityToUpdate);
+            advertiserEntitySessionBeanLocal.updateAdvertiserEntity(getSelectedAdvertiserEntityToUpdate());
 
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Advertiser updated successfully", null));
         } catch (AdvertiserEntityNotFoundException ex) {
@@ -75,10 +75,10 @@ public class AdvertiserManagementManagedBean implements Serializable {
             AdvertiserEntity advertiserEntityToDelete = (AdvertiserEntity) event.getComponent().getAttributes().get("advertiserEntityToDelete");
             advertiserEntitySessionBeanLocal.deleteAdvertiserEntity(advertiserEntityToDelete);
 
-            advertiserEntities.remove(advertiserEntityToDelete);
+            getAdvertiserEntities().remove(advertiserEntityToDelete);
 
-            if (filteredAdvertiserEntities != null) {
-                filteredAdvertiserEntities.remove(advertiserEntityToDelete);
+            if (getFilteredAdvertiserEntities() != null) {
+                getFilteredAdvertiserEntities().remove(advertiserEntityToDelete);
             }
 
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Advertiser deleted successfully", null));
@@ -87,6 +87,38 @@ public class AdvertiserManagementManagedBean implements Serializable {
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
+    }
+
+    public List<AdvertiserEntity> getAdvertiserEntities() {
+        return advertiserEntities;
+    }
+
+    public void setAdvertiserEntities(List<AdvertiserEntity> advertiserEntities) {
+        this.advertiserEntities = advertiserEntities;
+    }
+
+    public List<AdvertiserEntity> getFilteredAdvertiserEntities() {
+        return filteredAdvertiserEntities;
+    }
+
+    public void setFilteredAdvertiserEntities(List<AdvertiserEntity> filteredAdvertiserEntities) {
+        this.filteredAdvertiserEntities = filteredAdvertiserEntities;
+    }
+
+    public AdvertiserEntity getSelectedAdvertiserEntityToUpdate() {
+        return selectedAdvertiserEntityToUpdate;
+    }
+
+    public void setSelectedAdvertiserEntityToUpdate(AdvertiserEntity selectedAdvertiserEntityToUpdate) {
+        this.selectedAdvertiserEntityToUpdate = selectedAdvertiserEntityToUpdate;
+    }
+
+    public ViewAdvertiserManagedBean getViewAdvertiserManagedBean() {
+        return viewAdvertiserManagedBean;
+    }
+
+    public void setViewAdvertiserManagedBean(ViewAdvertiserManagedBean viewAdvertiserManagedBean) {
+        this.viewAdvertiserManagedBean = viewAdvertiserManagedBean;
     }
 
 

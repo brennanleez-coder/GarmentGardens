@@ -29,6 +29,7 @@ public class AdvertiserEntity implements Serializable {
     private String companyName;
     private String username;
     private String password;
+    private String email;
     
     @OneToMany(mappedBy= "advertiser", fetch = FetchType.LAZY)
     private List<AdvertisementEntity> advertisements;
@@ -42,11 +43,12 @@ public class AdvertiserEntity implements Serializable {
     }
 
    
-    public AdvertiserEntity(String companyName, String username, String password) {
+    public AdvertiserEntity(String companyName, String username, String password, String email) {
         this();
         this.companyName = companyName;
         this.username = username;
         this.password = password;
+        this.email = email;
     }
     
     
@@ -128,6 +130,14 @@ public class AdvertiserEntity implements Serializable {
      */
     public void setCreditCards(List<CreditCardEntity> creditCards) {
         this.creditCards = creditCards;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
     
 }

@@ -16,6 +16,128 @@
 
         </div>
 
+        <h:form id="formAllAdvertisers">
+
+            <p:messages id="messages" redisplay="false" closable="true" />
+
+            <p:dataTable id="dataTableAllAdvertisers" widgetVar="dataTableAllAdvertisers" value="#{advertiserManagementManagedBean.advertiserEntities}" var="advertiserEntity" rowKey="#{advertiserEntity.advertiserId}" rowIndexVar="row"
+                         filteredValue="#{advertiserManagementManagedBean.filteredAdvertiserEntities}"
+                         rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+                <f:facet name="header">
+                    <p:outputPanel style="text-align: right;">
+                        <h:outputText value="Search all fields:" />
+                        <p:inputText id="globalFilter" onkeyup="PF('dataTableAllAdvertisers').filter()" style="width:300px" placeholder="Enter keyword"/>
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column headerText="Advertiser ID" sortBy="#{advertiserEntity.advertiserId}" filterBy="#{advertiserEntity.advertiserId}" filterMatchMode="contains">
+                    <h:outputText value="#{advertiserEntity.advertiserId}" />
+                </p:column>                            
+
+                <p:column headerText="Company Name" sortBy="#{advertiserEntity.companyName}" filterBy="#{advertiserEntity.companyName}" filterMatchMode="contains">
+                    <h:outputText value="#{advertiserEntity.companyName}" />
+                </p:column>
+
+
+                <p:column headerText="Email" sortBy="#{advertiserEntity.email}" filterBy="#{advertiserEntity.email}" filterMatchMode="contains">
+                    <h:outputText value="#{advertiserEntity.email}" />
+                </p:column>
+          
+                <p:column headerText="Username" sortBy="#{advertiserEntity.email}" filterBy="#{advertiserEntity.username}" filterMatchMode="contains">
+                    <h:outputText value="#{advertiserEntity.username}" />
+                </p:column>
+
+                <p:column headerText="Action" >
+                    <p:commandButton update="ccViewAdvertiser:formViewAdvertiser" oncomplete="PF('dialogViewAdvertiser').show()" icon="ui-icon-document" title="View">
+                        <f:setPropertyActionListener value="#{advertiserEntity}" target="#{advertiserManagementManagedBean.viewAdvertiserManagedBean.advertiserEntityToView}" />
+                    </p:commandButton>
+                    <p:commandButton actionListener="#{advertiserManagementManagedBean.doUpdateAdvertiser}" update="formUpdateAdvertiser" oncomplete="PF('dialogUpdateAdvertiser').show()" icon="ui-icon-pencil" title="Update">
+                        <f:attribute name="advertiserEntityToUpdate" value="#{advertiserEntity}" />
+                    </p:commandButton>
+                    <p:commandButton icon="ui-icon-trash" actionListener="#{advertiserManagementManagedBean.deleteAdvertiser}" update="formAllAdvertisers:dataTableAllAdvertisers formAllAdvertisers:messages">
+                        <f:attribute name="advertiserEntityToDelete" value="#{advertiserEntity}" />
+                        <p:confirm header="Confirmation" message="Are you sure you want to delete #{advertiserEntity.username} ?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+
+        </h:form>
+
+        <ez:ViewAdvertiser id="ccViewAdvertiser" />
+
+        <h:form id="formUpdateAdvertiser">
+
+            <p:dialog id="dialogUpdateAdvertiser" widgetVar="dialogUpdateAdvertiser" header="Update Advertiser" closable="true">
+
+                <p:messages id="messagesUpdateAdvertiser" redisplay="false" />
+
+                <p:panelGrid>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Advertiser ID: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{advertiserManagementManagedBean.selectedAdvertiserEntityToUpdate.advertiserId}" />
+                        </p:column>
+                        <p:column>
+                            &nbsp;
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="companyName" value="Company Name: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="companyName" value="#{advertiserManagementManagedBean.selectedAdvertiserEntityToUpdate.companyName}" placeholder="Enter Company Name" required="true" requiredMessage="Company name is required" />
+                        </p:column>
+                        <p:column>
+                            <p:message for="companyName" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="email" value="Email: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="email" value="#{advertiserManagementManagedBean.selectedAdvertiserEntityToUpdate.email}" placeholder="Enter Email" required="true" requiredMessage="Email is required" />
+                        </p:column>
+                        <p:column>
+                            <p:message for="email" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="username" value="Username: " />
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="username" value="#{advertiserManagementManagedBean.selectedAdvertiserEntityToUpdate.username}" placeholder="Enter Username" required="true" requiredMessage="Username is required" />
+                        </p:column>
+                        <p:column>
+                            <p:message for="username" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column colspan="3">
+                            <p:commandButton value="Update Advertiser" update="@form formAllAdvertisers:dataTableAllAdvertisers" actionListener="#{advertiserManagementManagedBean.updateAdvertiser}" oncomplete="PF('dialogUpdateAdvertiser').show();" />
+                        </p:column>
+                    </p:row>
+
+                </p:panelGrid>
+
+            </p:dialog>
+
+        </h:form>
 
     </ui:define>
 
