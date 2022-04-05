@@ -5,7 +5,12 @@
  */
 package ejb.session.stateless;
 
+import entity.AdvertisementEntity;
 import javax.ejb.Local;
+import util.exception.AdvertiserEntityNotFoundException;
+import util.exception.CreateNewAdvertisementException;
+import util.exception.InputDataValidationException;
+import util.exception.UnknownPersistenceException;
 
 /**
  *
@@ -13,5 +18,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface AdvertisementEntitySessionBeanLocal {
+
+    public AdvertisementEntity createNewAdvertiserEntity(AdvertisementEntity advertisementEntity, Long advertiserId) throws AdvertiserEntityNotFoundException, UnknownPersistenceException, InputDataValidationException, CreateNewAdvertisementException;
     
 }

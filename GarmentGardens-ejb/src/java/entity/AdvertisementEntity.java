@@ -25,19 +25,23 @@ public class AdvertisementEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long advertisementId;
-    
-    
-    @ManyToOne(fetch=FetchType.LAZY, optional = false)
+    private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     private AdvertiserEntity advertiser;
 
-    
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private StaffEntity approvedByStaff;
-        
+
     public AdvertisementEntity() {
     }
 
+    public AdvertisementEntity(String description) {
+        this.description = description;
+    }
+
+    
     public Long getAdvertisementId() {
         return advertisementId;
     }
@@ -86,5 +90,13 @@ public class AdvertisementEntity implements Serializable {
     public void setApprovedByStaff(StaffEntity approvedByStaff) {
         this.approvedByStaff = approvedByStaff;
     }
-    
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 }
