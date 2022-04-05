@@ -20,7 +20,7 @@ public class SessionBeanLookup
     
     public SessionBeanLookup()
     {
-        ejbModuleJndiPath = "java:global/PointOfSaleSystemV60/PointOfSaleSystemV60-ejb/";
+        ejbModuleJndiPath = "java:global/GarmentGardens/GarmentGardens-ejb/";
     }
     
     
