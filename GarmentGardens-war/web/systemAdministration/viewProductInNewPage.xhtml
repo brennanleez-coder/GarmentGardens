@@ -64,7 +64,7 @@
             </h:form>
 
             <h:form id="Ratings and Comments">
-                <p:dataTable widgetVar="dataTableAllRatings" value="#{ViewProductInNewPageManagedBean.RatingManagedBean.ratings}" var="ratingEntity" rowKey="#{ratingEntity.ratingId}" rowIndexVar="row"
+                <p:dataTable widgetVar="dataTableAllRatings" value="#{ViewProductInNewPageManagedBean.ratings}" var="ratingEntity" rowKey="#{ratingEntity.ratingId}" rowIndexVar="row"
                              filteredValue="#{productManagementManagedBean.filteredProductEntities}"
                              rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
                     

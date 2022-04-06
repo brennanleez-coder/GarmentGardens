@@ -41,7 +41,9 @@ public class ViewProductManagedBean implements Serializable {
     public void postConstruct() {
     }
     
-    public void viewProductInNewPage() throws IOException {
+    public void viewProductInNewPage(ActionEvent event) throws IOException {
+        System.out.println("************ viewProductInNewPage");
+        
         FacesContext.getCurrentInstance().getExternalContext().getFlash().put("ProductToView", productEntityToView);
         FacesContext.getCurrentInstance().getExternalContext().redirect("viewProductInNewPage.xhtml"); 
     }
@@ -52,6 +54,14 @@ public class ViewProductManagedBean implements Serializable {
 
     public void setProductEntityToView(ProductEntity productEntityToView) {
         this.productEntityToView = productEntityToView;
+    }
+
+    public ViewProductInNewPageManagedBean getViewProductInNewPageManagedBean() {
+        return viewProductInNewPageManagedBean;
+    }
+
+    public void setViewProductInNewPageManagedBean(ViewProductInNewPageManagedBean viewProductInNewPageManagedBean) {
+        this.viewProductInNewPageManagedBean = viewProductInNewPageManagedBean;
     }
 
 }

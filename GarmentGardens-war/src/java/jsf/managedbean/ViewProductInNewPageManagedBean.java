@@ -26,8 +26,6 @@ public class ViewProductInNewPageManagedBean implements Serializable{
     /**
      * Creates a new instance of ViewProductInNewPageManagedBean
      */
-    @Inject
-    private RatingManagedBean ratingManagedBean;
     
     private ProductEntity productEntityFullDetailsToView;
     
