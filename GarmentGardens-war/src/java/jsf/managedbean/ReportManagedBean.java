@@ -36,11 +36,11 @@ public class ReportManagedBean {
     public ReportManagedBean() {
     }
 
-    public void generateReport(ActionEvent event) {
+    public void generateProductReport(ActionEvent event) {
         try {
             HashMap parameters = new HashMap();
             //parameters.put("Description", "This is a placeholder description");
-            InputStream reportStream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/jasperreport/report.jasper");
+            InputStream reportStream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/jasperreport/productReport.jasper");
             OutputStream outputStream = FacesContext.getCurrentInstance().getExternalContext().getResponseOutputStream();
             JasperRunManager.runReportToPdfStream(reportStream, outputStream, parameters, garmentGardensDataSource.getConnection());
         } catch (JRException ex) {

@@ -36,27 +36,19 @@ public class IndexManagedBean implements Serializable {
 
     @EJB(name = "OrderEntitySessionBeanLocal")
     private OrderEntitySessionBeanLocal orderEntitySessionBeanLocal;
-
-    @Inject
-    private ReportManagedBean reportManagedBean;
-
+    
     private String salesLineModelHex1;
     private LineChartModel salesLineModel;
     private List<List<OrderEntity>> orderEntitiesList;
 
     public IndexManagedBean() {
         salesLineModelHex1 = "#2AECFF";
-
     }
 
     @PostConstruct
     public void postConstruct() {
         orderEntitiesList = orderEntitySessionBeanLocal.retrieveAllOrdersInPastYear();
         //createSalesLineChartModel();
-    }
-
-    public void generateReport(ActionEvent event) {
-        reportManagedBean.generateReport(event);
     }
 
     public void createSalesLineChartModel() {

@@ -5,6 +5,7 @@
  */
 package ejb.session.singleton;
 
+import ejb.session.stateless.AdvertisementEntitySessionBeanLocal;
 import ejb.session.stateless.AdvertiserEntitySessionBeanLocal;
 import ejb.session.stateless.CategoryEntitySessionBeanLocal;
 import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
@@ -12,6 +13,7 @@ import ejb.session.stateless.ProductEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
 import ejb.session.stateless.TagEntitySessionBeanLocal;
 import ejb.session.stateless.UserEntitySessionBeanLocal;
+import entity.AdvertisementEntity;
 import entity.AdvertiserEntity;
 import entity.CategoryEntity;
 import entity.MessageOfTheDayEntity;
@@ -34,6 +36,8 @@ import javax.persistence.PersistenceContext;
 import util.enumeration.AccessRightEnum;
 import util.enumeration.RoleEnum;
 import util.exception.AdvertiserEntityExistException;
+import util.exception.AdvertiserEntityNotFoundException;
+import util.exception.CreateNewAdvertisementException;
 import util.exception.CreateNewAdvertiserEntityException;
 import util.exception.CreateNewCategoryException;
 import util.exception.CreateNewProductException;
@@ -75,6 +79,9 @@ public class DataInitSessionBean {
     @EJB(name = "AdvertiserEntitySessionBeanLocal")
     private AdvertiserEntitySessionBeanLocal advertiserEntitySessionBeanLocal;
 
+    @EJB(name = "AdvertisementEntitySessionBeanLocal")
+    private AdvertisementEntitySessionBeanLocal advertisementEntitySessionBeanLocal;
+
     @PersistenceContext(unitName = "GarmentGardens-ejbPU")
     private EntityManager em;
 
@@ -97,9 +104,9 @@ public class DataInitSessionBean {
             initialiseStaffCustomersSellers();
 
             initaliseCategoriesTags();
-            initialiseAdvertisers();
+            initialiseAdvertisersAndAdvertisements();
 
-        } catch (CreateNewAdvertiserEntityException | AdvertiserEntityExistException | StaffUsernameExistException | UserUsernameExistException | CreateNewTagException | CreateNewProductException | ProductSkuCodeExistException | CreateNewCategoryException | UnknownPersistenceException | InputDataValidationException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -175,40 +182,47 @@ public class DataInitSessionBean {
         staffEntitySessionBeanLocal.createNewStaff(manager);
         String[] surnames = {"lim", "tan", "lee", "leck", "wong", "ong", "wei", "lee", "wee", "yong", "leao", "chen", "chee", "chong", "alec", "teo", "lin", "meng", "chua", "eng", "leong"};
 
-        for (int i = 3; i < 100; i++) {
-            StaffEntity adminToMake = new StaffEntity("admin " + i, surnames[getRandom(surnames)], AccessRightEnum.ADMINISTRATOR, "admin" + surnames[getRandom(surnames)], "password");
+        for (int i = 3; i <= 100; i++) {
+            int randomInt = getRandom(surnames);
+            StaffEntity adminToMake = new StaffEntity("admin " + i, surnames[randomInt], AccessRightEnum.ADMINISTRATOR, "admin" + surnames[randomInt], "password");
             staffEntitySessionBeanLocal.createNewStaff(adminToMake);
         }
-        for (int i = 101; i < 200; i++) {
-            StaffEntity managerToMake = new StaffEntity("manager " + i, surnames[getRandom(surnames)], AccessRightEnum.MANAGER, "manager" + surnames[getRandom(surnames)], "password");
+        for (int i = 101; i <= 200; i++) {
+            int randomInt = getRandom(surnames);
+            StaffEntity managerToMake = new StaffEntity("manager " + i, surnames[randomInt], AccessRightEnum.MANAGER, "manager" + surnames[randomInt], "password");
             staffEntitySessionBeanLocal.createNewStaff(managerToMake);
         }
 
         UserEntity customer = new UserEntity("customer", "lee", "customer@mail.com", "customer", "password", new Date(), "NUS", RoleEnum.CUSTOMER);
         userEntitySessionBeanLocal.createNewUser(customer);
-        for (int i = 1; i < 200; i++) {
-            UserEntity customerToMake = new UserEntity("customer " + i, surnames[getRandom(surnames)], "customer" + i + surnames[getRandom(surnames)] + "@mail.com", "customer " + i, "password", new Date(), "NUS " + i, RoleEnum.CUSTOMER);
+        for (int i = 1; i <= 200; i++) {
+            int randomInt = getRandom(surnames);
+            UserEntity customerToMake = new UserEntity("customer " + i, surnames[randomInt], "customer" + i + surnames[randomInt] + "@mail.com", "customer " + i, "password", new Date(), "NUS " + i, RoleEnum.CUSTOMER);
             userEntitySessionBeanLocal.createNewUser(customerToMake);
         }
 
         UserEntity seller = new UserEntity("seller", "lee", "seller@mail.com", "seller", "password", new Date(), "NUS", RoleEnum.SELLER);
         userEntitySessionBeanLocal.createNewUser(seller);
-        for (int i = 200; i < 500; i++) {
-            UserEntity sellerToMake = new UserEntity("seller " + i, surnames[getRandom(surnames)], "seller " + i + surnames[getRandom(surnames)] + "@mail.com", "seller" + surnames[getRandom(surnames)], "password", new Date(), "NUS " + i, RoleEnum.SELLER);
+        for (int i = 200; i <= 500; i++) {
+            int randomInt = getRandom(surnames);
+            UserEntity sellerToMake = new UserEntity("seller " + i, surnames[randomInt], "seller " + i + surnames[randomInt] + "@mail.com", "seller" + surnames[randomInt], "password", new Date(), "NUS " + i, RoleEnum.SELLER);
             userEntitySessionBeanLocal.createNewUser(sellerToMake);
         }
 
     }
 
-    private void initialiseAdvertisers() throws CreateNewAdvertiserEntityException, AdvertiserEntityExistException, UnknownPersistenceException, InputDataValidationException {
+    private void initialiseAdvertisersAndAdvertisements() throws CreateNewAdvertisementException, CreateNewAdvertiserEntityException, AdvertiserEntityNotFoundException, AdvertiserEntityExistException, UnknownPersistenceException, InputDataValidationException {
 
         String[] surnames = {"lim", "tan", "lee", "leck", "wong", "ong", "wei", "lee", "wee", "yong", "leao", "chen", "chee", "chong", "alec", "teo", "lin", "meng", "chua", "eng", "leong"};
 
-        for (int i = 1; i < 20; i++) {
-            int rng = getRandom(surnames);
-            AdvertiserEntity advertiser = new AdvertiserEntity("advertiser " + i, "advertiser" + surnames[rng], "password", "advertiser" + surnames[rng] + "@mail.com");
+        for (int i = 1; i <= 20; i++) {
+            int randomInt = getRandom(surnames);
+            AdvertiserEntity advertiser = new AdvertiserEntity("advertiser " + i, "advertiser" + surnames[randomInt], "password", "advertiser" + surnames[randomInt] + "@mail.com");
             advertiserEntitySessionBeanLocal.createNewAdvertiserEntity(advertiser, new ArrayList<>(), new ArrayList<>());
+            AdvertisementEntity advertisementEntity = new AdvertisementEntity("sample description");
+            advertisementEntitySessionBeanLocal.createNewAdvertiserEntity(advertisementEntity, Long.valueOf(i));
         }
+
     }
 
     public int getRandom(String[] arr) {

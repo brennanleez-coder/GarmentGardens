@@ -47,32 +47,34 @@ public class AdvertisementEntitySessionBean implements AdvertisementEntitySessio
         validator = validatorFactory.getValidator();
     }
 
-    
-    /*
     @Override
-    public AdvertisementEntity createNewAdvertiserEntity(AdvertisementEntity advertisementEntity, Long advertiserId, Long staffId) throws AdvertiserEntityNotFoundException, UnknownPersistenceException, InputDataValidationException, CreateNewAdvertiserEntityException {
+    public AdvertisementEntity createNewAdvertiserEntity(AdvertisementEntity advertisementEntity, Long advertiserId) throws AdvertiserEntityNotFoundException, UnknownPersistenceException, InputDataValidationException, CreateNewAdvertisementException {
         Set<ConstraintViolation<AdvertisementEntity>> constraintViolations = validator.validate(advertisementEntity);
 
         if (constraintViolations.isEmpty()) {
-            
+
             AdvertiserEntity advertiserEntityToAssociate = advertiserEntitySessionBeanLocal.retrieveAdvertiserEntityByAdvertiserId(advertiserId);
-            StaffEntity staffEntityToAssociate = staffEntitySessionBeanLocal.retrieveStaffByStaffId(staffId);
-            
-            if (advertiserEntityToAssociate == null || staffEntityToAssociate == null ) {
+
+            if (advertiserEntityToAssociate == null) {
+                throw new AdvertiserEntityNotFoundException("The advertiser does not exist!");
+            }
+
+            try {
+                advertisementEntity.setAdvertiser(advertiserEntityToAssociate);
+                entityManager.persist(advertisementEntity);
+                entityManager.flush();
                 
+                return advertisementEntity;
                 
-            } else {
+            } catch (Exception ex) {
                 throw new CreateNewAdvertisementException("There was an error creating the Advertisement");
             }
-            
-                
         } else {
             throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
         }
+        
     }
-*/
-    
-    
+
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<AdvertisementEntity>> constraintViolations) {
         String msg = "Input data validation error!:";
 
