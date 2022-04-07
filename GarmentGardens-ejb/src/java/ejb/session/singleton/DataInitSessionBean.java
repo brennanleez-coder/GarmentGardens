@@ -154,25 +154,25 @@ public class DataInitSessionBean {
         CategoryEntity categoryEntityN = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category N", "Category N"), categoryEntityY);
         CategoryEntity categoryEntityO = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Category O", "Category O"), categoryEntityZ);
 
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD001", "Product A1", "Product A1", 100, new BigDecimal("10.00"), true), categoryEntityA.getCategoryId(), tagIdsPopular);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD002", "Product A2", "Product A2", 100, new BigDecimal("25.50"), true), categoryEntityA.getCategoryId(), tagIdsDiscount);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD003", "Product A3", "Product A3", 100, new BigDecimal("15.00"), true), categoryEntityA.getCategoryId(), tagIdsPopularDiscount);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD004", "Product B1", "Product B1", 100, new BigDecimal("20.00"), true), categoryEntityB.getCategoryId(), tagIdsPopularNew);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD005", "Product B2", "Product B2", 100, new BigDecimal("10.00"), true), categoryEntityB.getCategoryId(), tagIdsPopularDiscountNew);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD006", "Product B3", "Product B3", 100, new BigDecimal("100.00"), true), categoryEntityB.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD007", "Product C1", "Product C1", 100, new BigDecimal("35.00"), true), categoryEntityC.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD008", "Product C2", "Product C2", 100, new BigDecimal("20.05"), true), categoryEntityC.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD009", "Product C3", "Product C3", 100, new BigDecimal("5.50"), true), categoryEntityC.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD001", "Product A1", "Product A1", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/FoxBP9S.png"), categoryEntityA.getCategoryId(), tagIdsPopular);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD002", "Product A2", "Product A2", 100, new BigDecimal("25.50"), true, "https://i.imgur.com/FoxBP9S.png"), categoryEntityA.getCategoryId(), tagIdsDiscount);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD003", "Product A3", "Product A3", 100, new BigDecimal("15.00"), true, "https://i.imgur.com/FoxBP9S.png"), categoryEntityA.getCategoryId(), tagIdsPopularDiscount);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD004", "Product B1", "Product B1", 100, new BigDecimal("20.00"), true, "https://i.imgur.com/FoxBP9S.png"), categoryEntityB.getCategoryId(), tagIdsPopularNew);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD005", "Product B2", "Product B2", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/FoxBP9S.png"), categoryEntityB.getCategoryId(), tagIdsPopularDiscountNew);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD006", "Product B3", "Product B3", 100, new BigDecimal("100.00"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityB.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD007", "Product C1", "Product C1", 100, new BigDecimal("35.00"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityC.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD008", "Product C2", "Product C2", 100, new BigDecimal("20.05"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityC.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD009", "Product C3", "Product C3", 100, new BigDecimal("5.50"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityC.getCategoryId(), tagIdsEmpty);
 
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD010", "Product M1", "Product M1", 100, new BigDecimal("20.50"), true), categoryEntityM.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD011", "Product M2", "Product M2", 100, new BigDecimal("30.50"), true), categoryEntityM.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD012", "Product M3", "Product M3", 100, new BigDecimal("18.50"), true), categoryEntityM.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD013", "Product N1", "Product N1", 100, new BigDecimal("50.00"), true), categoryEntityN.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD014", "Product N2", "Product N2", 100, new BigDecimal("100.00"), true), categoryEntityN.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD015", "Product N3", "Product N3", 100, new BigDecimal("200.00"), true), categoryEntityN.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD016", "Product O1", "Product O1", 100, new BigDecimal("95.00"), true), categoryEntityO.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD017", "Product O2", "Product O2", 100, new BigDecimal("19.05"), true), categoryEntityO.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD018", "Product O3", "Product O3", 100, new BigDecimal("10.50"), true), categoryEntityO.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD010", "Product M1", "Product M1", 100, new BigDecimal("20.50"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityM.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD011", "Product M2", "Product M2", 100, new BigDecimal("30.50"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityM.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD012", "Product M3", "Product M3", 100, new BigDecimal("18.50"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityM.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD013", "Product N1", "Product N1", 100, new BigDecimal("50.00"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityN.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD014", "Product N2", "Product N2", 100, new BigDecimal("100.00"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityN.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD015", "Product N3", "Product N3", 100, new BigDecimal("200.00"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityN.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD016", "Product O1", "Product O1", 100, new BigDecimal("95.00"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityO.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD017", "Product O2", "Product O2", 100, new BigDecimal("19.05"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityO.getCategoryId(), tagIdsEmpty);
+        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD018", "Product O3", "Product O3", 100, new BigDecimal("10.50"), true, "https://imgur.com/a/7vdCiUd"), categoryEntityO.getCategoryId(), tagIdsEmpty);
     }
 
     private void initialiseStaffCustomersSellers() throws UserUsernameExistException, StaffUsernameExistException, UnknownPersistenceException, InputDataValidationException {

@@ -37,7 +37,8 @@ public class ProductEntity implements Serializable {
     private Integer quantityOnHand;
     private BigDecimal unitPrice;
     private Boolean isListed;
-    private List<String> images;
+    //private List<String> images;
+    private String imageLink;
     
     @ManyToMany(mappedBy = "products")
     private List<TagEntity> tags;
@@ -59,9 +60,10 @@ public class ProductEntity implements Serializable {
         this.ratings = new ArrayList<RatingEntity>();
         this.tags = new ArrayList<TagEntity>();
         this.lineItems = new ArrayList<LineItemEntity>();
+        //this.images = new ArrayList<String>();
     }
 
-    public ProductEntity(String skuCode, String name, String description, Integer quantityOnHand, BigDecimal unitPrice, Boolean isListed) {
+    public ProductEntity(String skuCode, String name, String description, Integer quantityOnHand, BigDecimal unitPrice, Boolean isListed, String imageLink) {
         this();
         this.skuCode = skuCode;
         this.name = name;
@@ -69,6 +71,7 @@ public class ProductEntity implements Serializable {
         this.quantityOnHand = quantityOnHand;
         this.unitPrice = unitPrice;
         this.isListed = isListed;
+        this.imageLink = imageLink;
     }
     
     
@@ -262,13 +265,13 @@ public class ProductEntity implements Serializable {
         }
     }
     
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
+//    public List<String> getImages() {
+//        return images;
+//    }
+//
+//    public void setImages(List<String> images) {
+//        this.images = images;
+//    }
 
     public List<LineItemEntity> getLineItems() {
         return lineItems;
@@ -276,6 +279,14 @@ public class ProductEntity implements Serializable {
 
     public void setLineItems(List<LineItemEntity> lineItems) {
         this.lineItems = lineItems;
+    }
+
+    public String getImageLink() {
+        return imageLink;
+    }
+
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
     }
 
     

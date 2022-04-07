@@ -25,6 +25,15 @@
                             <h:outputText value="#{viewProductManagedBean.productEntityToView.productId}" />
                         </p:column>
                     </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Product Image: " />
+                        </p:column>
+                        <p:column>
+                            <h:graphicImage value="#{viewProductManagedBean.productEntityToView.imageLink}" height="100" width="100" />
+                        </p:column>
+                    </p:row>
 
                     <p:row>
                         <p:column>
