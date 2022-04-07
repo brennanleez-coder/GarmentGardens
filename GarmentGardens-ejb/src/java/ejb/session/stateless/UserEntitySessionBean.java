@@ -131,7 +131,8 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
         try
         {
             UserEntity userEntity = retrieveUserByUsername(username);
-            String passwordHash = CryptographicHelper.getInstance().byteArrayToHexString(CryptographicHelper.getInstance().doMD5Hashing(password));            
+            //String passwordHash = CryptographicHelper.getInstance().byteArrayToHexString(CryptographicHelper.getInstance().doMD5Hashing(password));
+            String passwordHash = userEntity.getPassword();
             if(userEntity.getPassword().equals(passwordHash))
             {
                 userEntity.getOrders().size();                
@@ -139,12 +140,12 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
             }
             else
             {
-                throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
+                throw new InvalidLoginCredentialException("Invalid Login Credentials: Please try again!!");
             }
         }
         catch(UserNotFoundException ex)
         {
-            throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
+            throw new InvalidLoginCredentialException("Username does not exist! Please sign up for an account first");
         }
     }
     

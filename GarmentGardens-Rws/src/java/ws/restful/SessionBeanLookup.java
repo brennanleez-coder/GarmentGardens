@@ -5,6 +5,7 @@ import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
 import ejb.session.stateless.ProductEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
 import ejb.session.stateless.TagEntitySessionBeanLocal;
+import ejb.session.stateless.UserEntitySessionBeanLocal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
@@ -77,6 +78,16 @@ public class SessionBeanLookup
         try {
             javax.naming.Context c = new InitialContext();
             return (MessageOfTheDayEntitySessionBeanLocal) c.lookup(ejbModuleJndiPath + "MessageOfTheDayEntitySessionBean!ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+    
+    public UserEntitySessionBeanLocal lookupUserEntitySessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (UserEntitySessionBeanLocal) c.lookup(ejbModuleJndiPath + "UserEntitySessionBean!ejb.session.stateless.UserEntitySessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
