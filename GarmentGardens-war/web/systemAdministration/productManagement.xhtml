@@ -44,6 +44,10 @@
                     <p:column headerText="SKU Code" sortBy="#{productEntity.skuCode}" filterBy="#{productEntity.skuCode}" filterMatchMode="contains">
                         <h:outputText value="#{productEntity.skuCode}" />
                     </p:column>
+                    
+                    <p:column headerText="Image">
+                        <h:graphicImage value="#{productEntity.imageLink}" height="100" width="100" />
+                    </p:column>
 
                     <p:column headerText="Product ID" sortBy="#{productEntity.productId}" filterBy="#{productEntity.productId}" filterMatchMode="contains">
                         <h:outputText value="#{productEntity.productId}" />
@@ -120,6 +124,18 @@
                             </p:column>
                             <p:column>
                                 <p:message for="skuCode" />
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="image" value="Image Link: " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="image" value="#{productManagementManagedBean.newProductEntity.imageLink}" placeholder="Image Link" required="true" requiredMessage="Image Link is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="image" />
                             </p:column>
                         </p:row>
 
@@ -241,6 +257,18 @@
                             </p:column>
                             <p:column>
                                 <h:outputText value="#{productManagementManagedBean.selectedProductEntityToUpdate.productId}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
+                            </p:column>
+                        </p:row>
+                        
+                         <p:row>
+                            <p:column>
+                                <h:outputLabel value="Image: " />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="image" value="#{productManagementManagedBean.selectedProductEntityToUpdate.imageLink}" />
                             </p:column>
                             <p:column>
                                 &nbsp;
