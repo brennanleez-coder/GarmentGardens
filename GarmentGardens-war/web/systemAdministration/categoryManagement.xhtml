@@ -12,8 +12,12 @@
         <ez:Breadcrumb pageName="categoryManagement" />
 
         <div>
-            <h3 style="padding-left:15px">Category Management</h3>
-
+            <div style="display: flex; justify-content: space-between">
+                <h3 style="padding-left:15px">Category Management</h3>
+                <h:form>
+                    <p:commandButton style="margin-right:15px" value="Generate Report" ajax="false" />
+                </h:form>
+            </div>
             <h:form id="formAllCategories">
 
                 <p:messages id="messages" redisplay="false" closable="true" />

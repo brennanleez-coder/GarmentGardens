@@ -38,47 +38,48 @@
         <h:panelGroup rendered="#{sessionScope.isLogin == true}">
             <h1 style="padding-left:15px">Welcome, #{sessionScope.currentStaffEntity.accessRightEnum}! 🙇‍♂️</h1>
 
+
+                <!--                    <div class="chartCard">
+                                        <p:lineChart model="#{indexManagedBean.salesLineModel}" />
+                                    </div>-->
+
             <div>
-
-                <h:form>
-                    <h2 style="padding-left:15px">Reports</h2>
-
-                    <h:form id="formReport">
-
-                        <p:panel header="Product Report">
-
-                            <p:commandButton value="Generate" actionListener="#{reportManagedBean.generateProductReport}" ajax="false" />
-
-                        </p:panel>
-
-                    </h:form>
-
-                    <h:form id="formCategoryReport">
-
-                        <p:panel header="Category Report">
-
-                            <p:commandButton value="Generate" actionListener="#{reportManagedBean.generateCategoryReport}" ajax="false" />
-
-                        </p:panel>
-
-                    </h:form>
-
-                    <h:form id="formRewardReport">
-
-                        <p:panel header="Reward Report">
-
-                            <p:commandButton value="Generate" actionListener="#{reportManagedBean.generateCategoryReport}" ajax="false" />
-
-                        </p:panel>
-
-                    </h:form>
-
-<!--                    <div class="chartCard">
-                        <p:lineChart model="#{indexManagedBean.salesLineModel}" />
-                    </div>-->
-
-                    <div style="clear:both"/>
-                </h:form>
+                <p:fieldset legend="Products" toggleable="true" toggleSpeed="500">
+                    <h:panelGrid columns="3" cellpadding="15">
+                        <p:graphicImage library="images" name="products.png" height="150" width="200" style="border-radius: 15px" />
+                        <h:outputText value="Garment Gardens' suite of Products."> </h:outputText>
+                        <h:link style="position: absolute; right: 10%;" outcome="/systemAdministration/productManagement.xhtml" > 
+                            <h:outputText value="Explore >" style="text-decoration: underline"> </h:outputText>
+                        </h:link>
+                    </h:panelGrid>
+                </p:fieldset>
+                <p:fieldset legend="Categories" toggleable="true" toggleSpeed="500">
+                    <h:panelGrid columns="3" cellpadding="15">
+                        <p:graphicImage library="images" name="categories.png" height="150" width="200" style="border-radius: 15px" />
+                        <h:outputText value="All parent and child categories!"> </h:outputText>
+                        <h:link style="position: absolute; right: 10%;" outcome="/systemAdministration/categoryManagement.xhtml" > 
+                            <h:outputText value="Explore >" style="text-decoration: underline"> </h:outputText>
+                        </h:link>
+                    </h:panelGrid>
+                </p:fieldset>
+                <p:fieldset legend="Tags" toggleable="true" toggleSpeed="500">
+                    <h:panelGrid columns="3" cellpadding="15">
+                        <p:graphicImage library="images" name="tags.png" height="150" width="200" style="border-radius: 15px" />
+                        <h:outputText value="Manage tags. Popular, Unlimited, New etc."> </h:outputText>
+                        <h:link style="position: absolute; right: 10%;" outcome="/systemAdministration/tagManagement.xhtml" > 
+                            <h:outputText value="Explore >" style="text-decoration: underline"> </h:outputText>
+                        </h:link>
+                    </h:panelGrid>
+                </p:fieldset>
+                <p:fieldset legend="Rewards" toggleable="true" toggleSpeed="500">
+                    <h:panelGrid columns="3" cellpadding="15">
+                        <p:graphicImage library="images" name="rewards.png" height="150" width="200" style="border-radius: 15px" />
+                        <h:outputText value="Rewards keeps our customers coming back for more."> </h:outputText>
+                        <h:link style="position: absolute; right: 10%;" outcome="/systemAdministration/rewardManagement.xhtml" > 
+                            <h:outputText value="Explore >" style="text-decoration: underline"> </h:outputText>
+                        </h:link>
+                    </h:panelGrid>
+                </p:fieldset>
             </div>
 
         </h:panelGroup>

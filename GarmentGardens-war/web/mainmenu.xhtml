@@ -16,7 +16,7 @@
         <nav>
             <h:form>
 
-                <p:menu style="width:200px;">
+                <p:menu style="width:200px;" toggleable="true">
                     <p:submenu label="Role Administration" rendered="#{sessionScope.isLogin == true}">
                         <p:menuitem value="Staff Management" outcome="/roleAdministration/staffManagement.xhtml" icon="pi pi-users" />
                         <p:menuitem value="User Management" outcome="/roleAdministration/userManagement.xhtml" icon="pi pi-users" />
