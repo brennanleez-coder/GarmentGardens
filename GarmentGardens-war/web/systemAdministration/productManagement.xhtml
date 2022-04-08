@@ -49,7 +49,7 @@
                         <h:graphicImage value="#{productEntity.imageLink}" height="100" width="100" />
                     </p:column>
 
-                    <p:column headerText="Product ID" sortBy="#{productEntity.productId}" filterBy="#{productEntity.productId}" filterMatchMode="contains">
+                    <p:column headerText="Product ID" style="width:100px" sortBy="#{productEntity.productId}" filterBy="#{productEntity.productId}" filterMatchMode="contains">
                         <h:outputText value="#{productEntity.productId}" />
                     </p:column>                            
 
@@ -61,11 +61,11 @@
                         <h:outputText value="#{productEntity.description}" />
                     </p:column>
 
-                    <p:column headerText="Quantity on Hand" sortBy="#{productEntity.quantityOnHand}" filterBy="#{productEntity.quantityOnHand}" filterMatchMode="contains">
+                    <p:column headerText="Quantity" sortBy="#{productEntity.quantityOnHand}" filterBy="#{productEntity.quantityOnHand}" filterMatchMode="contains">
                         <h:outputText value="#{productEntity.quantityOnHand}" />
                     </p:column>
 
-                    <p:column headerText="Unit Price" sortBy="#{productEntity.unitPrice}" filterBy="#{productEntity.unitPrice}" filterMatchMode="contains" style="text-align: right;">
+                    <p:column headerText="Unit Price" sortBy="#{productEntity.unitPrice}" filterBy="#{productEntity.unitPrice}" filterMatchMode="contains">
                         <h:outputText value="#{productEntity.unitPrice}">
                             <f:convertNumber minFractionDigits="2" maxFractionDigits="2" type="currency" currencyCode="SGD" />
                         </h:outputText>
@@ -81,7 +81,7 @@
                         <h:outputText value="#{productEntity.category.name}" />
                     </p:column>
 
-                    <p:column headerText="Listed" sortBy="#{productEntity.isListed}" filterBy="#{productEntity.isListed}" filterMatchMode="exact">
+                    <p:column headerText="Listed" style="width:60px" sortBy="#{productEntity.isListed}" filterBy="#{productEntity.isListed}" filterMatchMode="exact">
                         <h:outputText value="#{productEntity.isListed}">
                         </h:outputText>
                     </p:column>

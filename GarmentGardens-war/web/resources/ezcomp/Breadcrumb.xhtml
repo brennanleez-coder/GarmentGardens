@@ -15,8 +15,43 @@
         
             <p:breadCrumb homeDisplay="false">
 
-            </p:breadCrumb>
+                <p:menuitem icon="pi pi-home" url="#{application.contextPath}/index.xhtml" style="text-decoration-line: none;" />
+                
+                <p:menuitem value="Role Administration" rendered="#{cc.attrs.pageName == 'advertiserManagement' ||
+                                                                        cc.attrs.pageName == 'staffManagement' ||
+                                                                        cc.attrs.pageName == 'userManagement'}" />
 
+                <p:menuitem value="Advertiser Management" url="#{application.contextPath}/roleAdministration/advertiserManagement.xhtml" rendered="#{cc.attrs.pageName == 'advertiserManagement'}" />
+                <p:menuitem value="Staff Management" url="#{application.contextPath}/roleAdministration/staffManagement.xhtml" rendered="#{cc.attrs.pageName == 'staffManagement'}" />
+                <p:menuitem value="User Management" url="#{application.contextPath}/roleAdministration/userManagement.xhtml" rendered="#{cc.attrs.pageName == 'userManagement'}" />
+                
+                <p:menuitem value="System Administration" rendered="#{cc.attrs.pageName == 'orderManagement' ||
+                                                                        cc.attrs.pageName == 'rewardManagement' ||
+                                                                        cc.attrs.pageName == 'productManagement' ||
+                                                                        cc.attrs.pageName == 'viewFullProductDetails' ||
+                                                                        cc.attrs.pageName == 'categoryManagement' ||
+                                                                        cc.attrs.pageName == 'tagManagement' ||
+                                                                        cc.attrs.pageName == 'motdManagement'}" />
+
+                <p:menuitem value="Order Management" url="#{application.contextPath}/systemAdministration/orderManagement.xhtml" rendered="#{cc.attrs.pageName == 'orderManagement'}" />
+                <p:menuitem value="Reward Management" url="#{application.contextPath}/systemAdministration/rewardManagement.xhtml" rendered="#{cc.attrs.pageName == 'rewardManagement'}" />
+                <p:menuitem value="Product Management" url="#{application.contextPath}/systemAdministration/productManagement.xhtml" rendered="#{cc.attrs.pageName == 'productManagement'}" />
+                <p:menuitem value="Category Management" url="#{application.contextPath}/systemAdministration/categoryManagement.xhtml" rendered="#{cc.attrs.pageName == 'categoryManagement'}" />
+                <p:menuitem value="Tag Management" url="#{application.contextPath}/systemAdministration/tagManagement.xhtml" rendered="#{cc.attrs.pageName == 'tagManagement'}" />
+                <p:menuitem value="Motd Management" url="#{application.contextPath}/systemAdministration/motdManagement.xhtml" rendered="#{cc.attrs.pageName == 'motdManagement'}" />
+                
+                <p:menuitem value="View Product Details" url="#{application.contextPath}/systemAdministration/viewFullProductDetails.xhtml" rendered="#{cc.attrs.pageName == 'viewFullProductDetails'}" />
+
+                <p:menuitem value="Operations" rendered="#{cc.attrs.pageName == 'searchProductsByName' ||
+                                                                        cc.attrs.pageName == 'filterProductsByCategory' ||                                                                        
+                                                                        cc.attrs.pageName == 'filterProductsByTags'}" />
+
+                <p:menuitem value="Search Products by Name" url="#{application.contextPath}/operations/searchProductsByName.xhtml" rendered="#{cc.attrs.pageName == 'searchProductsByName'}" />
+                <p:menuitem value="Filter Products By Category" url="#{application.contextPath}/operations/filterProductsByCategory.xhtml" rendered="#{cc.attrs.pageName == 'filterProductsByCategory'}" />
+                <p:menuitem value="Filter Products By Tags" url="#{application.contextPath}/operations/filterProductsByTags.xhtml" rendered="#{cc.attrs.pageName == 'filterProductsByTags'}" />
+
+            </p:breadCrumb>
+        
         </h:form>
         
     </cc:implementation>
