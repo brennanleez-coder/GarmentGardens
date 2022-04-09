@@ -122,6 +122,7 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
         for (ProductEntity productEntity : productEntities) {
             productEntity.getCategory();
             productEntity.getTags().size();
+            productEntity.getRatings().size();
         }
 
         return productEntities;
@@ -227,7 +228,7 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
             productEntity.getCategory();
             productEntity.getTags().size();
             productEntity.getRatings().size();
-
+            productEntity.getRatings().size();
             return productEntity;
         } else {
             throw new ProductNotFoundException("Product ID " + productId + " does not exist!");
@@ -243,6 +244,7 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
             ProductEntity productEntity = (ProductEntity) query.getSingleResult();
             productEntity.getCategory();
             productEntity.getTags().size();
+            productEntity.getRatings().size();
 
             return productEntity;
         } catch (NoResultException | NonUniqueResultException ex) {

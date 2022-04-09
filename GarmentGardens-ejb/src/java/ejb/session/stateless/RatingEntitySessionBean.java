@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.ProductEntity;
 import entity.RatingEntity;
+import entity.UserEntity;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
@@ -22,6 +23,7 @@ import util.exception.InputDataValidationException;
 import util.exception.ProductNotFoundException;
 import util.exception.RatingNotFoundException;
 import util.exception.UpdateRatingException;
+import util.exception.UserNotFoundException;
 
 /**
  *
@@ -29,6 +31,9 @@ import util.exception.UpdateRatingException;
  */
 @Stateless
 public class RatingEntitySessionBean implements RatingEntitySessionBeanLocal {
+
+    @EJB(name = "UserEntitySessionBeanLocal")
+    private UserEntitySessionBeanLocal userEntitySessionBeanLocal;
 
     @EJB(name = "ProductEntitySessionBeanLocal")
     private ProductEntitySessionBeanLocal productEntitySessionBeanLocal;
@@ -45,11 +50,17 @@ public class RatingEntitySessionBean implements RatingEntitySessionBeanLocal {
     }
 
     @Override
-    public RatingEntity createRating(RatingEntity newRatingEntity) {
-        entityManager.persist(newRatingEntity);
-        entityManager.flush();
+    public RatingEntity createRating(RatingEntity newRatingEntity, Long userId) throws UserNotFoundException {
+        UserEntity customer = userEntitySessionBeanLocal.retrieveUserByUserId(userId);
+        if (customer != null) {
+            newRatingEntity.setCustomer(customer);
+            entityManager.persist(newRatingEntity);
+            entityManager.flush();
 
-        return newRatingEntity;
+            return newRatingEntity;
+        } else {
+            throw new UserNotFoundException("User cannot be found: " + userId);
+        }
 
     }
 
@@ -58,7 +69,9 @@ public class RatingEntitySessionBean implements RatingEntitySessionBeanLocal {
         Query query = entityManager.createQuery("SELECT r FROM RatingEntity r WHERE r.productId = ?1")
                 .setParameter(1, productId);
         List<RatingEntity> ratings = query.getResultList();
-
+        for (RatingEntity rating: ratings) {
+            rating.getCustomer();
+        }
         return ratings;
     }
 

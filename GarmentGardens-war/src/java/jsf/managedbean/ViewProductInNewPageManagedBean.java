@@ -31,6 +31,7 @@ public class ViewProductInNewPageManagedBean implements Serializable{
     
     
     public ViewProductInNewPageManagedBean() {
+        productEntityFullDetailsToView = new ProductEntity();
     }
     
     @PostConstruct

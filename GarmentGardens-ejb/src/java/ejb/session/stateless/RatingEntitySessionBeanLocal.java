@@ -12,6 +12,7 @@ import util.exception.InputDataValidationException;
 import util.exception.ProductNotFoundException;
 import util.exception.RatingNotFoundException;
 import util.exception.UpdateRatingException;
+import util.exception.UserNotFoundException;
 
 /**
  *
@@ -24,7 +25,7 @@ public interface RatingEntitySessionBeanLocal {
 
     public RatingEntity deleteRating(RatingEntity rating);
 
-    public RatingEntity createRating(RatingEntity newRatingEntity);
+    public RatingEntity createRating(RatingEntity newRatingEntity, Long userId) throws UserNotFoundException;
     
     public void updateRating(RatingEntity ratingEntity) throws InputDataValidationException, RatingNotFoundException, UpdateRatingException;
 

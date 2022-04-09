@@ -12,6 +12,7 @@ import ejb.session.stateless.LineItemEntitySessionBeanLocal;
 import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
 import ejb.session.stateless.OrderEntitySessionBeanLocal;
 import ejb.session.stateless.ProductEntitySessionBeanLocal;
+import ejb.session.stateless.RatingEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
 import ejb.session.stateless.TagEntitySessionBeanLocal;
 import ejb.session.stateless.UserEntitySessionBeanLocal;
@@ -22,12 +23,11 @@ import entity.LineItemEntity;
 import entity.MessageOfTheDayEntity;
 import entity.OrderEntity;
 import entity.ProductEntity;
+import entity.RatingEntity;
 import entity.StaffEntity;
 import entity.TagEntity;
 import entity.UserEntity;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,6 +70,9 @@ import util.exception.UserUsernameExistException;
 @LocalBean
 @Startup
 public class DataInitSessionBean {
+
+    @EJB(name = "RatingEntitySessionBeanLocal")
+    private RatingEntitySessionBeanLocal ratingEntitySessionBeanLocal;
 
     @EJB(name = "OrderEntitySessionBeanLocal")
     private OrderEntitySessionBeanLocal orderEntitySessionBeanLocal;
@@ -195,6 +198,37 @@ public class DataInitSessionBean {
         productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD016", "Product O1", "Product O1", 100, new BigDecimal("95.00"), true, "https://imgur.com/a/7vdCiUd"), cargopants.getCategoryId(), tagIdsEmpty);
         productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD017", "Product O2", "Product O2", 100, new BigDecimal("19.05"), true, "https://imgur.com/a/7vdCiUd"), cargopants.getCategoryId(), tagIdsEmpty);
         productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD018", "Product O3", "Product O3", 100, new BigDecimal("10.50"), true, "https://imgur.com/a/7vdCiUd"), cargopants.getCategoryId(), tagIdsEmpty);
+
+        try {
+            ProductEntity prod001 = productEntitySessionBeanLocal.retrieveProductByProductSkuCode("PROD001");
+            UserEntity firstUser = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf(1));
+            RatingEntity testRating = ratingEntitySessionBeanLocal.createRating(new RatingEntity("This product has a very nice colour", 5, new Date()), firstUser.getUserId());
+            testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf(1)));
+            prod001.getRatings().add(testRating);
+        } catch (ProductNotFoundException | UserNotFoundException ex) {
+            Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        List<ProductEntity> listOfProducts = productEntitySessionBeanLocal.retrieveAllProducts();
+        for (ProductEntity product : listOfProducts) {
+            try {
+                UserEntity firstUser = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf(1));
+                RatingEntity testRating = ratingEntitySessionBeanLocal.createRating(new RatingEntity("This product has a very nice colour", 5, new Date()), firstUser.getUserId());
+                testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf(1)));
+
+                UserEntity secondUser = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf(2));
+                RatingEntity testRating2 = ratingEntitySessionBeanLocal.createRating(new RatingEntity("This product fit really well", 4, new Date()), secondUser.getUserId());
+                testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf(1)));
+
+
+                product.getRatings().add(testRating);
+                product.getRatings().add(testRating2);
+
+            } catch (UserNotFoundException ex) {
+                Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
     }
 
     private void initialiseStaffCustomersSellers() throws UserUsernameExistException, StaffUsernameExistException, UnknownPersistenceException, InputDataValidationException {
@@ -205,7 +239,7 @@ public class DataInitSessionBean {
     }
 
     private void initialiseUsers() throws InputDataValidationException, UserUsernameExistException, UnknownPersistenceException {
-        UserEntity customer = new UserEntity("customer", "lee", "customer@mail.com", "customer", "password", new Date(), "NUS", RoleEnum.CUSTOMER);
+        UserEntity customer = new UserEntity("customer1", "lee", "customer@mail.com", "customer", "password", new Date(), "NUS", RoleEnum.CUSTOMER);
         userEntitySessionBeanLocal.createNewUser(customer);
 
         int min = 111111;
@@ -286,7 +320,7 @@ public class DataInitSessionBean {
                 totalAmount = totalAmount.add(product.getUnitPrice());
                 order.getLineItems().add(lineItem);
             }
-            
+
             order.setTotalOrderItem(randNumLineItems);
             order.setTotalQuantity(totalQuantity);
             order.setTotalAmount(totalAmount);
