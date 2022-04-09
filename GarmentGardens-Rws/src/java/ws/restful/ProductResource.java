@@ -2,9 +2,11 @@ package ws.restful;
 
 import ejb.session.stateless.ProductEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
+import ejb.session.stateless.UserEntitySessionBeanLocal;
 import entity.ProductEntity;
 import entity.StaffEntity;
 import entity.TagEntity;
+import entity.UserEntity;
 import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -41,7 +43,8 @@ public class ProductResource
     
     private final SessionBeanLookup sessionBeanLookup;
     
-    private final StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
+//    private final StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
+    private final UserEntitySessionBeanLocal userEntitySessionBeanLocal;
     private final ProductEntitySessionBeanLocal productEntitySessionBeanLocal;
     
     
@@ -49,8 +52,8 @@ public class ProductResource
     public ProductResource() 
     {
         sessionBeanLookup = new SessionBeanLookup();
-        
-        staffEntitySessionBeanLocal = sessionBeanLookup.lookupStaffEntitySessionBeanLocal();
+        userEntitySessionBeanLocal = sessionBeanLookup.lookupUserEntitySessionBeanLocal();
+//        staffEntitySessionBeanLocal = sessionBeanLookup.lookupStaffEntitySessionBeanLocal();
         productEntitySessionBeanLocal = sessionBeanLookup.lookupProductEntitySessionBeanLocal();
     }
     
@@ -65,8 +68,9 @@ public class ProductResource
     {
         try
         {
-            StaffEntity staffEntity = staffEntitySessionBeanLocal.staffLogin(username, password);
-            System.out.println("********** ProductResource.retrieveAllProducts(): Staff " + staffEntity.getUsername() + " login remotely via web service");
+//            StaffEntity staffEntity = staffEntitySessionBeanLocal.staffLogin(username, password);
+            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
+            System.out.println("********** ProductResource.retrieveAllProducts(): Staff " + userEntity.getUsername() + " login remotely via web service");
 
             List<ProductEntity> productEntities = productEntitySessionBeanLocal.retrieveAllProducts();
             
@@ -112,8 +116,8 @@ public class ProductResource
     {
         try
         {
-            StaffEntity staffEntity = staffEntitySessionBeanLocal.staffLogin(username, password);
-            System.out.println("********** ProductResource.retrieveProduct(): Staff " + staffEntity.getUsername() + " login remotely via web service");
+            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
+            System.out.println("********** ProductResource.retrieveProduct(): Staff " + userEntity.getUsername() + " login remotely via web service");
 
             ProductEntity productEntity = productEntitySessionBeanLocal.retrieveProductByProductId(productId);
             
@@ -156,8 +160,8 @@ public class ProductResource
         {
             try
             {
-                StaffEntity staffEntity = staffEntitySessionBeanLocal.staffLogin(createProductReq.getUsername(), createProductReq.getPassword());
-                System.out.println("********** ProductResource.createProduct(): Staff " + staffEntity.getUsername() + " login remotely via web service");
+                UserEntity userEntity = userEntitySessionBeanLocal.userLogin(createProductReq.getUsername(), createProductReq.getPassword());
+                System.out.println("********** ProductResource.createProduct(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
                 
                 ProductEntity productEntity  = productEntitySessionBeanLocal.createNewProduct(createProductReq.getProductEntity(), createProductReq.getCategoryId(), createProductReq.getTagIds());                
                 
@@ -197,8 +201,8 @@ public class ProductResource
         {
             try
             {                
-                StaffEntity staffEntity = staffEntitySessionBeanLocal.staffLogin(updateProductReq.getUsername(), updateProductReq.getPassword());
-                System.out.println("********** ProductResource.updateProduct(): Staff " + staffEntity.getUsername() + " login remotely via web service");
+                UserEntity userEntity = userEntitySessionBeanLocal.userLogin(updateProductReq.getUsername(), updateProductReq.getPassword());
+                System.out.println("********** ProductResource.updateProduct(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
                 
                 productEntitySessionBeanLocal.updateProduct(updateProductReq.getProductEntity(), updateProductReq.getCategoryId(), updateProductReq.getTagIds());
                 
@@ -235,8 +239,8 @@ public class ProductResource
     {
         try
         {
-            StaffEntity staffEntity = staffEntitySessionBeanLocal.staffLogin(username, password);
-            System.out.println("********** ProductResource.deleteProduct(): Staff " + staffEntity.getUsername() + " login remotely via web service");
+            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
+            System.out.println("********** ProductResource.deleteProduct(): USER(Seller) " + userEntity.getUsername() + " login remotely via web service");
 
             productEntitySessionBeanLocal.deleteProduct(productId);
             

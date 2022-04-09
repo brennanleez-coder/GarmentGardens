@@ -2,8 +2,10 @@ package ws.restful;
 
 import ejb.session.stateless.TagEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
+import ejb.session.stateless.UserEntitySessionBeanLocal;
 import entity.StaffEntity;
 import entity.TagEntity;
+import entity.UserEntity;
 import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -28,7 +30,7 @@ public class TagResource
     
     private final SessionBeanLookup sessionBeanLookup;
     
-    private final StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
+    private final UserEntitySessionBeanLocal userEntitySessionBeanLocal;
     private final TagEntitySessionBeanLocal tagEntitySessionBeanLocal;
 
     
@@ -37,7 +39,7 @@ public class TagResource
     {
         sessionBeanLookup = new SessionBeanLookup();
         
-        staffEntitySessionBeanLocal = sessionBeanLookup.lookupStaffEntitySessionBeanLocal();
+        userEntitySessionBeanLocal = sessionBeanLookup.lookupUserEntitySessionBeanLocal();
         tagEntitySessionBeanLocal = sessionBeanLookup.lookupTagEntitySessionBeanLocal();
     }
     
@@ -52,8 +54,8 @@ public class TagResource
     {
         try
         {
-            StaffEntity staffEntity = staffEntitySessionBeanLocal.staffLogin(username, password);
-            System.out.println("********** TagResource.retrieveAllTags(): Staff " + staffEntity.getUsername() + " login remotely via web service");
+            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
+            System.out.println("********** TagResource.retrieveAllTags(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
 
             List<TagEntity> tagEntities = tagEntitySessionBeanLocal.retrieveAllTags();
             

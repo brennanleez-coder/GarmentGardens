@@ -2,8 +2,10 @@ package ws.restful;
 
 import ejb.session.stateless.CategoryEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
+import ejb.session.stateless.UserEntitySessionBeanLocal;
 import entity.CategoryEntity;
 import entity.StaffEntity;
+import entity.UserEntity;
 import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -28,8 +30,9 @@ public class CategoryResource
     
     private final SessionBeanLookup sessionBeanLookup;
     
-    private final StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
+//    private final StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
     private final CategoryEntitySessionBeanLocal categoryEntitySessionBeanLocal;
+    private final UserEntitySessionBeanLocal userEntitySessionBeanLocal;
 
     
     
@@ -37,7 +40,7 @@ public class CategoryResource
     {
         sessionBeanLookup = new SessionBeanLookup();
         
-        staffEntitySessionBeanLocal = sessionBeanLookup.lookupStaffEntitySessionBeanLocal();
+        userEntitySessionBeanLocal = sessionBeanLookup.lookupUserEntitySessionBeanLocal();
         categoryEntitySessionBeanLocal = sessionBeanLookup.lookupCategoryEntitySessionBeanLocal();
     }
     
@@ -52,8 +55,8 @@ public class CategoryResource
     {
         try
         {
-            StaffEntity staffEntity = staffEntitySessionBeanLocal.staffLogin(username, password);
-            System.out.println("********** CategoryResource.retrieveAllCategories(): Staff " + staffEntity.getUsername() + " login remotely via web service");
+            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
+            System.out.println("********** CategoryResource.retrieveAllCategories(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
 
             List<CategoryEntity> categoryEntities = categoryEntitySessionBeanLocal.retrieveAllCategories();
             
@@ -94,8 +97,8 @@ public class CategoryResource
     {
         try
         {
-            StaffEntity staffEntity = staffEntitySessionBeanLocal.staffLogin(username, password);
-            System.out.println("********** CategoryResource.retrieveAllCategories(): Staff " + staffEntity.getUsername() + " login remotely via web service");
+            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
+            System.out.println("********** CategoryResource.retrieveAllCategories(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
 
             List<CategoryEntity> categoryEntities = categoryEntitySessionBeanLocal.retrieveAllLeafCategories();
             
