@@ -116,7 +116,6 @@ public class AdvertiserEntitySessionBean implements AdvertiserEntitySessionBeanL
 
         try {
             AdvertiserEntity advertiserEntity = (AdvertiserEntity) query.getSingleResult();
-            System.out.println(advertiserEntity);
             advertiserEntity.getAdvertisements().size();
             advertiserEntity.getCreditCards().size();
 

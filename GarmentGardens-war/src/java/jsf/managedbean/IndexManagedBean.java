@@ -48,7 +48,7 @@ public class IndexManagedBean implements Serializable {
     @PostConstruct
     public void postConstruct() {
         orderEntitiesList = orderEntitySessionBeanLocal.retrieveAllOrdersInPastYear();
-        //createSalesLineChartModel();
+        createSalesLineChartModel();
     }
 
     public void createSalesLineChartModel() {
@@ -61,7 +61,7 @@ public class IndexManagedBean implements Serializable {
 
         if (!getOrderEntitiesList().isEmpty()) {
             for (List<OrderEntity> orderEntities : getOrderEntitiesList()) {
-                labels.add(orderEntities.get(0).getTransactionDateTime().getMonth() + " " + orderEntities.get(0).getTransactionDateTime().getYear());
+                //labels.add(orderEntities.get(0).getTransactionDateTime().getMonth() + " " + orderEntities.get(0).getTransactionDateTime().getYear());
 
                 BigDecimal totalSales = BigDecimal.ZERO;
 

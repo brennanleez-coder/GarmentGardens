@@ -30,12 +30,18 @@ public class LineItemEntity implements Serializable {
     private Integer quantity;
     private BigDecimal unitPrice;
     private BigDecimal subTotal;
-    
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private ProductEntity product;
 
     public LineItemEntity() {
+    }
+
+    public LineItemEntity(Integer quantity, BigDecimal unitPrice) {
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.subTotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
     public LineItemEntity(Integer quantity, BigDecimal unitPrice, BigDecimal subTotal) {
@@ -146,5 +152,5 @@ public class LineItemEntity implements Serializable {
     public void setProduct(ProductEntity product) {
         this.product = product;
     }
-    
+
 }

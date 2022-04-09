@@ -46,6 +46,7 @@ public class LineItemEntitySessionBean implements LineItemEntitySessionBeanLocal
 
             return newLineItemEntity;
         } else {
+            System.out.println(constraintViolations);
             throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
         }
     }

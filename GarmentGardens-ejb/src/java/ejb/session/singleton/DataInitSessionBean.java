@@ -25,13 +25,15 @@ import entity.ProductEntity;
 import entity.StaffEntity;
 import entity.TagEntity;
 import entity.UserEntity;
-import static java.lang.Long.max;
-import static java.lang.Long.min;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.util.Pair;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -47,13 +49,17 @@ import util.exception.AdvertiserEntityNotFoundException;
 import util.exception.CreateNewAdvertisementException;
 import util.exception.CreateNewAdvertiserEntityException;
 import util.exception.CreateNewCategoryException;
+import util.exception.CreateNewOrderException;
 import util.exception.CreateNewProductException;
 import util.exception.CreateNewTagException;
 import util.exception.InputDataValidationException;
+import util.exception.ProductInsufficientQuantityOnHandException;
+import util.exception.ProductNotFoundException;
 import util.exception.ProductSkuCodeExistException;
 import util.exception.StaffNotFoundException;
 import util.exception.StaffUsernameExistException;
 import util.exception.UnknownPersistenceException;
+import util.exception.UserNotFoundException;
 import util.exception.UserUsernameExistException;
 
 /**
@@ -117,6 +123,7 @@ public class DataInitSessionBean {
 
             initaliseCategoriesTags();
             initialiseAdvertisersAndAdvertisements();
+            initialiseMockOrders();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -208,7 +215,6 @@ public class DataInitSessionBean {
             UserEntity customerToMake = new UserEntity(getRandomName().getKey(), getRandomName().getValue(), getRandomName().getKey().concat(getRandomName().getValue()) + Math.floor(Math.random() * (max - min + 1) + min) + "@mail.com", getRandomName().getKey().concat(getRandomName().getValue()) + Math.floor(Math.random() * (max - min + 1) + min), getRandomName().getKey().concat(getRandomName().getValue()) + i + Math.floor(Math.random() * (max - min + 1) + min), new Date(), "NUS " + Math.floor(Math.random() * (max - min + 1) + min), RoleEnum.CUSTOMER);
             userEntitySessionBeanLocal.createNewUser(customerToMake);
 
-            
         }
 
         UserEntity seller = new UserEntity("seller", "lee", "seller@mail.com", "seller", "password", new Date(), "NUS", RoleEnum.SELLER);
@@ -250,6 +256,41 @@ public class DataInitSessionBean {
             advertiserEntitySessionBeanLocal.createNewAdvertiserEntity(advertiser, new ArrayList<>(), new ArrayList<>());
             AdvertisementEntity advertisementEntity = new AdvertisementEntity("sample description");
             advertisementEntitySessionBeanLocal.createNewAdvertiserEntity(advertisementEntity, advertiser.getAdvertiserId());
+        }
+
+    }
+
+    private void initialiseMockOrders() throws InputDataValidationException, UserNotFoundException, ProductNotFoundException, ProductInsufficientQuantityOnHandException, CreateNewOrderException {
+        Random rand = new Random();
+        System.out.println("Mock orders..");
+
+        // 25 DIFFERENT ORDERS
+        for (int i = 1; i <= 25; i++) {
+
+            long randUserId = new Long(rand.nextInt(50) + 1);
+            long randProductId = new Long(rand.nextInt(10) + 1);
+            int randQty = rand.nextInt(3) + 1;
+            int randNumLineItems = rand.nextInt(5) + 1;
+
+            int totalQuantity = 0;
+            BigDecimal totalAmount = new BigDecimal(0);
+            OrderEntity order = new OrderEntity();
+
+            // randNumLineItems LINE ITEMS EACH
+            for (int x = 1; x <= randNumLineItems; x++) {
+                ProductEntity product = productEntitySessionBeanLocal.retrieveProductByProductId(randProductId);
+                LineItemEntity lineItem = new LineItemEntity(randQty, product.getUnitPrice());
+                lineItem.setProduct(product);
+                lineItemEntitySessionBeanLocal.createLineItem(lineItem);
+                totalQuantity += randQty;
+                totalAmount = totalAmount.add(product.getUnitPrice());
+                order.getLineItems().add(lineItem);
+            }
+            
+            order.setTotalOrderItem(randNumLineItems);
+            order.setTotalQuantity(totalQuantity);
+            order.setTotalAmount(totalAmount);
+            orderEntitySessionBeanLocal.createNewOrder(randUserId, order);
         }
 
     }

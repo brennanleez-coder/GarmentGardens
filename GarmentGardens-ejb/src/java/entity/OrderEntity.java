@@ -39,13 +39,13 @@ public class OrderEntity implements Serializable {
     private LocalDateTime transactionDateTime;
     private Boolean voidRefund = false;
     private DeliveryStatusEnum deliveryStatus = DeliveryStatusEnum.ONGOING;
-    
+
     @OneToMany //because uni directional
     private List<LineItemEntity> lineItems;
-    
+
     @OneToOne(mappedBy = "order", fetch = FetchType.LAZY)
     private DisputeEntity dispute;
-    
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
     private UserEntity customer;
@@ -61,7 +61,14 @@ public class OrderEntity implements Serializable {
         this.totalAmount = totalAmount;
         this.transactionDateTime = transactionDateTime;
     }
-    
+
+    public OrderEntity(Integer totalOrderItem, Integer totalQuantity, BigDecimal totalAmount) {
+        this();
+        this.totalOrderItem = totalOrderItem;
+        this.totalQuantity = totalQuantity;
+        this.totalAmount = totalAmount;
+        this.transactionDateTime = LocalDateTime.now();
+    }
 
     public Long getOrderId() {
         return orderId;
@@ -185,5 +192,5 @@ public class OrderEntity implements Serializable {
     public void setCustomer(UserEntity customer) {
         this.customer = customer;
     }
-    
+
 }
