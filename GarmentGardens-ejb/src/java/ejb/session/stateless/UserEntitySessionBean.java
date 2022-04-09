@@ -18,6 +18,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.exception.ChangePasswordException;
 import util.exception.DeleteUserException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
@@ -133,7 +134,7 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
             UserEntity userEntity = retrieveUserByUsername(username);
             //String passwordHash = CryptographicHelper.getInstance().byteArrayToHexString(CryptographicHelper.getInstance().doMD5Hashing(password));
             String passwordHash = userEntity.getPassword();
-            if(userEntity.getPassword().equals(passwordHash))
+            if(password.equals(passwordHash))
             {
                 userEntity.getOrders().size();                
                 return userEntity;
@@ -198,6 +199,24 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
             throw new DeleteUserException("User ID " + userId + " is associated with existing order(s) and cannot be deleted!");
         }
     }
+    
+    @Override
+    public void userChangePassword(String username, String oldPassword, String newPassword) throws ChangePasswordException, InvalidLoginCredentialException
+    {
+
+        UserEntity userEntity = userLogin(username, oldPassword);
+
+        if (!newPassword.isEmpty() && newPassword != null)
+        {
+            userEntity.setPassword(newPassword);
+        }
+        else
+        {
+            throw new ChangePasswordException("Password is not provided");
+        }
+
+    }
+    
 
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<UserEntity>>constraintViolations)
     {
