@@ -11,16 +11,30 @@
 
         <ez:Breadcrumb pageName="viewFullProductDetails" />
 
+
+
         <div>
-            <h3 style="padding-left:15px">Full Product Details: </h3>
+            <h3 style="padding-left:15px">Full Product Details: #{viewProductInNewPageManagedBean.productEntityFullsDetailsToView.name}</h3>
 
             <h:form>
                 <h2>
                     <h:commandLink value="Back" actionListener="#{viewProductInNewPageManagedBean.back}" />&nbsp;
-    <!--                <h:commandLink value="Update" actionListener="#{viewProductDetailsManagedBean.updateProduct}" />&nbsp;|
-                    <h:commandLink value="Delete" actionListener="#{viewProductDetailsManagedBean.deleteProduct}" />-->
                 </h2>
             </h:form>
+
+            <p:panelGrid>
+
+                <p:row>
+                    <p:column>
+                        <p:outputLabel value="Product Average Rating"/>
+                    </p:column>
+                    <p:column>
+                        <p:outputLabel value="#{viewProductInNewPageManagedBean.ratingScoreForProduct}"/>
+                    </p:column>
+                </p:row>
+
+
+            </p:panelGrid>
             <h:form id="formMain">
 
 
@@ -63,11 +77,11 @@
                 </p:layoutUnit>
             </h:form>
 
-            <h:form id="Ratings and Comments">
-                <p:dataTable widgetVar="dataTableAllRatings" value="#{ViewProductInNewPageManagedBean.ratings}" var="ratingEntity" rowKey="#{ratingEntity.ratingId}" rowIndexVar="row"
+            <h:form id="RatingsandComments">
+                <p:dataTable widgetVar="dataTableAllRatings" value="#{viewProductInNewPageManagedBean.productEntityFullsDetailsToView.ratings}" var="ratingEntity" rowKey="#{ratingEntity.ratingId}" rowIndexVar="row"
                              filteredValue="#{productManagementManagedBean.filteredProductEntities}"
                              rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
-                    
+
                     <p:column headerText="Description" sortBy="#{ratingEntity.description}">
                         <h:outputText value="#{ratingEntity.description}" />
                     </p:column>
@@ -78,6 +92,10 @@
 
                     <p:column headerText="Date of Rating" sortBy="#{ratingEntity.dateOfRating}">
                         <h:outputText value="#{ratingEntity.dateOfRating}" />
+                    </p:column>
+
+                    <p:column headerText="Rated By" sortBy="#{ratingEntity.customer.userId}">
+                        <h:outputText value="#{ratingEntity.customer.firstName}" />
                     </p:column>
                 </p:dataTable>
             </h:form>

@@ -12,6 +12,7 @@ import ejb.session.stateless.LineItemEntitySessionBeanLocal;
 import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
 import ejb.session.stateless.OrderEntitySessionBeanLocal;
 import ejb.session.stateless.ProductEntitySessionBeanLocal;
+import ejb.session.stateless.RatingEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
 import ejb.session.stateless.TagEntitySessionBeanLocal;
 import ejb.session.stateless.UserEntitySessionBeanLocal;
@@ -22,12 +23,12 @@ import entity.LineItemEntity;
 import entity.MessageOfTheDayEntity;
 import entity.OrderEntity;
 import entity.ProductEntity;
+import entity.RatingEntity;
 import entity.StaffEntity;
 import entity.TagEntity;
 import entity.UserEntity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,6 +71,9 @@ import util.exception.UserUsernameExistException;
 @LocalBean
 @Startup
 public class DataInitSessionBean {
+
+    @EJB(name = "RatingEntitySessionBeanLocal")
+    private RatingEntitySessionBeanLocal ratingEntitySessionBeanLocal;
 
     @EJB(name = "OrderEntitySessionBeanLocal")
     private OrderEntitySessionBeanLocal orderEntitySessionBeanLocal;
@@ -176,25 +180,50 @@ public class DataInitSessionBean {
         CategoryEntity cargopants = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Cargo Pants", "Cargo Pants"), bottoms);
         CategoryEntity sweatpants = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Sweat Pants", "Sweat Pants"), bottoms);
 
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD001", "Product A1", "Product A1", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/FoxBP9S.png"), tShirts.getCategoryId(), tagIdsPopular);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD002", "Product A2", "Product A2", 100, new BigDecimal("25.50"), true, "https://i.imgur.com/FoxBP9S.png"), tShirts.getCategoryId(), tagIdsDiscount);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD003", "Product A3", "Product A3", 100, new BigDecimal("15.00"), true, "https://i.imgur.com/FoxBP9S.png"), tShirts.getCategoryId(), tagIdsPopularDiscount);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD004", "Product B1", "Product B1", 100, new BigDecimal("20.00"), true, "https://i.imgur.com/FoxBP9S.png"), hoodies.getCategoryId(), tagIdsPopularNew);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD005", "Product B2", "Product B2", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/FoxBP9S.png"), hoodies.getCategoryId(), tagIdsPopularDiscountNew);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD006", "Product B3", "Product B3", 100, new BigDecimal("100.00"), true, "https://imgur.com/a/7vdCiUd"), hoodies.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD007", "Product C1", "Product C1", 100, new BigDecimal("35.00"), true, "https://imgur.com/a/7vdCiUd"), jackets.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD008", "Product C2", "Product C2", 100, new BigDecimal("20.05"), true, "https://imgur.com/a/7vdCiUd"), jackets.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD009", "Product C3", "Product C3", 100, new BigDecimal("5.50"), true, "https://imgur.com/a/7vdCiUd"), jackets.getCategoryId(), tagIdsEmpty);
+        List<ProductEntity> list = new ArrayList<>();
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD001", "Product A1", "Product A1", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/FoxBP9S.png"), tShirts.getCategoryId(), tagIdsPopular));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD002", "Product A2", "Product A2", 100, new BigDecimal("25.50"), true, "https://i.imgur.com/FoxBP9S.png"), tShirts.getCategoryId(), tagIdsDiscount));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD003", "Product A3", "Product A3", 100, new BigDecimal("15.00"), true, "https://i.imgur.com/FoxBP9S.png"), tShirts.getCategoryId(), tagIdsPopularDiscount));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD004", "Product B1", "Product B1", 100, new BigDecimal("20.00"), true, "https://i.imgur.com/FoxBP9S.png"), hoodies.getCategoryId(), tagIdsPopularNew));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD005", "Product B2", "Product B2", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/FoxBP9S.png"), hoodies.getCategoryId(), tagIdsPopularDiscountNew));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD006", "Product B3", "Product B3", 100, new BigDecimal("100.00"), true, "https://imgur.com/a/7vdCiUd"), hoodies.getCategoryId(), tagIdsEmpty));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD007", "Product C1", "Product C1", 100, new BigDecimal("35.00"), true, "https://imgur.com/a/7vdCiUd"), jackets.getCategoryId(), tagIdsEmpty));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD008", "Product C2", "Product C2", 100, new BigDecimal("20.05"), true, "https://imgur.com/a/7vdCiUd"), jackets.getCategoryId(), tagIdsEmpty));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD009", "Product C3", "Product C3", 100, new BigDecimal("5.50"), true, "https://imgur.com/a/7vdCiUd"), jackets.getCategoryId(), tagIdsEmpty));
 
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD010", "Product M1", "Product M1", 100, new BigDecimal("20.50"), true, "https://imgur.com/a/7vdCiUd"), singlets.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD011", "Product M2", "Product M2", 100, new BigDecimal("30.50"), true, "https://imgur.com/a/7vdCiUd"), singlets.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD012", "Product M3", "Product M3", 100, new BigDecimal("18.50"), true, "https://imgur.com/a/7vdCiUd"), singlets.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD013", "Product N1", "Product N1", 100, new BigDecimal("50.00"), true, "https://imgur.com/a/7vdCiUd"), shorts.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD014", "Product N2", "Product N2", 100, new BigDecimal("100.00"), true, "https://imgur.com/a/7vdCiUd"), shorts.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD015", "Product N3", "Product N3", 100, new BigDecimal("200.00"), true, "https://imgur.com/a/7vdCiUd"), shorts.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD016", "Product O1", "Product O1", 100, new BigDecimal("95.00"), true, "https://imgur.com/a/7vdCiUd"), cargopants.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD017", "Product O2", "Product O2", 100, new BigDecimal("19.05"), true, "https://imgur.com/a/7vdCiUd"), cargopants.getCategoryId(), tagIdsEmpty);
-        productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD018", "Product O3", "Product O3", 100, new BigDecimal("10.50"), true, "https://imgur.com/a/7vdCiUd"), cargopants.getCategoryId(), tagIdsEmpty);
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD010", "Product M1", "Product M1", 100, new BigDecimal("20.50"), true, "https://imgur.com/a/7vdCiUd"), singlets.getCategoryId(), tagIdsEmpty));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD011", "Product M2", "Product M2", 100, new BigDecimal("30.50"), true, "https://imgur.com/a/7vdCiUd"), singlets.getCategoryId(), tagIdsEmpty));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD012", "Product M3", "Product M3", 100, new BigDecimal("18.50"), true, "https://imgur.com/a/7vdCiUd"), singlets.getCategoryId(), tagIdsEmpty));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD013", "Product N1", "Product N1", 100, new BigDecimal("50.00"), true, "https://imgur.com/a/7vdCiUd"), shorts.getCategoryId(), tagIdsEmpty));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD014", "Product N2", "Product N2", 100, new BigDecimal("100.00"), true, "https://imgur.com/a/7vdCiUd"), shorts.getCategoryId(), tagIdsEmpty));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD015", "Product N3", "Product N3", 100, new BigDecimal("200.00"), true, "https://imgur.com/a/7vdCiUd"), shorts.getCategoryId(), tagIdsEmpty));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD016", "Product O1", "Product O1", 100, new BigDecimal("95.00"), true, "https://imgur.com/a/7vdCiUd"), cargopants.getCategoryId(), tagIdsEmpty));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD017", "Product O2", "Product O2", 100, new BigDecimal("19.05"), true, "https://imgur.com/a/7vdCiUd"), cargopants.getCategoryId(), tagIdsEmpty));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD018", "Product O3", "Product O3", 100, new BigDecimal("10.50"), true, "https://imgur.com/a/7vdCiUd"), cargopants.getCategoryId(), tagIdsEmpty));
+
+        for (UserEntity user : userEntitySessionBeanLocal.retrieveAllUsers()) {
+            for (ProductEntity product : list) {
+
+                try {
+
+                    RatingEntity testRating = ratingEntitySessionBeanLocal.createRating(new RatingEntity("This product has a very nice colour", 5, new Date()), user.getUserId());
+                    testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(user.getUserId()));
+                    product.getRatings().add(testRating);
+                    for (int i = 1; i < 10; i++) {
+                        UserEntity secondUser = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf((new Random()).nextInt(userEntitySessionBeanLocal.retrieveAllUsers().size()-1)+1));
+                        RatingEntity testRating2 = ratingEntitySessionBeanLocal.createRating(new RatingEntity("Mock Ratings", i%5, new Date()), secondUser.getUserId());
+                        testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(secondUser.getUserId()));
+                        product.getRatings().add(testRating2);
+                    }
+
+                    
+
+                } catch (UserNotFoundException ex) {
+                    Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
     }
 
     private void initialiseStaffCustomersSellers() throws UserUsernameExistException, StaffUsernameExistException, UnknownPersistenceException, InputDataValidationException {
@@ -205,13 +234,13 @@ public class DataInitSessionBean {
     }
 
     private void initialiseUsers() throws InputDataValidationException, UserUsernameExistException, UnknownPersistenceException {
-        UserEntity customer = new UserEntity("customer", "lee", "customer@mail.com", "customer", "password", new Date(), "NUS", RoleEnum.CUSTOMER);
+        UserEntity customer = new UserEntity("customer1", "lee", "customer@mail.com", "customer", "password", new Date(), "NUS", RoleEnum.CUSTOMER);
         userEntitySessionBeanLocal.createNewUser(customer);
 
         int min = 111111;
         int max = 999999;
 
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 50; i++) {
             UserEntity customerToMake = new UserEntity(getRandomName().getKey(), getRandomName().getValue(), getRandomName().getKey().concat(getRandomName().getValue()) + Math.floor(Math.random() * (max - min + 1) + min) + "@mail.com", getRandomName().getKey().concat(getRandomName().getValue()) + Math.floor(Math.random() * (max - min + 1) + min), getRandomName().getKey().concat(getRandomName().getValue()) + i + Math.floor(Math.random() * (max - min + 1) + min), new Date(), "NUS " + Math.floor(Math.random() * (max - min + 1) + min), RoleEnum.CUSTOMER);
             userEntitySessionBeanLocal.createNewUser(customerToMake);
 
@@ -220,7 +249,7 @@ public class DataInitSessionBean {
         UserEntity seller = new UserEntity("seller", "lee", "seller@mail.com", "seller", "password", new Date(), "NUS", RoleEnum.SELLER);
         userEntitySessionBeanLocal.createNewUser(seller);
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 30; i++) {
 
             UserEntity sellerToMake = new UserEntity(getRandomName().getKey(), getRandomName().getValue(), getRandomName().getKey().concat(getRandomName().getValue()) + Math.floor(Math.random() * (max - min + 1) + min) + "@mail.com", getRandomName().getKey().concat(getRandomName().getValue()) + Math.floor(Math.random() * (max - min + 1) + min), getRandomName().getKey().concat(getRandomName().getValue()) + i + Math.floor(Math.random() * (max - min + 1) + min), new Date(), "SMU " + Math.floor(Math.random() * (max - min + 1) + min), RoleEnum.SELLER);
             userEntitySessionBeanLocal.createNewUser(sellerToMake);
@@ -239,7 +268,7 @@ public class DataInitSessionBean {
             staffEntitySessionBeanLocal.createNewStaff(adminToMake);
 
         }
-        for (int i = 0; i <= 50; i++) {
+        for (int i = 0; i <= 30; i++) {
             StaffEntity managerToMake = new StaffEntity(getRandomName().getKey(), getRandomName().getValue(), AccessRightEnum.MANAGER, "manager" + getRandomName().getKey().concat(getRandomName().getValue()), getRandomName().getKey().concat(getRandomName().getValue()));
             staffEntitySessionBeanLocal.createNewStaff(managerToMake);
         }
@@ -250,7 +279,7 @@ public class DataInitSessionBean {
         int min = 0;
         int max = 1000;
 
-        for (int i = 1; i <= 50; i++) {
+        for (int i = 1; i <= 30; i++) {
 
             AdvertiserEntity advertiser = new AdvertiserEntity("advertiser " + getRandomName().getKey(), getRandomName().getKey().concat(getRandomName().getValue()), getRandomName().getKey().concat(getRandomName().getValue()) + i, getRandomName().getKey().concat(getRandomName().getValue()) + Math.floor(Math.random() * (max - min + 1) + min) + "@mail.com");
             advertiserEntitySessionBeanLocal.createNewAdvertiserEntity(advertiser, new ArrayList<>(), new ArrayList<>());
@@ -286,10 +315,11 @@ public class DataInitSessionBean {
                 totalAmount = totalAmount.add(product.getUnitPrice());
                 order.getLineItems().add(lineItem);
             }
-            
+
             order.setTotalOrderItem(randNumLineItems);
             order.setTotalQuantity(totalQuantity);
             order.setTotalAmount(totalAmount);
+            order.setTransactionDateTime(LocalDateTime.now());
             orderEntitySessionBeanLocal.createNewOrder(randUserId, order);
         }
 
