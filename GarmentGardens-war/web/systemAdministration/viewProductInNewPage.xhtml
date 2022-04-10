@@ -11,6 +11,8 @@
 
         <ez:Breadcrumb pageName="viewFullProductDetails" />
 
+
+
         <div>
             <h3 style="padding-left:15px">Full Product Details: #{viewProductInNewPageManagedBean.productEntityFullsDetailsToView.name}</h3>
 
@@ -19,6 +21,20 @@
                     <h:commandLink value="Back" actionListener="#{viewProductInNewPageManagedBean.back}" />&nbsp;
                 </h2>
             </h:form>
+
+            <p:panelGrid>
+
+                <p:row>
+                    <p:column>
+                        <p:outputLabel value="Product Average Rating"/>
+                    </p:column>
+                    <p:column>
+                        <p:outputLabel value="#{viewProductInNewPageManagedBean.ratingScoreForProduct}"/>
+                    </p:column>
+                </p:row>
+
+
+            </p:panelGrid>
             <h:form id="formMain">
 
 
