@@ -17,6 +17,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -24,6 +25,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import util.exception.InputDataValidationException;
+import util.exception.InvalidLoginCredentialException;
+import util.exception.UnknownPersistenceException;
+import util.exception.UserUsernameExistException;
+import ws.datamodel.CreateUserReq;
 import util.exception.ChangePasswordException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
@@ -31,6 +37,7 @@ import util.exception.UpdateUserException;
 import util.exception.UserNotFoundException;
 import ws.datamodel.UpdateProfileReq;
 import ws.datamodel.UserChangePasswordReq;
+
 
 /**
  * REST Web Service
@@ -85,6 +92,33 @@ public class UserResource {
         }
     }
     
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createUser(CreateUserReq createUserReq)
+    {
+        if(createUserReq != null)
+        {
+            try
+            {
+                Long userEntity  = userEntitySessionBeanLocal.createNewUser(createUserReq.getUserEntity());                
+                
+                return Response.status(Response.Status.OK).entity(userEntity).build();
+            }
+            catch(UserUsernameExistException ex)
+            {
+                return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+            }
+            catch(UnknownPersistenceException ex)
+            {
+                return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+            }
+            catch(InputDataValidationException ex)
+            {
+                return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+            }
+            catch(Exception ex)
+
     @Path("retrieveUserByUserId/{userId}")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
@@ -170,7 +204,7 @@ public class UserResource {
         }
         else
         {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid user profile update request").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid create new user request").build();
         }
     }
 }
