@@ -28,6 +28,7 @@ import entity.StaffEntity;
 import entity.TagEntity;
 import entity.UserEntity;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -209,7 +210,7 @@ public class DataInitSessionBean {
                     testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(user.getUserId()));
                     product.getRatings().add(testRating);
                     for (int i = 1; i < 10; i++) {
-                        UserEntity secondUser = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf(new Random().nextInt(userEntitySessionBeanLocal.retrieveAllUsers().size()+1)));
+                        UserEntity secondUser = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf((new Random()).nextInt(userEntitySessionBeanLocal.retrieveAllUsers().size()-1)+1));
                         RatingEntity testRating2 = ratingEntitySessionBeanLocal.createRating(new RatingEntity("Mock Ratings", i%5, new Date()), secondUser.getUserId());
                         testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(secondUser.getUserId()));
                         product.getRatings().add(testRating2);
@@ -318,6 +319,7 @@ public class DataInitSessionBean {
             order.setTotalOrderItem(randNumLineItems);
             order.setTotalQuantity(totalQuantity);
             order.setTotalAmount(totalAmount);
+            order.setTransactionDateTime(LocalDateTime.now());
             orderEntitySessionBeanLocal.createNewOrder(randUserId, order);
         }
 
