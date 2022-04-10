@@ -70,7 +70,7 @@ public class ProductResource
         {
 //            StaffEntity staffEntity = staffEntitySessionBeanLocal.staffLogin(username, password);
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-            System.out.println("********** ProductResource.retrieveAllProducts(): Staff " + userEntity.getUsername() + " login remotely via web service");
+            System.out.println("********** ProductResource.retrieveAllProducts(): User " + userEntity.getUsername() + " login remotely via web service");
 
             List<ProductEntity> productEntities = productEntitySessionBeanLocal.retrieveAllProducts();
             
@@ -117,7 +117,7 @@ public class ProductResource
         try
         {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-            System.out.println("********** ProductResource.retrieveProduct(): Staff " + userEntity.getUsername() + " login remotely via web service");
+            System.out.println("********** ProductResource.retrieveProduct(): User " + userEntity.getUsername() + " login remotely via web service");
 
             ProductEntity productEntity = productEntitySessionBeanLocal.retrieveProductByProductId(productId);
             

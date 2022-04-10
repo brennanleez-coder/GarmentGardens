@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.UserEntity;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.ChangePasswordException;
 import util.exception.DeleteUserException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
@@ -36,5 +37,7 @@ public interface UserEntitySessionBeanLocal {
     public void updateUser(UserEntity userEntity) throws UserNotFoundException, UpdateUserException, InputDataValidationException;
 
     public void deleteUser(Long userId) throws UserNotFoundException, DeleteUserException;
+
+    public void userChangePassword(String username, String oldPassword, String newPassword) throws ChangePasswordException, InvalidLoginCredentialException;
     
 }
