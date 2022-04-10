@@ -11,8 +11,11 @@ import ejb.session.stateless.TagEntitySessionBeanLocal;
 import entity.CategoryEntity;
 import entity.ProductEntity;
 import entity.TagEntity;
+import java.io.File;
+import java.io.FileOutputStream;
 
 import java.io.IOException;
+import java.io.InputStream;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
@@ -24,6 +27,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
+import org.primefaces.event.FileUploadEvent;
 import util.exception.CreateNewProductException;
 import util.exception.DeleteProductException;
 import util.exception.InputDataValidationException;
@@ -56,7 +60,7 @@ public class ProductManagementManagedBean implements Serializable {
     private Long categoryIdNew;
     private List<Long> tagIdsNew;
     private List<CategoryEntity> categoryEntities;
-    private List<TagEntity> tagEntities;
+    private List<TagEntity> tagEntities;   
 
     private ProductEntity selectedProductEntityToUpdate;
     private Long categoryIdUpdate;
@@ -162,7 +166,80 @@ public class ProductManagementManagedBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
     }
+    
+    public void handleFileUpload(FileUploadEvent event)
+    {
+        try
+        {
+            String newFilePath = "C:/glassfish-5.1.0-uploadedfiles/" + event.getFile().getFileName();
+            
+            System.err.println("********** Garment.handleFileUpload(): File name: " + event.getFile().getFileName());
+            System.err.println("********** Garment.handleFileUpload(): newFilePath: " + newFilePath);
+          
+            File file = new File(newFilePath);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
 
+            int a;
+            int BUFFER_SIZE = 8192;
+            byte[] buffer = new byte[BUFFER_SIZE];
+
+            InputStream inputStream = event.getFile().getInputStream();
+
+            while (true)
+            {
+                a = inputStream.read(buffer);
+
+                if (a < 0)
+                {
+                    break;
+                }
+
+                fileOutputStream.write(buffer, 0, a);
+                fileOutputStream.flush();
+            }
+
+            fileOutputStream.close();
+            inputStream.close();
+            
+            newProductEntity.setImageLink(event.getFile().getFileName());
+             
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,  "File uploaded successfully", ""));
+        }
+        catch(IOException ex)
+        {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,  "File upload error: " + ex.getMessage(), ""));
+        }
+    }
+    
+    public void createNewProductTemp()
+    {        
+        if(categoryIdNew == 0)
+        {
+            categoryIdNew = null;
+        }    
+       
+        try
+        {
+            ProductEntity pe = productEntitySessionBeanLocal.createNewProduct(newProductEntity, categoryIdNew, tagIdsNew);
+            productEntities.add(pe);
+            
+            if(filteredProductEntities != null)
+            {
+                filteredProductEntities.add(pe);
+            }
+            
+            newProductEntity = new ProductEntity();
+            categoryIdNew = null;
+            tagIdsNew = null;
+            
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New product created successfully (Product ID: " + pe.getProductId() + ")", null));
+        }
+        catch(InputDataValidationException | CreateNewProductException | ProductSkuCodeExistException | UnknownPersistenceException ex)
+        {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new product: " + ex.getMessage(), null));
+        }
+    }
+    
     public ViewProductManagedBean getViewProductManagedBean() {
         return viewProductManagedBean;
     }
@@ -251,4 +328,5 @@ public class ProductManagementManagedBean implements Serializable {
         this.tagIdsUpdate = tagIdsUpdate;
     }
 
+    
 }
