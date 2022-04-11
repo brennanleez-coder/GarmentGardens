@@ -261,7 +261,6 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
                 ProductEntity productEntityToUpdate = retrieveProductByProductId(productEntity.getProductId());
 
                 if (productEntityToUpdate.getSkuCode().equals(productEntity.getSkuCode())) {
-                    // Added in v5.1
                     if (categoryId != null && (!productEntityToUpdate.getCategory().getCategoryId().equals(categoryId))) {
                         CategoryEntity categoryEntityToUpdate = categoryEntitySessionBeanLocal.retrieveCategoryByCategoryId(categoryId);
 
@@ -272,7 +271,6 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
                         productEntityToUpdate.setCategory(categoryEntityToUpdate);
                     }
 
-                    // Added in v5.1
                     if (tagIds != null) {
                         for (TagEntity tagEntity : productEntityToUpdate.getTags()) {
                             tagEntity.getProducts().remove(productEntityToUpdate);
@@ -289,13 +287,8 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
                     productEntityToUpdate.setName(productEntity.getName());
                     productEntityToUpdate.setDescription(productEntity.getDescription());
                     productEntityToUpdate.setQuantityOnHand(productEntity.getQuantityOnHand());
-                    //productEntityToUpdate.setReorderQuantity(productEntity.getReorderQuantity());
                     productEntityToUpdate.setUnitPrice(productEntity.getUnitPrice());
-                    // Removed in v5.0
-                    //productEntityToUpdate.setCategory(productEntity.getCategory());
-                    // Added in v5.1
-                    //productEntityToUpdate.setProductRating((productEntity.getProductRating()));
-                } else {
+             } else {
                     throw new UpdateProductException("SKU Code of product record to be updated does not match the existing record");
                 }
             } else {

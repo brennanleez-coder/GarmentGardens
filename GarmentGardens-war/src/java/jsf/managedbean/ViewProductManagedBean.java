@@ -44,7 +44,7 @@ public class ViewProductManagedBean implements Serializable {
     public void viewProductInNewPage(ActionEvent event) throws IOException {
         System.out.println("************ viewProductInNewPage");
         
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("ProductToView", productEntityToView);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("ProductToView", productEntityToView);
         FacesContext.getCurrentInstance().getExternalContext().redirect("viewProductInNewPage.xhtml"); 
     }
 

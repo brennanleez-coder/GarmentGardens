@@ -8,9 +8,9 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="content">
-        
+
         <ez:Breadcrumb pageName="orderManagement" />
-        
+
         <div>
             <div style="display: flex; justify-content: space-between">
                 <h3 style="padding-left:15px">Order Management</h3>
@@ -18,12 +18,11 @@
                     <p:commandButton style="margin-right:15px" value="Generate Report" ajax="false" />
                 </h:form>
             </div>
-            <br/>
             <h:form id="formAllOrders">
 
                 <p:messages id="messages" redisplay="false" closable="true" />
 
-                <p:dataTable id="dataTableAllOrder" widgetVar="dataTableAllOrders" value="#{orderManagementManagedBean.orderEntities}" var="orderEntity" rowKey="#{orderEntity.orderId}" rowIndexVar="row"
+                <p:dataTable id="dataTableAllOrders" widgetVar="dataTableAllOrders" value="#{orderManagementManagedBean.orderEntities}" var="orderEntity" rowKey="#{orderEntity.orderId}" rowIndexVar="row"
                              filteredValue="#{orderManagementManagedBean.filteredOrderEntities}"
                              rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
 
@@ -37,7 +36,7 @@
                     <p:column headerText="Order ID" sortBy="#{orderEntity.orderId}" filterBy="#{orderEntity.orderId}" filterMatchMode="contains">
                         <h:outputText value="#{orderEntity.orderId}" />
                     </p:column>  
-                    
+
                     <p:column headerText="Customer ID" sortBy="#{orderEntity.customer.userId}" filterBy="#{orderEntity.customer.userId}" filterMatchMode="contains">
                         <h:outputText value="#{orderEntity.customer.userId}" />
                     </p:column>  
@@ -59,35 +58,40 @@
                     </p:column>
 
                     <p:column headerText="Transaction Time" sortBy="#{orderEntity.transactionDateTime}" filterBy="#{orderEntity.transactionDateTime}" filterMatchMode="exact">
-                        <h:outputText value="#{orderEntity.transactionDateTime}"/>
+                        <h:outputText value="#{orderEntity.transactionDateTime}">
+                            <!--                            <f:convertDateTime pattern="dd-MM-yyyy" />-->
+                        </h:outputText>
                     </p:column>
-                    
+
                     <p:column headerText="Void Refund (T/F)" sortBy="#{orderEntity.voidRefund}" filterBy="#{orderEntity.voidRefund}" filterMatchMode="exact">
-                        <h:outputText value="#{orderEntity.voidRefund}"/>
+                        <h:outputText style="color:red" value="#{orderEntity.voidRefund}" rendered="#{orderEntity.voidRefund}"/>                    
+                        <h:outputText value="#{orderEntity.voidRefund}" rendered="#{!orderEntity.voidRefund}"/>                    
                     </p:column>
 
                     <p:column headerText="Action" >
-                        <p:commandButton icon="ui-icon-pencil" title="Void">
+                        <p:commandButton update="ccViewOrder:formViewOrder" oncomplete="PF('dialogViewOrder').show()" icon="ui-icon-document" title="View">
+                            <f:setPropertyActionListener value="#{orderEntity}" target="#{orderManagementManagedBean.viewOrderManagedBean.orderEntityToView}" />
+                        </p:commandButton>
+                        <p:commandButton value="Void" actionListener="#{orderManagementManagedBean.voidRefundOrder}" rendered="#{!orderEntity.voidRefund}" update="@form formAllOrders:dataTableAllOrders">
+                            <p:confirm header="Confirmation" message="Void is permanent, confirm?" icon="pi pi-exclamation-triangle" />
                             <f:attribute name="orderEntityToVoid" value="#{orderEntity}" />
                         </p:commandButton>
                     </p:column>
-                    
+
                 </p:dataTable>
 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    <div style="text-align: center">
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </div>
                 </p:confirmDialog>
 
             </h:form>
-            
-            
-            
-            
 
+            <ez:ViewOrder id="ccViewOrder" />
         </div>
-        
-        
+
     </ui:define>
 
 </ui:composition>

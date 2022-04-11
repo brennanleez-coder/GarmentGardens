@@ -14,33 +14,18 @@
 
 
         <div>
-            <h3 style="padding-left:15px">Full Product Details: #{viewProductInNewPageManagedBean.productEntityFullsDetailsToView.name}</h3>
-
-            <h:form>
-                <h2>
-                    <h:commandLink value="Back" actionListener="#{viewProductInNewPageManagedBean.back}" />&nbsp;
-                </h2>
-            </h:form>
-
-            <p:panelGrid>
-
-                <p:row>
-                    <p:column>
-                        <p:outputLabel value="Product Average Rating"/>
-                    </p:column>
-                    <p:column>
-                        <p:outputLabel value="#{viewProductInNewPageManagedBean.ratingScoreForProduct}"/>
-                    </p:column>
-                </p:row>
+                <h:form style="padding-left: 5px; width: 10%">
+                    <h:commandLink value="Back" actionListener="#{viewProductInNewPageManagedBean.back}" />
+                </h:form>
+                <h2 style="padding-left:15px; width: 80%">Full Product Details: <br/>#{viewProductInNewPageManagedBean.productEntityFullDetailsToView.name}</h2>
 
 
-            </p:panelGrid>
+            <h3 style="padding-left:15px">Product Average Rating:&nbsp;
+                #{viewProductInNewPageManagedBean.ratingScoreForProduct} </h3>
+
             <h:form id="formMain">
 
-
-                <p:layoutUnit position="center">
-
-                    <p:dataTable id="dataTableMain" widgetVar="dataTableMain" value="#{ViewProductInNewPageManagedBean.productEntityFullDetailsToView}" var="productEntity">
+                    <p:dataTable id="dataTableMain" widgetVar="dataTableMain" value="#{viewProductInNewPageManagedBean.productEntityFullDetailsToView}" var="productEntity">
 
                         <p:column headerText="SKU Code" sortBy="#{productEntity.skuCode}">
                             <h:outputText value="#{productEntity.skuCode}" />
@@ -73,12 +58,10 @@
                         </p:column>
 
                     </p:dataTable>
-
-                </p:layoutUnit>
             </h:form>
 
             <h:form id="RatingsandComments">
-                <p:dataTable widgetVar="dataTableAllRatings" value="#{viewProductInNewPageManagedBean.productEntityFullsDetailsToView.ratings}" var="ratingEntity" rowKey="#{ratingEntity.ratingId}" rowIndexVar="row"
+                <p:dataTable widgetVar="dataTableAllRatings" value="#{viewProductInNewPageManagedBean.productEntityFullDetailsToView.ratings}" var="ratingEntity" rowKey="#{ratingEntity.ratingId}" rowIndexVar="row"
                              filteredValue="#{productManagementManagedBean.filteredProductEntities}"
                              rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
 

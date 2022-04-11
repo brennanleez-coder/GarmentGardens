@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -77,11 +78,6 @@ public class ProductManagementManagedBean implements Serializable {
         tagEntities = tagEntitySessionBeanLocal.retrieveAllTags();
     }
 
-    public void viewProductDetails(ActionEvent event) throws IOException {
-        Long productIdToView = (Long) event.getComponent().getAttributes().get("productId");
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("productIdToView", productIdToView);
-        FacesContext.getCurrentInstance().getExternalContext().redirect("viewProductDetails.xhtml");
-    }
 
     public void createNewProduct(ActionEvent event) {
         if (categoryIdNew == 0) {
@@ -171,7 +167,8 @@ public class ProductManagementManagedBean implements Serializable {
     {
         try
         {
-            String newFilePath = "C:/glassfish-5.1.0-uploadedfiles/" + event.getFile().getFileName();
+            String newFilePath = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("alternatedocroot") + System.getProperty("file.separator") + event.getFile().getFileName();
+//            String newFilePath = "C:/Users/wong/Documents/NetBeansProjects/GarmentGardens/GarmentGardens/uploadedFiles/" + event.getFile().getFileName();
             
             System.err.println("********** Garment.handleFileUpload(): File name: " + event.getFile().getFileName());
             System.err.println("********** Garment.handleFileUpload(): newFilePath: " + newFilePath);
@@ -211,34 +208,6 @@ public class ProductManagementManagedBean implements Serializable {
         }
     }
     
-    public void createNewProductTemp()
-    {        
-        if(categoryIdNew == 0)
-        {
-            categoryIdNew = null;
-        }    
-       
-        try
-        {
-            ProductEntity pe = productEntitySessionBeanLocal.createNewProduct(newProductEntity, categoryIdNew, tagIdsNew);
-            productEntities.add(pe);
-            
-            if(filteredProductEntities != null)
-            {
-                filteredProductEntities.add(pe);
-            }
-            
-            newProductEntity = new ProductEntity();
-            categoryIdNew = null;
-            tagIdsNew = null;
-            
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New product created successfully (Product ID: " + pe.getProductId() + ")", null));
-        }
-        catch(InputDataValidationException | CreateNewProductException | ProductSkuCodeExistException | UnknownPersistenceException ex)
-        {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new product: " + ex.getMessage(), null));
-        }
-    }
     
     public ViewProductManagedBean getViewProductManagedBean() {
         return viewProductManagedBean;
