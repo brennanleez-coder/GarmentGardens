@@ -15,7 +15,7 @@
     
     <context-param>
         <param-name>alternatedocroot</param-name>
-        <param-value>/Users/brennanlee/glassfish-5.1.0-uploadedFiles</param-value>
+        <param-value>/Users/ryyant/glassfish-5.1.0-uploadedFiles</param-value>
     </context-param>
 
     <listener>
