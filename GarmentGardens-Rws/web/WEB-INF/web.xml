@@ -39,4 +39,10 @@
         <local>ejb.session.stateless.CreditCardEntitySessionBeanLocal</local>
         <ejb-link>GarmentGardens-ejb.jar#CreditCardEntitySessionBean</ejb-link>
     </ejb-local-ref>
+    <ejb-local-ref>
+        <ejb-ref-name>RewardEntitySessionBeanLocal</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>ejb.session.stateless.RewardEntitySessionBeanLocal</local>
+        <ejb-link>GarmentGardens-ejb.jar#RewardEntitySessionBean</ejb-link>
+    </ejb-local-ref>
 </web-app>

@@ -4,6 +4,7 @@ import ejb.session.stateless.CategoryEntitySessionBeanLocal;
 import ejb.session.stateless.CreditCardEntitySessionBeanLocal;
 import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
 import ejb.session.stateless.ProductEntitySessionBeanLocal;
+import ejb.session.stateless.RewardEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
 import ejb.session.stateless.TagEntitySessionBeanLocal;
 import ejb.session.stateless.UserEntitySessionBeanLocal;
@@ -84,6 +85,16 @@ public class SessionBeanLookup {
         try {
             javax.naming.Context c = new InitialContext();
             return (CreditCardEntitySessionBeanLocal) c.lookup("java:global/GarmentGardens/GarmentGardens-ejb/CreditCardEntitySessionBean!ejb.session.stateless.CreditCardEntitySessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    public RewardEntitySessionBeanLocal lookupRewardEntitySessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (RewardEntitySessionBeanLocal) c.lookup("java:global/GarmentGardens/GarmentGardens-ejb/RewardEntitySessionBean!ejb.session.stateless.RewardEntitySessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
