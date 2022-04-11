@@ -21,7 +21,7 @@ public class CreateCreditCardReq {
     private String creditCardNumber;
     private String cvv;
     private Date expiryDate;
-    private String billinagAddress;
+    private String billingAddress;
     
     private UserEntity user;
     private AdvertiserEntity advertiser;
@@ -36,7 +36,7 @@ public class CreateCreditCardReq {
         this.creditCardNumber = creditCardNumber;
         this.cvv = cvv;
         this.expiryDate = expiryDate;
-        this.billinagAddress = billinagAddress;
+        this.billingAddress = billinagAddress;
         this.user = user;
         this.advertiser = advertiser;
     }
@@ -77,12 +77,12 @@ public class CreateCreditCardReq {
         this.expiryDate = expiryDate;
     }
 
-    public String getBillinagAddress() {
-        return billinagAddress;
+    public String getBillingAddress() {
+        return billingAddress;
     }
 
-    public void setBillinagAddress(String billinagAddress) {
-        this.billinagAddress = billinagAddress;
+    public void setBillingAddress(String billingAddress) {
+        this.billingAddress = billingAddress;
     }
 
     public UserEntity getUser() {

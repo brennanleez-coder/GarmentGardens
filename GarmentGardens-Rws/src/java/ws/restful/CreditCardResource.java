@@ -135,7 +135,7 @@ public class CreditCardResource {
                 UserEntity userEntity = userEntitySessionBeanLocal.userLogin(createCreditCardReq.getUsername(), createCreditCardReq.getPassword());
                 
                 
-                CreditCardEntity creditCardEntity  = creditCardEntitySessionBeanLocal.createNewCreditCardEntity(new CreditCardEntity(createCreditCardReq.getHolderName(), createCreditCardReq.getCreditCardNumber(),createCreditCardReq.getCvv(), createCreditCardReq.getExpiryDate(), createCreditCardReq.getBillinagAddress()));
+                CreditCardEntity creditCardEntity  = creditCardEntitySessionBeanLocal.createNewCreditCardEntity(new CreditCardEntity(createCreditCardReq.getHolderName(), createCreditCardReq.getCreditCardNumber(),createCreditCardReq.getCvv(), createCreditCardReq.getExpiryDate(), createCreditCardReq.getBillingAddress()));
                 
                 return Response.status(Response.Status.OK).entity(creditCardEntity.getCreditCardId()).build();
             }
