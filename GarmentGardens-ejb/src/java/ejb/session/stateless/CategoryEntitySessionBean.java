@@ -52,15 +52,15 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
             try {
                 if (parent != null) {
                     CategoryEntity parentCategoryEntity = retrieveCategoryByCategoryId(parent.getCategoryId());
-                    
+
                     if (!parentCategoryEntity.getProducts().isEmpty()) {
                         throw new CreateNewCategoryException("Parent category cannot be associated with any product");
                     }
-                    
+
                     // ASSOCIATION
                     parentCategoryEntity.getSubCategories().add(newCategoryEntity);
                     newCategoryEntity.setParentCategory(parentCategoryEntity);
-                } 
+                }
 
                 entityManager.persist(newCategoryEntity);
                 entityManager.flush();
@@ -103,7 +103,6 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
 
         for (CategoryEntity rootCategoryEntity : rootCategoryEntities) {
             lazilyLoadSubCategories(rootCategoryEntity);
-
             rootCategoryEntity.getProducts().size();
         }
 
@@ -121,6 +120,25 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
         }
 
         return leafCategoryEntities;
+    }
+
+    @Override
+    public List<CategoryEntity> getSubCategories(Long categoryId) throws CategoryNotFoundException {
+        Query query = entityManager.createQuery("SELECT c FROM CategoryEntity c WHERE c.parentCategory.categoryId =?1 ORDER BY c.name ASC");
+        query.setParameter(1, categoryId);
+        List<CategoryEntity> subCategoryEntities = query.getResultList();
+
+        for (CategoryEntity categoryEntity : subCategoryEntities) {
+            categoryEntity.getSubCategories().size();
+            categoryEntity.getProducts().size();
+        }
+        System.out.println("HERE " + subCategoryEntities);
+
+        if (!subCategoryEntities.isEmpty()) {
+            return subCategoryEntities;
+        } else {
+            throw new CategoryNotFoundException("Category ID " + categoryId + " does not exist!");
+        }
     }
 
     @Override
@@ -142,7 +160,7 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
         categoryEntity.getParentCategory();
         categoryEntity.getSubCategories().size();
         categoryEntity.getProducts().size();
-        
+
         if (categoryEntity != null) {
             return categoryEntity;
         } else {
@@ -191,7 +209,7 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
                 parent.getSubCategories().remove(categoryEntityToRemove);
             }
             categoryEntityToRemove.setParentCategory(null);
-            
+
             entityManager.remove(categoryEntityToRemove);
             entityManager.flush();
         }

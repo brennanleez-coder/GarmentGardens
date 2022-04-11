@@ -15,7 +15,7 @@
     
     <context-param>
         <param-name>alternatedocroot</param-name>
-        <param-value>C:/Users/wong/Documents/NetBeansProjects/GarmentGardensAngular/uploadedFiles</param-value>
+        <param-value>/Users/ryyant/glassfish-5.1.0-uploadedFiles</param-value>
     </context-param>
 
     <listener>
