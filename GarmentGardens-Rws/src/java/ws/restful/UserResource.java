@@ -186,9 +186,6 @@ public class UserResource {
         {
             try
             {
-                LocalDate localDate = Instant.ofEpochMilli(updateProfileReq.getDateOfBirth()).atZone(ZoneId.systemDefault()).toLocalDate();
-                Date date = java.sql.Timestamp.valueOf(localDate.toString());
-                updateProfileReq.getCurrentUser().setDateOfBirth(date);
                 UserEntity userEntity = updateProfileReq.getCurrentUser();
                 
                 userEntitySessionBeanLocal.updateUser(userEntity);
