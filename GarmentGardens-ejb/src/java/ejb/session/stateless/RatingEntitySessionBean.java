@@ -69,7 +69,7 @@ public class RatingEntitySessionBean implements RatingEntitySessionBeanLocal {
         Query query = entityManager.createQuery("SELECT r FROM RatingEntity r WHERE r.productId = ?1")
                 .setParameter(1, productId);
         List<RatingEntity> ratings = query.getResultList();
-        for (RatingEntity rating: ratings) {
+        for (RatingEntity rating : ratings) {
             rating.getCustomer();
         }
         return ratings;
@@ -93,7 +93,8 @@ public class RatingEntitySessionBean implements RatingEntitySessionBeanLocal {
 
     @Override
     public RatingEntity deleteRating(RatingEntity rating) {
-        entityManager.remove(rating);
+        RatingEntity ratingEntity = entityManager.find(RatingEntity.class, rating.getRatingId());
+        entityManager.remove(ratingEntity);
         return rating;
     }
 
@@ -106,6 +107,14 @@ public class RatingEntitySessionBean implements RatingEntitySessionBeanLocal {
         } else {
             throw new RatingNotFoundException("Rating ID " + ratingId + " does not exist!");
         }
+    }
+
+    @Override
+    public List<RatingEntity> retrieveRatingsByUserId(Long userId) {
+        List<RatingEntity> ratingEntities = entityManager.createQuery("SELECT r FROM RatingEntity r WHERE r.customer.userId = ?1")
+                .setParameter(1, userId)
+                .getResultList();
+        return ratingEntities;
     }
 
     @Override

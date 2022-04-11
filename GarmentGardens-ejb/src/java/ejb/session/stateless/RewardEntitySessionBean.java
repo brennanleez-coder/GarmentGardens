@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.RewardEntity;
+import entity.StaffEntity;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.Stateless;
@@ -146,13 +147,15 @@ public class RewardEntitySessionBean implements RewardEntitySessionBeanLocal {
     public void deleteReward(Long rewardId) throws RewardNotFoundException, DeleteRewardException
     {
         RewardEntity rewardEntityToRemove = retrieveRewardByRewardId(rewardId);
-        
+                
         if(rewardEntityToRemove.getCustomer() != null)
         {
             throw new DeleteRewardException("Reward ID " + rewardId + " is associated with existing customer and cannot be deleted!");
         }
         else
         {
+            StaffEntity staff = rewardEntityToRemove.getStaff();
+            staff.getCreatedRewards().remove(rewardEntityToRemove);
             entityManager.remove(rewardEntityToRemove);
         }                
     }

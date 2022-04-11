@@ -8,86 +8,88 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="content">
-        
+
         <ez:Breadcrumb pageName="orderManagement" />
-        
-        <div>
-            <div style="display: flex; justify-content: space-between">
-                <h3 style="padding-left:15px">Order Management</h3>
-                <h:form>
-                    <p:commandButton style="margin-right:15px" value="Generate Report" ajax="false" />
-                </h:form>
-            </div>
-            <br/>
-            <h:form id="formAllOrders">
 
-                <p:messages id="messages" redisplay="false" closable="true" />
+        <div style="display: flex; justify-content: space-between">
+            <h3 style="padding-left:15px">Order Management</h3>
+            <h:form>
+                <p:commandButton style="margin-right:15px" value="Generate Report" ajax="false" />
+            </h:form>
+        </div>
+        <h:form id="formAllOrders">
 
-                <p:dataTable id="dataTableAllOrder" widgetVar="dataTableAllOrders" value="#{orderManagementManagedBean.orderEntities}" var="orderEntity" rowKey="#{orderEntity.orderId}" rowIndexVar="row"
-                             filteredValue="#{orderManagementManagedBean.filteredOrderEntities}"
-                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+            <p:messages id="messages" redisplay="false" closable="true" />
 
-                    <f:facet name="header">
-                        <p:outputPanel style="text-align: right;">
-                            <h:outputText value="Search all fields:" />
-                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllOrders').filter()" style="width:300px" placeholder="Enter keyword"/>
-                        </p:outputPanel>
-                    </f:facet>
+            <p:dataTable id="dataTableAllOrders" widgetVar="dataTableAllOrders" value="#{orderManagementManagedBean.orderEntities}" var="orderEntity" rowKey="#{orderEntity.orderId}" rowIndexVar="row"
+                         filteredValue="#{orderManagementManagedBean.filteredOrderEntities}"
+                         rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
 
-                    <p:column headerText="Order ID" sortBy="#{orderEntity.orderId}" filterBy="#{orderEntity.orderId}" filterMatchMode="contains">
-                        <h:outputText value="#{orderEntity.orderId}" />
-                    </p:column>  
-                    
-                    <p:column headerText="Customer ID" sortBy="#{orderEntity.customer.userId}" filterBy="#{orderEntity.customer.userId}" filterMatchMode="contains">
-                        <h:outputText value="#{orderEntity.customer.userId}" />
-                    </p:column>  
+                <f:facet name="header">
+                    <p:outputPanel style="text-align: right;">
+                        <h:outputText value="Search all fields:" />
+                        <p:inputText id="globalFilter" onkeyup="PF('dataTableAllOrders').filter()" style="width:300px" placeholder="Enter keyword"/>
+                    </p:outputPanel>
+                </f:facet>
 
-                    <p:column headerText="Delivery Status" sortBy="#{orderEntity.deliveryStatus}" filterBy="#{orderEntity.deliveryStatus}" filterMatchMode="contains">
-                        <h:outputText value="#{orderEntity.deliveryStatus}" />
-                    </p:column>
+                <p:column headerText="Order ID" sortBy="#{orderEntity.orderId}" filterBy="#{orderEntity.orderId}" filterMatchMode="contains">
+                    <h:outputText value="#{orderEntity.orderId}" />
+                </p:column>  
 
-                    <p:column headerText="Total Amount" sortBy="#{orderEntity.totalAmount}" filterBy="#{orderEntity.totalAmount}" filterMatchMode="contains">
-                        <h:outputText value="#{orderEntity.totalAmount}" />
-                    </p:column>
+                <p:column headerText="Customer ID" sortBy="#{orderEntity.customer.userId}" filterBy="#{orderEntity.customer.userId}" filterMatchMode="contains">
+                    <h:outputText value="#{orderEntity.customer.userId}" />
+                </p:column>  
 
-                    <p:column headerText="Total Order Items" sortBy="#{orderEntity.totalOrderItem}" filterBy="#{orderEntity.totalOrderItem}" filterMatchMode="contains">
-                        <h:outputText value="#{orderEntity.totalOrderItem}" />
-                    </p:column>
+                <p:column headerText="Delivery Status" sortBy="#{orderEntity.deliveryStatus}" filterBy="#{orderEntity.deliveryStatus}" filterMatchMode="contains">
+                    <h:outputText value="#{orderEntity.deliveryStatus}" />
+                </p:column>
 
-                    <p:column headerText="Total Quantity" sortBy="#{orderEntity.totalQuantity}" filterBy="#{orderEntity.totalQuantity}" filterMatchMode="contains" style="text-align: right;">
-                        <h:outputText value="#{orderEntity.totalQuantity}"/>
-                    </p:column>
+                <p:column headerText="Total Amount" sortBy="#{orderEntity.totalAmount}" filterBy="#{orderEntity.totalAmount}" filterMatchMode="contains">
+                    <h:outputText value="#{orderEntity.totalAmount}" />
+                </p:column>
 
-                    <p:column headerText="Transaction Time" sortBy="#{orderEntity.transactionDateTime}" filterBy="#{orderEntity.transactionDateTime}" filterMatchMode="exact">
-                        <h:outputText value="#{orderEntity.transactionDateTime}"/>
-                    </p:column>
-                    
-                    <p:column headerText="Void Refund (T/F)" sortBy="#{orderEntity.voidRefund}" filterBy="#{orderEntity.voidRefund}" filterMatchMode="exact">
-                        <h:outputText value="#{orderEntity.voidRefund}"/>
-                    </p:column>
+                <p:column headerText="Total Order Items" sortBy="#{orderEntity.totalOrderItem}" filterBy="#{orderEntity.totalOrderItem}" filterMatchMode="contains">
+                    <h:outputText value="#{orderEntity.totalOrderItem}" />
+                </p:column>
 
-                    <p:column headerText="Action" >
-                        <p:commandButton icon="ui-icon-pencil" title="Void">
-                            <f:attribute name="orderEntityToVoid" value="#{orderEntity}" />
-                        </p:commandButton>
-                    </p:column>
-                    
-                </p:dataTable>
+                <p:column headerText="Total Quantity" sortBy="#{orderEntity.totalQuantity}" filterBy="#{orderEntity.totalQuantity}" filterMatchMode="contains" style="text-align: right;">
+                    <h:outputText value="#{orderEntity.totalQuantity}"/>
+                </p:column>
 
-                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:column headerText="Transaction Time" sortBy="#{orderEntity.transactionDateTime}" filterBy="#{orderEntity.transactionDateTime}" filterMatchMode="exact">
+                    <h:outputText value="#{orderEntity.transactionDateTime}">
+                        <!--                        <f:convertDateTime pattern="dd-MM-yyyy"/>-->
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Void Refund (T/F)" sortBy="#{orderEntity.voidRefund}" filterBy="#{orderEntity.voidRefund}" filterMatchMode="exact">
+                    <h:outputText style="color:red" value="#{orderEntity.voidRefund}" rendered="#{orderEntity.voidRefund}"/>                    
+                    <h:outputText value="#{orderEntity.voidRefund}" rendered="#{!orderEntity.voidRefund}"/>                    
+                </p:column>
+
+                <p:column headerText="Action" >
+                    <p:commandButton update="ccViewOrder:formViewOrder" oncomplete="PF('dialogViewOrder').show()" icon="ui-icon-document" title="View">
+                        <f:setPropertyActionListener value="#{orderEntity}" target="#{orderManagementManagedBean.viewOrderManagedBean.orderEntityToView}" />
+                    </p:commandButton>
+                    <p:commandButton value="Void" actionListener="#{orderManagementManagedBean.voidRefundOrder}" rendered="#{!orderEntity.voidRefund}" update="formAllOrders:dataTableAllOrders formAllOrders:messages">
+                        <p:confirm header="Confirmation" message="Void is permanent, confirm?" icon="pi pi-exclamation-triangle" />
+                        <f:attribute name="orderEntityToVoid" value="#{orderEntity}" />
+                    </p:commandButton>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <div style="text-align: center">
                     <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                </p:confirmDialog>
+                </div>
+            </p:confirmDialog>
 
-            </h:form>
-            
-            
-            
-            
+        </h:form>
 
-        </div>
-        
-        
+        <ez:ViewOrder id="ccViewOrder" />
+
     </ui:define>
 
 </ui:composition>

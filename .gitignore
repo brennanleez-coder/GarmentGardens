@@ -33,3 +33,7 @@ GarmentGardens-ejb/dist/
 hs_err_pid*
 /GarmentGardens-war/nbproject/private/
 /GarmentGardens-Rws/nbproject/private/
+
+/GarmentGardens-war/web/WEB-INF/glassfish-web.xml
+/GarmentGardens-war/web/WEB-INF/web.xml
+/GarmentGardens-war/web/WEB-INF/

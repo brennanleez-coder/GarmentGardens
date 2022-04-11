@@ -6,7 +6,6 @@
 package ejb.session.stateless;
 
 import entity.CategoryEntity;
-import entity.LineItemEntity;
 import entity.ProductEntity;
 import entity.TagEntity;
 import java.util.ArrayList;
@@ -253,6 +252,22 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
     }
 
     @Override
+    public List<ProductEntity> retrieveProductsBySellerId(Long userId)  {
+        Query query = entityManager.createQuery("SELECT p FROM ProductEntity p WHERE p.seller.userId = :inUserId");
+        query.setParameter("inUserId", userId);
+        List<ProductEntity> productEntities = query.getResultList();
+
+            for (ProductEntity p : productEntities) {
+                p.getCategory();
+                p.getTags().size();
+                p.getRatings().size();
+            }
+
+            return productEntities;
+
+    }
+
+    @Override
     public void updateProduct(ProductEntity productEntity, Long categoryId, List<Long> tagIds) throws ProductNotFoundException, CategoryNotFoundException, TagNotFoundException, UpdateProductException, InputDataValidationException {
         if (productEntity != null && productEntity.getProductId() != null) {
             Set<ConstraintViolation<ProductEntity>> constraintViolations = validator.validate(productEntity);
@@ -261,7 +276,6 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
                 ProductEntity productEntityToUpdate = retrieveProductByProductId(productEntity.getProductId());
 
                 if (productEntityToUpdate.getSkuCode().equals(productEntity.getSkuCode())) {
-                    // Added in v5.1
                     if (categoryId != null && (!productEntityToUpdate.getCategory().getCategoryId().equals(categoryId))) {
                         CategoryEntity categoryEntityToUpdate = categoryEntitySessionBeanLocal.retrieveCategoryByCategoryId(categoryId);
 
@@ -272,7 +286,6 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
                         productEntityToUpdate.setCategory(categoryEntityToUpdate);
                     }
 
-                    // Added in v5.1
                     if (tagIds != null) {
                         for (TagEntity tagEntity : productEntityToUpdate.getTags()) {
                             tagEntity.getProducts().remove(productEntityToUpdate);
@@ -289,12 +302,7 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
                     productEntityToUpdate.setName(productEntity.getName());
                     productEntityToUpdate.setDescription(productEntity.getDescription());
                     productEntityToUpdate.setQuantityOnHand(productEntity.getQuantityOnHand());
-                    //productEntityToUpdate.setReorderQuantity(productEntity.getReorderQuantity());
                     productEntityToUpdate.setUnitPrice(productEntity.getUnitPrice());
-                    // Removed in v5.0
-                    //productEntityToUpdate.setCategory(productEntity.getCategory());
-                    // Added in v5.1
-                    //productEntityToUpdate.setProductRating((productEntity.getProductRating()));
                 } else {
                     throw new UpdateProductException("SKU Code of product record to be updated does not match the existing record");
                 }
@@ -314,13 +322,12 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
         if (productEntityToRemove == null) {
             throw new ProductNotFoundException("Product is not found in database, ID: " + productId);
         } else {
-            if (!productEntityToRemove.getLineItems().isEmpty())
-            {
+            if (!productEntityToRemove.getLineItems().isEmpty()) {
                 throw new DeleteProductException("Product ID " + productId + " is associated with existing sale transaction line item(s) and cannot be deleted!");
             } else {
                 entityManager.remove(productEntityToRemove);
             }
-            
+
         }
     }
 

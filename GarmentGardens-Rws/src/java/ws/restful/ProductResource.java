@@ -89,8 +89,7 @@ public class ProductResource
                 }
             }
             
-            GenericEntity<List<ProductEntity>> genericEntity = new GenericEntity<List<ProductEntity>>(productEntities) {
-            };
+            GenericEntity<List<ProductEntity>> genericEntity = new GenericEntity<List<ProductEntity>>(productEntities) {};
             
             return Response.status(Status.OK).entity(genericEntity).build();
         }

@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <cc:interface>
+    </cc:interface>
+
+    <cc:implementation>
+
+        <h:form id="formViewOrder">
+
+            <p:dialog id="dialogViewOrder" widgetVar="dialogViewOrder" header="View Order" closable="true">
+
+                <p:panelGrid>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Order ID: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewOrderManagedBean.orderEntityToView.orderId}" />
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Customer ID: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewOrderManagedBean.orderEntityToView.getCustomer().userId}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Delivery Status: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewOrderManagedBean.orderEntityToView.deliveryStatus}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Total Amount: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewOrderManagedBean.orderEntityToView.totalAmount}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Total Order Items: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewOrderManagedBean.orderEntityToView.totalOrderItem}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Total Quantity: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewOrderManagedBean.orderEntityToView.totalQuantity}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Transaction Time: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewOrderManagedBean.orderEntityToView.transactionDateTime}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="Void Refund: " />
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{viewOrderManagedBean.orderEntityToView.voidRefund}" />
+                        </p:column>
+                    </p:row>
+
+
+                </p:panelGrid>
+
+            </p:dialog>
+
+        </h:form>
+
+    </cc:implementation>
+</html>

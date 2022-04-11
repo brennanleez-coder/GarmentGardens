@@ -37,7 +37,6 @@ public class ProductEntity implements Serializable {
     private Integer quantityOnHand;
     private BigDecimal unitPrice;
     private Boolean isListed;
-    //private List<String> images;
     private String imageLink;
     
     @ManyToMany(mappedBy = "products")
@@ -60,7 +59,6 @@ public class ProductEntity implements Serializable {
         this.ratings = new ArrayList<RatingEntity>();
         this.tags = new ArrayList<TagEntity>();
         this.lineItems = new ArrayList<LineItemEntity>();
-        //this.images = new ArrayList<String>();
     }
 
     public ProductEntity(String skuCode, String name, String description, Integer quantityOnHand, BigDecimal unitPrice, Boolean isListed, String imageLink) {
@@ -73,10 +71,6 @@ public class ProductEntity implements Serializable {
         this.isListed = isListed;
         this.imageLink = imageLink;
     }
-    
-    
-
-    
 
     @Override
     public int hashCode() {

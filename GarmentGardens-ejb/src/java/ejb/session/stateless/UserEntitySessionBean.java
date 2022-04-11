@@ -4,9 +4,16 @@
  * and open the template in the editor.
  */
 package ejb.session.stateless;
+
+import entity.ProductEntity;
+import entity.RatingEntity;
+import entity.RewardEntity;
 import entity.UserEntity;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -19,15 +26,15 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.exception.ChangePasswordException;
+import util.exception.DeleteRewardException;
 import util.exception.DeleteUserException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.RewardNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateUserException;
 import util.exception.UserNotFoundException;
 import util.exception.UserUsernameExistException;
-import util.security.CryptographicHelper;
-
 
 /**
  *
@@ -39,6 +46,15 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
     @PersistenceContext(unitName = "GarmentGardens-ejbPU")
     private EntityManager entityManager;
 
+    @EJB(name = "RewardEntitySessionBeanLocal")
+    private RewardEntitySessionBeanLocal rewardEntitySessionBeanLocal;
+
+    @EJB(name = "RatingEntitySessionBeanLocal")
+    private RatingEntitySessionBeanLocal ratingEntitySessionBeanLocal;
+
+    @EJB(name = "ProductEntitySessionBeanLocal")
+    private ProductEntitySessionBeanLocal productEntitySessionBeanLocal;
+
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
 
@@ -46,190 +62,163 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
         validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
     }
-    
-    
+
     @Override
-    public Long createNewUser(UserEntity newUserEntity) throws UserUsernameExistException, UnknownPersistenceException, InputDataValidationException
-    {
-        Set<ConstraintViolation<UserEntity>>constraintViolations = validator.validate(newUserEntity);
-        
-        if(constraintViolations.isEmpty())
-        {
-            try
-            {
+    public Long createNewUser(UserEntity newUserEntity) throws UserUsernameExistException, UnknownPersistenceException, InputDataValidationException {
+        Set<ConstraintViolation<UserEntity>> constraintViolations = validator.validate(newUserEntity);
+
+        if (constraintViolations.isEmpty()) {
+            try {
                 entityManager.persist(newUserEntity);
                 entityManager.flush();
 
                 return newUserEntity.getUserId();
-            }
-            catch(PersistenceException ex)
-            {
-                if(ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException"))
-                {
-                    if(ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException"))
-                    {
+            } catch (PersistenceException ex) {
+                if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
+                    if (ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
                         throw new UserUsernameExistException();
-                    }
-                    else
-                    {
+                    } else {
                         throw new UnknownPersistenceException(ex.getMessage());
                     }
-                }
-                else
-                {
+                } else {
                     throw new UnknownPersistenceException(ex.getMessage());
                 }
             }
-        }
-        else
-        {
+        } else {
             throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
         }
     }
-    
+
     @Override
-    public List<UserEntity> retrieveAllUsers()
-    {
+    public List<UserEntity> retrieveAllUsers() {
         Query query = entityManager.createQuery("SELECT u FROM UserEntity u");
-        
+
         return query.getResultList();
     }
-    
+
     @Override
-    public UserEntity retrieveUserByUserId(Long userId) throws UserNotFoundException
-    {
+    public UserEntity retrieveUserByUserId(Long userId) throws UserNotFoundException {
         UserEntity staffEntity = entityManager.find(UserEntity.class, userId);
-        
-        if(staffEntity != null)
-        {
+
+        if (staffEntity != null) {
             return staffEntity;
-        }
-        else
-        {
+        } else {
             throw new UserNotFoundException("User ID " + userId + " does not exist!");
         }
     }
-    
+
     @Override
-    public UserEntity retrieveUserByUsername(String username) throws UserNotFoundException
-    {
+    public UserEntity retrieveUserByUsername(String username) throws UserNotFoundException {
         Query query = entityManager.createQuery("SELECT u FROM UserEntity u WHERE u.username = :inUsername");
         query.setParameter("inUsername", username);
-        
-        try
-        {
-            return (UserEntity)query.getSingleResult();
-        }
-        catch(NoResultException | NonUniqueResultException ex)
-        {
+
+        try {
+            return (UserEntity) query.getSingleResult();
+        } catch (NoResultException | NonUniqueResultException ex) {
             throw new UserNotFoundException("User with Username " + username + " does not exist!");
         }
     }
-    
+
     @Override
-    public UserEntity userLogin(String username, String password) throws InvalidLoginCredentialException
-    {
-        try
-        {
+    public UserEntity userLogin(String username, String password) throws InvalidLoginCredentialException {
+        try {
             UserEntity userEntity = retrieveUserByUsername(username);
             //String passwordHash = CryptographicHelper.getInstance().byteArrayToHexString(CryptographicHelper.getInstance().doMD5Hashing(password));
             String passwordHash = userEntity.getPassword();
-            if(password.equals(passwordHash))
-            {
-                userEntity.getOrders().size();                
+            if (password.equals(passwordHash)) {
+                userEntity.getOrders().size();
                 return userEntity;
-            }
-            else
-            {
+            } else {
                 throw new InvalidLoginCredentialException("Invalid Login Credentials: Please try again!!");
             }
-        }
-        catch(UserNotFoundException ex)
-        {
+        } catch (UserNotFoundException ex) {
             throw new InvalidLoginCredentialException("Username does not exist! Please sign up for an account first");
         }
     }
-    
+
     @Override
-    public void updateUser(UserEntity userEntity) throws UserNotFoundException, UpdateUserException, InputDataValidationException
-    {
-        if(userEntity != null && userEntity.getUserId() != null)
-        {
-            Set<ConstraintViolation<UserEntity>>constraintViolations = validator.validate(userEntity);
-        
-            if(constraintViolations.isEmpty())
-            {
+    public void updateUser(UserEntity userEntity) throws UserNotFoundException, UpdateUserException, InputDataValidationException {
+        if (userEntity != null && userEntity.getUserId() != null) {
+            Set<ConstraintViolation<UserEntity>> constraintViolations = validator.validate(userEntity);
+
+            if (constraintViolations.isEmpty()) {
                 UserEntity userEntityToUpdate = retrieveUserByUserId(userEntity.getUserId());
 
-                if(userEntityToUpdate.getUsername().equals(userEntity.getUsername()))
-                {
+                if (userEntityToUpdate.getUsername().equals(userEntity.getUsername())) {
                     userEntityToUpdate.setFirstName(userEntity.getFirstName());
                     userEntityToUpdate.setLastName(userEntity.getLastName());
                     userEntityToUpdate.setEmail(userEntity.getEmail());
                     userEntityToUpdate.setDateOfBirth(userEntity.getDateOfBirth());
                     userEntityToUpdate.setAddress(userEntity.getAddress());
-                }
-                else
-                {
+                } else {
                     throw new UpdateUserException("Username of user record to be updated does not match the existing record");
                 }
-            }
-            else
-            {
+            } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
             }
-        }
-        else
-        {
+        } else {
             throw new UserNotFoundException("User ID not provided for user to be updated");
         }
     }
-    
+
     @Override
-    public void deleteUser(Long userId) throws UserNotFoundException, DeleteUserException
-    {
+    public void deleteUser(Long userId) throws UserNotFoundException, DeleteUserException {
         UserEntity userEntityToRemove = retrieveUserByUserId(userId);
-        
-        if(userEntityToRemove.getOrders().isEmpty())
-        {
+
+        if (userEntityToRemove.getOrders().isEmpty()) {
+            for (RewardEntity reward : userEntityToRemove.getRewards()) {
+                try {
+                    rewardEntitySessionBeanLocal.deleteReward(reward.getRewardId());
+                } catch (RewardNotFoundException | DeleteRewardException ex) {
+                    Logger.getLogger(UserEntitySessionBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (userEntityToRemove.getIndividualCart() != null) {
+                userEntityToRemove.getIndividualCart().setCustomer(null);
+                userEntityToRemove.setIndividualCart(null);
+            }
+            if (userEntityToRemove.getGroupCart() != null) {
+                userEntityToRemove.getGroupCart().getGroupCustomers().clear();
+                userEntityToRemove.setGroupCart(null);
+            }
+
+            for (RatingEntity rating : ratingEntitySessionBeanLocal.retrieveRatingsByUserId(userId)) {
+                ratingEntitySessionBeanLocal.deleteRating(rating);
+            }
+
+            for (ProductEntity product : productEntitySessionBeanLocal.retrieveProductsBySellerId(userId)) {
+                product.setSeller(null);
+            }
+
             entityManager.remove(userEntityToRemove);
-        }
-        else
-        {
+
+        } else {
             throw new DeleteUserException("User ID " + userId + " is associated with existing order(s) and cannot be deleted!");
         }
     }
-    
+
     @Override
-    public void userChangePassword(String username, String oldPassword, String newPassword) throws ChangePasswordException, InvalidLoginCredentialException
-    {
+    public void userChangePassword(String username, String oldPassword, String newPassword) throws ChangePasswordException, InvalidLoginCredentialException {
 
         UserEntity userEntity = userLogin(username, oldPassword);
 
-        if (!newPassword.isEmpty() && newPassword != null)
-        {
+        if (!newPassword.isEmpty() && newPassword != null) {
             userEntity.setPassword(newPassword);
-        }
-        else
-        {
+        } else {
             throw new ChangePasswordException("Password is not provided");
         }
 
     }
-    
 
-    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<UserEntity>>constraintViolations)
-    {
+    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<UserEntity>> constraintViolations) {
         String msg = "Input data validation error!:";
-            
-        for(ConstraintViolation constraintViolation:constraintViolations)
-        {
+
+        for (ConstraintViolation constraintViolation : constraintViolations) {
             msg += "\n\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage();
         }
-        
+
         return msg;
     }
-    
-    
-    
+
 }

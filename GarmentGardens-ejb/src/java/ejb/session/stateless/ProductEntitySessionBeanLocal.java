@@ -47,5 +47,7 @@ public interface ProductEntitySessionBeanLocal {
     public void debitQuantityOnHand(Long productId, Integer quantityToDebit) throws ProductNotFoundException, ProductInsufficientQuantityOnHandException;
 
     public void creditQuantityOnHand(Long productId, Integer quantityToCredit) throws ProductNotFoundException;
+
+    public List<ProductEntity> retrieveProductsBySellerId(Long userId);
     
 }
