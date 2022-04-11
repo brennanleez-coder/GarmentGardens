@@ -133,12 +133,18 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
     
     
     
-    @Override
-    public void updateOrder(OrderEntity orderEntity)
-    {
-        entityManager.merge(orderEntity);
-    }
-    
+//    @Override
+//    public void updateOrder(OrderEntity orderEntity) throws OrderNotFoundException
+//    {
+//        try {
+//            entityManager.find(OrderEntity.class, orderEntity.getOrderId());
+//            entityManager.merge(orderEntity);
+//            entityManager.flush();
+//        } catch (Exception ex) {
+//            throw new OrderNotFoundException("Order ID " + orderEntity.getOrderId() + " does not exist!");
+//        }
+//    }
+//    
     
     
     // Updated in v4.1
@@ -163,6 +169,7 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
             }
             
             orderEntity.setVoidRefund(true);
+            entityManager.flush();
         }
         else
         {

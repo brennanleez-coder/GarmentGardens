@@ -29,7 +29,7 @@ public interface OrderEntitySessionBeanLocal {
 
     public OrderEntity retrieveOrderByOrderId(Long orderId) throws OrderNotFoundException;
 
-    public void updateOrder(OrderEntity orderEntity);
+//    public void updateOrder(OrderEntity orderEntity) throws OrderNotFoundException;
 
     public void voidRefundOrder(Long orderId) throws OrderNotFoundException, OrderAlreadyVoidRefundedException;
 

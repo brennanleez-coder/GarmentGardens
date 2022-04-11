@@ -26,51 +26,36 @@ import util.exception.ProductNotFoundException;
  */
 @Named(value = "viewProductInNewPageManagedBean")
 @ViewScoped
-public class ViewProductInNewPageManagedBean implements Serializable{
+public class ViewProductInNewPageManagedBean implements Serializable {
 
     @EJB(name = "RatingEntitySessionBeanLocal")
     private RatingEntitySessionBeanLocal ratingEntitySessionBeanLocal;
 
-    /**
-     * Creates a new instance of ViewProductInNewPageManagedBean
-     */
-    
-    
     private ProductEntity productEntityFullDetailsToView;
     private String ratingScoreForProduct;
-    
-    
-    
+
     public ViewProductInNewPageManagedBean() {
         productEntityFullDetailsToView = new ProductEntity();
         ratingScoreForProduct = "";
     }
-    
+
     @PostConstruct
     public void postConstruct() {
         try {
-            productEntityFullDetailsToView = (ProductEntity) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("ProductToView");
-            setRatingScoreForProduct(String.format("%.2f out of 5", ratingEntitySessionBeanLocal.retrieveRatingScore(productEntityFullDetailsToView.getProductId())));
+        setProductEntityFullDetailsToView((ProductEntity) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("ProductToView"));
+        System.out.println(getProductEntityFullDetailsToView());
+
+           setRatingScoreForProduct(String.format("%.2f out of 5", ratingEntitySessionBeanLocal.retrieveRatingScore(getProductEntityFullDetailsToView().getProductId())));
         } catch (ProductNotFoundException ex) {
             Logger.getLogger(ViewProductInNewPageManagedBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
-    
-    public void back(ActionEvent event) throws IOException{
+
+    public void back(ActionEvent event) throws IOException {
         FacesContext.getCurrentInstance().getExternalContext().redirect("productManagement.xhtml");
     }
-    
-    
-    
 
-    public ProductEntity getProductEntityFullsDetailsToView() {
-        return productEntityFullDetailsToView;
-    }
-
-    public void setProductEntityFullDetailsToView(ProductEntity productEntityFulLDetailsToView) {
-        this.productEntityFullDetailsToView = productEntityFulLDetailsToView;
-    }
 
     public String getRatingScoreForProduct() {
         return ratingScoreForProduct;
@@ -79,5 +64,13 @@ public class ViewProductInNewPageManagedBean implements Serializable{
     public void setRatingScoreForProduct(String ratingScoreForProduct) {
         this.ratingScoreForProduct = ratingScoreForProduct;
     }
-    
+
+    public ProductEntity getProductEntityFullDetailsToView() {
+        return productEntityFullDetailsToView;
+    }
+
+    public void setProductEntityFullDetailsToView(ProductEntity productEntityFullDetailsToView) {
+        this.productEntityFullDetailsToView = productEntityFullDetailsToView;
+    }
+
 }

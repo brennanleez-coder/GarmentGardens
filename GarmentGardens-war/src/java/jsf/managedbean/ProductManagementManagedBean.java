@@ -77,11 +77,6 @@ public class ProductManagementManagedBean implements Serializable {
         tagEntities = tagEntitySessionBeanLocal.retrieveAllTags();
     }
 
-    public void viewProductDetails(ActionEvent event) throws IOException {
-        Long productIdToView = (Long) event.getComponent().getAttributes().get("productId");
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().put("productIdToView", productIdToView);
-        FacesContext.getCurrentInstance().getExternalContext().redirect("viewProductDetails.xhtml");
-    }
 
     public void createNewProduct(ActionEvent event) {
         if (categoryIdNew == 0) {
