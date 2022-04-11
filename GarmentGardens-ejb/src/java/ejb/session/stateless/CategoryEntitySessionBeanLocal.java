@@ -38,5 +38,7 @@ public interface CategoryEntitySessionBeanLocal {
     public List<CategoryEntity> retrieveAllCategories();
 
     public List<CategoryEntity> filterCategoriesByCategory(Long categoryId) throws CategoryNotFoundException;
+
+    public List<CategoryEntity> getSubCategories(Long categoryId) throws CategoryNotFoundException;
     
 }

@@ -14,12 +14,15 @@ import entity.UserEntity;
 public class UpdateProfileReq {
     
     private UserEntity currentUser;
-    private Long dateOfBirth;
 
     public UpdateProfileReq() {
     }
 
     public UpdateProfileReq(UserEntity currentUser) {
+        this.currentUser = currentUser;
+    }
+
+    public UpdateProfileReq(UserEntity currentUser, Long dateOfBirth) {
         this.currentUser = currentUser;
     }
 
@@ -36,21 +39,6 @@ public class UpdateProfileReq {
     public void setCurrentUser(UserEntity currentUser) {
         this.currentUser = currentUser;
     }
-
-    /**
-     * @return the dateOfBirth
-     */
-    public Long getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    /**
-     * @param dateOfBirth the dateOfBirth to set
-     */
-    public void setDateOfBirth(Long dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-    
     
     
 }
