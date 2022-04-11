@@ -174,4 +174,5 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
             throw new CartNotFoundException("Cart not provided");
         }
     }
+    
 }

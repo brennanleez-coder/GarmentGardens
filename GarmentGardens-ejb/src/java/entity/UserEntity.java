@@ -55,10 +55,10 @@ public class UserEntity implements Serializable {
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private List<OrderEntity> orders;
     
-    @OneToOne (fetch = FetchType.LAZY, optional = true, mappedBy = "customer")
+    @OneToOne(fetch = FetchType.LAZY, optional = true, mappedBy = "customer")
     private CartEntity individualCart;
     
-    @ManyToOne (fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     private CartEntity groupCart;
 
     public UserEntity() {

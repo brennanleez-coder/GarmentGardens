@@ -72,8 +72,7 @@ public class AdvertiserEntitySessionBean implements AdvertiserEntitySessionBeanL
                 });
 
                 advertiserEntity.setCreditCards(listOfCreditCards);
-                advertiserEntity.setAdvertisements(listOfAdvertisements); 
-
+                advertiserEntity.setAdvertisements(listOfAdvertisements);
 
                 entityManager.persist(advertiserEntity);
                 entityManager.flush();
@@ -129,11 +128,11 @@ public class AdvertiserEntitySessionBean implements AdvertiserEntitySessionBeanL
         try {
             AdvertiserEntity advertiserEntityToDelete = entityManager.find(AdvertiserEntity.class, advertiserEntity.getAdvertiserId());
             try {
-                for (AdvertisementEntity advertisementEntity : advertiserEntity.getAdvertisements()) {
+                for (AdvertisementEntity advertisementEntity : advertiserEntityToDelete.getAdvertisements()) {
                     advertisementEntity.setApprovedByStaff(null);
                     entityManager.remove(advertisementEntity);
                 }
-                advertiserEntity.setAdvertisements(null);
+                advertiserEntityToDelete.getAdvertisements().clear();
                 entityManager.remove(advertiserEntityToDelete);
             } catch (Exception ex) {
                 throw new DeleteAdvertiserEntityException("Error deleting advertiser, ID: " + advertiserEntity.getAdvertiserId());

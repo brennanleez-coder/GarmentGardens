@@ -34,13 +34,13 @@ public class CartEntity implements Serializable {
     private BigDecimal totalAmount;
     private CartTypeEnum cartTypeEnum;
     
-    @OneToOne (fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private UserEntity customer;
     
-    @OneToMany (mappedBy = "groupCart")
+    @OneToMany(mappedBy = "groupCart")
     private List<UserEntity> groupCustomers;
     
-    @OneToOne (fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private UserEntity groupOwner;
     
     @OneToMany(fetch = FetchType.LAZY)

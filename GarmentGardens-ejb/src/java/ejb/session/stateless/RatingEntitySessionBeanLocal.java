@@ -32,5 +32,7 @@ public interface RatingEntitySessionBeanLocal {
     public RatingEntity retrieveRatingByRatingId(Long ratingId) throws RatingNotFoundException;
 
     public Double retrieveRatingScore(Long productId) throws ProductNotFoundException;
+
+    public List<RatingEntity> retrieveRatingsByUserId(Long userId) ;
     
 }

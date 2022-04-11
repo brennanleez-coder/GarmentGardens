@@ -6,7 +6,6 @@
 package ejb.session.stateless;
 
 import entity.CategoryEntity;
-import entity.LineItemEntity;
 import entity.ProductEntity;
 import entity.TagEntity;
 import java.util.ArrayList;
@@ -253,6 +252,22 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
     }
 
     @Override
+    public List<ProductEntity> retrieveProductsBySellerId(Long userId)  {
+        Query query = entityManager.createQuery("SELECT p FROM ProductEntity p WHERE p.seller.userId = :inUserId");
+        query.setParameter("inUserId", userId);
+        List<ProductEntity> productEntities = query.getResultList();
+
+            for (ProductEntity p : productEntities) {
+                p.getCategory();
+                p.getTags().size();
+                p.getRatings().size();
+            }
+
+            return productEntities;
+
+    }
+
+    @Override
     public void updateProduct(ProductEntity productEntity, Long categoryId, List<Long> tagIds) throws ProductNotFoundException, CategoryNotFoundException, TagNotFoundException, UpdateProductException, InputDataValidationException {
         if (productEntity != null && productEntity.getProductId() != null) {
             Set<ConstraintViolation<ProductEntity>> constraintViolations = validator.validate(productEntity);
@@ -288,7 +303,7 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
                     productEntityToUpdate.setDescription(productEntity.getDescription());
                     productEntityToUpdate.setQuantityOnHand(productEntity.getQuantityOnHand());
                     productEntityToUpdate.setUnitPrice(productEntity.getUnitPrice());
-             } else {
+                } else {
                     throw new UpdateProductException("SKU Code of product record to be updated does not match the existing record");
                 }
             } else {
@@ -307,13 +322,12 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
         if (productEntityToRemove == null) {
             throw new ProductNotFoundException("Product is not found in database, ID: " + productId);
         } else {
-            if (!productEntityToRemove.getLineItems().isEmpty())
-            {
+            if (!productEntityToRemove.getLineItems().isEmpty()) {
                 throw new DeleteProductException("Product ID " + productId + " is associated with existing sale transaction line item(s) and cannot be deleted!");
             } else {
                 entityManager.remove(productEntityToRemove);
             }
-            
+
         }
     }
 
