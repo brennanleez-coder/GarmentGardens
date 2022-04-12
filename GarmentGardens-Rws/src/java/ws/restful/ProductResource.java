@@ -123,6 +123,44 @@ public class ProductResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
+    
+    @Path("retrieveAllSellerProducts")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllSellerProducts(@QueryParam("username") String username,
+            @QueryParam("password") String password) {
+        try {
+            
+            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
+            System.out.println("********** ProductResource.retrieveSellerProduct(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
+
+            List<ProductEntity> productEntities = productEntitySessionBeanLocal.retrieveProductsBySellerId(userEntity.getUserId());
+
+            for (ProductEntity productEntity : productEntities) {
+                if (productEntity.getCategory().getParentCategory() != null) {
+                    productEntity.getCategory().getParentCategory().getSubCategories().clear();
+                }
+
+                productEntity.getCategory().getProducts().clear();
+
+                for (TagEntity tagEntity : productEntity.getTags()) {
+                    tagEntity.getProducts().clear();
+                }
+
+            }
+
+            int size = productEntities.size();
+            System.out.println("Size is ........................" + size);
+
+            GenericEntity<List<ProductEntity>> genericEntity = new GenericEntity<List<ProductEntity>>(productEntities) {
+            };
+
+            return Response.status(Status.OK).entity(genericEntity).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
 
     @Path("retrieveProduct/{productId}")
     @GET
@@ -159,7 +197,7 @@ public class ProductResource {
                 UserEntity userEntity = userEntitySessionBeanLocal.userLogin(createProductReq.getUsername(), createProductReq.getPassword());
                 System.out.println("********** ProductResource.createProduct(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
 
-                ProductEntity productEntity = productEntitySessionBeanLocal.createNewProduct(createProductReq.getProductEntity(), createProductReq.getCategoryId(), createProductReq.getTagIds());
+                ProductEntity productEntity = productEntitySessionBeanLocal.createNewProductFrontEnd(createProductReq.getProductEntity(), createProductReq.getCategoryId(), createProductReq.getTagIds(), userEntity);
 
                 return Response.status(Response.Status.OK).entity(productEntity.getProductId()).build();
             } catch (InvalidLoginCredentialException ex) {

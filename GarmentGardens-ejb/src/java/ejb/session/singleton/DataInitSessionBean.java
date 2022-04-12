@@ -224,6 +224,15 @@ public class DataInitSessionBean {
         list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD025", "Product R1", "Product R1", 100, new BigDecimal("95.00"), true, "https://imgur.com/a/7vdCiUd"), boxers.getCategoryId(), tagIdsEmpty));
         list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD026", "Product R2", "Product R2", 100, new BigDecimal("19.05"), true, "https://imgur.com/a/7vdCiUd"), boxers.getCategoryId(), tagIdsEmpty));
         list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD027", "Product R3", "Product R3", 100, new BigDecimal("10.50"), true, "https://imgur.com/a/7vdCiUd"), boxers.getCategoryId(), tagIdsEmpty));
+        UserEntity seller1 = new UserEntity("seller1", "lee", "seller1@mail.com", "seller1", "password", new Date(), "NUS", RoleEnum.SELLER);
+        try {
+            userEntitySessionBeanLocal.createNewUser(seller1);
+        } catch (UserUsernameExistException ex) {
+            Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        list.add(productEntitySessionBeanLocal.createNewProductFrontEnd(new ProductEntity("PROD028", "Front Blue T shirt", "Product A1", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/xkV92KB.jpg"), tShirts.getCategoryId(), tagIdsPopular, seller1));
+        
         for (UserEntity user : userEntitySessionBeanLocal.retrieveAllUsers()) {
             for (ProductEntity product : list) {
 
