@@ -5,7 +5,9 @@
  */
 package jsf.managedbean;
 
+import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
 import ejb.session.stateless.OrderEntitySessionBeanLocal;
+import entity.MessageOfTheDayEntity;
 import entity.OrderEntity;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -34,13 +36,20 @@ import org.primefaces.model.charts.optionconfig.title.Title;
 @RequestScoped
 public class IndexManagedBean implements Serializable {
 
+    @EJB(name = "MessageOfTheDayEntitySessionBeanLocal")
+    private MessageOfTheDayEntitySessionBeanLocal messageOfTheDayEntitySessionBeanLocal;
+
     @EJB(name = "OrderEntitySessionBeanLocal")
     private OrderEntitySessionBeanLocal orderEntitySessionBeanLocal;
+    
+    
 
     private String salesLineModelHex1;
     private LineChartModel salesLineModel;
     private List<List<OrderEntity>> orderEntitiesList;
-
+    private List<MessageOfTheDayEntity> listOfMessageOfTheDay;
+    private List<MessageOfTheDayEntity> recentThreeMotd;
+    
     public IndexManagedBean() {
         salesLineModelHex1 = "#2AECFF";
     }
@@ -53,6 +62,11 @@ public class IndexManagedBean implements Serializable {
             System.out.println(listOfOrders.size());
         }
         createSalesLineChartModel();
+        
+//        setListOfMessageOfTheDay(messageOfTheDayEntitySessionBeanLocal.retrieveAllMessagesOfTheDay());
+//        recentThreeMotd.add(listOfMessageOfTheDay.get(listOfMessageOfTheDay.size()-1));
+//        recentThreeMotd.add(listOfMessageOfTheDay.get(listOfMessageOfTheDay.size()-2));
+//        recentThreeMotd.add(listOfMessageOfTheDay.get(listOfMessageOfTheDay.size()-3));
     }
 
     public void createSalesLineChartModel() {
@@ -151,6 +165,22 @@ public class IndexManagedBean implements Serializable {
 
     public void setOrderEntitiesList(List<List<OrderEntity>> orderEntitiesList) {
         this.orderEntitiesList = orderEntitiesList;
+    }
+
+    public List<MessageOfTheDayEntity> getListOfMessageOfTheDay() {
+        return listOfMessageOfTheDay;
+    }
+
+    public void setListOfMessageOfTheDay(List<MessageOfTheDayEntity> listOfMessageOfTheDay) {
+        this.listOfMessageOfTheDay = listOfMessageOfTheDay;
+    }
+
+    public List<MessageOfTheDayEntity> getRecentThreeMotd() {
+        return recentThreeMotd;
+    }
+
+    public void setRecentThreeMotd(List<MessageOfTheDayEntity> recentThreeMotd) {
+        this.recentThreeMotd = recentThreeMotd;
     }
 
 }

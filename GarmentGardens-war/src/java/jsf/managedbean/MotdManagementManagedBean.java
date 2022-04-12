@@ -17,6 +17,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.view.ViewScoped;
 import util.exception.InputDataValidationException;
+import util.exception.UpdateMessageOfTheDayException;
 
 /**
  *
@@ -31,6 +32,7 @@ public class MotdManagementManagedBean implements Serializable {
 
     private MessageOfTheDayEntity newMessageOfTheDay;
 
+    private MessageOfTheDayEntity motdToUpdate;
     private List<MessageOfTheDayEntity> motdEntities;
     private List<MessageOfTheDayEntity> filteredMotdEntities;
 
@@ -60,6 +62,26 @@ public class MotdManagementManagedBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New MOTD created successfully (Message ID: " + newMessageOfTheDay.getMotdId() + ")", null));
         } catch (InputDataValidationException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while creating the new Message Of The Day: " + ex.getMessage(), null));
+        }
+    }
+
+    public void doUpdateMotd(ActionEvent event) {
+        motdToUpdate = (MessageOfTheDayEntity) event.getComponent().getAttributes().get("motdEntityToUpdate");
+
+    }
+
+    public void updateProduct(ActionEvent event) {
+
+        try {
+            messageOfTheDayEntitySessionBeanLocal.updateMessageOfTheDay(motdToUpdate);
+
+
+            motdToUpdate = new MessageOfTheDayEntity();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Message Of The Day updated successfully", null));
+        } catch (UpdateMessageOfTheDayException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while updating Message Of The Day: " + ex.getMessage(), null));
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An unexpected error has occurred: " + ex.getMessage(), null));
         }
     }
 
@@ -103,6 +125,14 @@ public class MotdManagementManagedBean implements Serializable {
 
     public void setFilteredMotdEntities(List<MessageOfTheDayEntity> filteredMotdEntities) {
         this.filteredMotdEntities = filteredMotdEntities;
+    }
+
+    public MessageOfTheDayEntity getMotdToUpdate() {
+        return motdToUpdate;
+    }
+
+    public void setMotdToUpdate(MessageOfTheDayEntity motdToUpdate) {
+        this.motdToUpdate = motdToUpdate;
     }
 
 }
