@@ -84,6 +84,7 @@ public class ProductResource {
             };
 
             return Response.status(Status.OK).entity(genericEntity).build();
+
         } catch (Exception ex) {
             System.out.println("Exception");
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();

@@ -45,10 +45,9 @@ public class CategoryResource {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllCategories(@QueryParam("username") String username,
-            @QueryParam("password") String password) {
+    public Response retrieveAllCategories() {
         try {
-            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
+            
 
             List<CategoryEntity> categoryEntities = categoryEntitySessionBeanLocal.retrieveAllCategories();
 
@@ -65,8 +64,6 @@ public class CategoryResource {
             };
 
             return Response.status(Status.OK).entity(genericEntity).build();
-        } catch (InvalidLoginCredentialException ex) {
-            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
