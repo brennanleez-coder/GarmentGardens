@@ -109,54 +109,55 @@ public class ProductResource
     }
     
     
-//    @Path("retrieveAllProductsFiltered")
-//    @GET
-//    @Consumes(MediaType.TEXT_PLAIN)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response retrieveAllProductsFiltered(@QueryParam("username") String username, 
-//                                        @QueryParam("password") String password)
-//    {
-//        try
-//        {
-//            
-//            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-//            System.out.println("********** ProductResource.retrieveAllProducts(): User " + userEntity.getUsername() + " login remotely via web service");
-//
-//            List<ProductEntity> productEntities = productEntitySessionBeanLocal.filterProductsByCategory(Long.valueOf(1));
-//            
-//            for(ProductEntity productEntity:productEntities)
-//            {
-//                if(productEntity.getCategory().getParentCategory() != null)
-//                {
-//                    productEntity.getCategory().getParentCategory().getSubCategories().clear();
-//                }
-//                
-//                productEntity.getCategory().getProducts().clear();
-//                
-//                for(TagEntity tagEntity:productEntity.getTags())
-//                {
-//                    tagEntity.getProducts().clear();
-//                }
-//                
-//               
-//            }
-//            
-//            int size = productEntities.size();
-//            System.out.println("Size is ........................" + size);
-//            
-//            GenericEntity<List<ProductEntity>> genericEntity = new GenericEntity<List<ProductEntity>>(productEntities) {};
-//            
-//            return Response.status(Status.OK).entity(genericEntity).build();
-//        }
-//        catch(InvalidLoginCredentialException ex)
-//        {
-//            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-//        }
-//        catch(Exception ex)
-//        {
-//            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-//        }
-//    }
+    @Path("retrieveAllProductsFiltered/{categoryId}")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllProductsFiltered(@QueryParam("username") String username, 
+                                        @QueryParam("password") String password,
+                                        @PathParam("categoryId") Long categoryId)
+    {
+        try
+        {
+            
+            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
+            System.out.println("********** ProductResource.retrieveAllProducts(): User " + userEntity.getUsername() + " login remotely via web service");
+
+            List<ProductEntity> productEntities = productEntitySessionBeanLocal.filterProductsByCategory(categoryId);
+            
+            for(ProductEntity productEntity:productEntities)
+            {
+                if(productEntity.getCategory().getParentCategory() != null)
+                {
+                    productEntity.getCategory().getParentCategory().getSubCategories().clear();
+                }
+                
+                productEntity.getCategory().getProducts().clear();
+                
+                for(TagEntity tagEntity:productEntity.getTags())
+                {
+                    tagEntity.getProducts().clear();
+                }
+                
+               
+            }
+            
+            int size = productEntities.size();
+            System.out.println("Size is ........................" + size);
+            
+            GenericEntity<List<ProductEntity>> genericEntity = new GenericEntity<List<ProductEntity>>(productEntities) {};
+            
+            return Response.status(Status.OK).entity(genericEntity).build();
+        }
+        catch(InvalidLoginCredentialException ex)
+        {
+            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+        }
+        catch(Exception ex)
+        {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
     
     
     
