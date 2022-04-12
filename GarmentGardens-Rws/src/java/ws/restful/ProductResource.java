@@ -1,10 +1,9 @@
 package ws.restful;
 
 import ejb.session.stateless.ProductEntitySessionBeanLocal;
-import ejb.session.stateless.StaffEntitySessionBeanLocal;
 import ejb.session.stateless.UserEntitySessionBeanLocal;
+import entity.LineItemEntity;
 import entity.ProductEntity;
-import entity.StaffEntity;
 import entity.TagEntity;
 import entity.UserEntity;
 import java.util.List;
@@ -32,62 +31,54 @@ import util.exception.UpdateProductException;
 import ws.datamodel.CreateProductReq;
 import ws.datamodel.UpdateProductReq;
 
-
-
 @Path("Product")
 
-public class ProductResource 
-{    
+public class ProductResource {
+
     @Context
     private UriInfo context;
-    
+
     private final SessionBeanLookup sessionBeanLookup;
-    
+
 //    private final StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
     private final UserEntitySessionBeanLocal userEntitySessionBeanLocal;
     private final ProductEntitySessionBeanLocal productEntitySessionBeanLocal;
-    
-    
-    
-    public ProductResource() 
-    {
+
+    public ProductResource() {
         sessionBeanLookup = new SessionBeanLookup();
         userEntitySessionBeanLocal = sessionBeanLookup.lookupUserEntitySessionBeanLocal();
 //        staffEntitySessionBeanLocal = sessionBeanLookup.lookupStaffEntitySessionBeanLocal();
         productEntitySessionBeanLocal = sessionBeanLookup.lookupProductEntitySessionBeanLocal();
     }
-    
-    
-    
+
     @Path("retrieveAllProducts")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllProducts(@QueryParam("username") String username, 
-                                        @QueryParam("password") String password)
-    {
-        try
-        {
-//            StaffEntity staffEntity = staffEntitySessionBeanLocal.staffLogin(username, password);
+    public Response retrieveAllProducts(@QueryParam("username") String username,
+            @QueryParam("password") String password) {
+        try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
             System.out.println("********** ProductResource.retrieveAllProducts(): User " + userEntity.getUsername() + " login remotely via web service");
 
             List<ProductEntity> productEntities = productEntitySessionBeanLocal.retrieveAllProducts();
-            
-            for(ProductEntity productEntity:productEntities)
-            {
-                if(productEntity.getCategory().getParentCategory() != null)
-                {
+
+            for (ProductEntity productEntity : productEntities) {
+                if (productEntity.getCategory().getParentCategory() != null) {
                     productEntity.getCategory().getParentCategory().getSubCategories().clear();
                 }
-                
+
                 productEntity.getCategory().getProducts().clear();
-                
-                for(TagEntity tagEntity:productEntity.getTags())
-                {
+
+                for (TagEntity tagEntity : productEntity.getTags()) {
                     tagEntity.getProducts().clear();
                 }
+                
+               
             }
+            
+            int size = productEntities.size();
+            System.out.println("Size is ........................" + size);
             
             GenericEntity<List<ProductEntity>> genericEntity = new GenericEntity<List<ProductEntity>>(productEntities) {};
             
@@ -104,157 +95,154 @@ public class ProductResource
     }
     
     
-    
+    @Path("retrieveAllProductsFiltered/{categoryId}")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAllProductsFiltered(@QueryParam("username") String username, 
+                                        @QueryParam("password") String password,
+                                        @PathParam("categoryId") Long categoryId)
+    {
+        try
+        {
+            
+            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
+            System.out.println("********** ProductResource.retrieveAllProducts(): User " + userEntity.getUsername() + " login remotely via web service");
+
+            List<ProductEntity> productEntities = productEntitySessionBeanLocal.filterProductsByCategory(categoryId);
+            
+            for(ProductEntity productEntity:productEntities)
+            {
+                if(productEntity.getCategory().getParentCategory() != null)
+                {
+                    productEntity.getCategory().getParentCategory().getSubCategories().clear();
+                }
+                
+                productEntity.getCategory().getProducts().clear();
+                
+                for(TagEntity tagEntity:productEntity.getTags())
+                {
+                    tagEntity.getProducts().clear();
+                }
+                
+               
+            }
+            
+            int size = productEntities.size();
+            System.out.println("Size is ........................" + size);
+            
+            GenericEntity<List<ProductEntity>> genericEntity = new GenericEntity<List<ProductEntity>>(productEntities) {};
+            
+            return Response.status(Status.OK).entity(genericEntity).build();
+        } catch (InvalidLoginCredentialException ex) {
+            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+
     @Path("retrieveProduct/{productId}")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveProduct(@QueryParam("username") String username, 
-                                        @QueryParam("password") String password,
-                                        @PathParam("productId") Long productId)
-    {
-        try
-        {
+    public Response retrieveProduct(@QueryParam("username") String username,
+            @QueryParam("password") String password,
+            @PathParam("productId") Long productId) {
+        try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
             System.out.println("********** ProductResource.retrieveProduct(): User " + userEntity.getUsername() + " login remotely via web service");
 
             ProductEntity productEntity = productEntitySessionBeanLocal.retrieveProductByProductId(productId);
-            
-            if(productEntity.getCategory().getParentCategory() != null)
-            {
+
+            if (productEntity.getCategory().getParentCategory() != null) {
                 productEntity.getCategory().getParentCategory().getSubCategories().clear();
             }
 
             productEntity.getCategory().getProducts().clear();
 
-            for(TagEntity tagEntity:productEntity.getTags())
-            {
+            for (TagEntity tagEntity : productEntity.getTags()) {
                 tagEntity.getProducts().clear();
             }
-            
+
             return Response.status(Status.OK).entity(productEntity).build();
-        }
-        catch(InvalidLoginCredentialException ex)
-        {
+        } catch (InvalidLoginCredentialException ex) {
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-        }
-        catch(ProductNotFoundException ex)
-        {
+        } catch (ProductNotFoundException ex) {
             return Response.status(Status.BAD_REQUEST).entity(ex.getMessage()).build();
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-    
-    
-    
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createProduct(CreateProductReq createProductReq)
-    {
-        if(createProductReq != null)
-        {
-            try
-            {
+    public Response createProduct(CreateProductReq createProductReq) {
+        if (createProductReq != null) {
+            try {
                 UserEntity userEntity = userEntitySessionBeanLocal.userLogin(createProductReq.getUsername(), createProductReq.getPassword());
                 System.out.println("********** ProductResource.createProduct(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
-                
-                ProductEntity productEntity  = productEntitySessionBeanLocal.createNewProduct(createProductReq.getProductEntity(), createProductReq.getCategoryId(), createProductReq.getTagIds());                
-                
+
+                ProductEntity productEntity = productEntitySessionBeanLocal.createNewProduct(createProductReq.getProductEntity(), createProductReq.getCategoryId(), createProductReq.getTagIds());
+
                 return Response.status(Response.Status.OK).entity(productEntity.getProductId()).build();
-            }
-            catch(InvalidLoginCredentialException ex)
-            {
+            } catch (InvalidLoginCredentialException ex) {
                 return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-            }
-            catch(CreateNewProductException ex)
-            {
+            } catch (CreateNewProductException ex) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-            }
-            catch(ProductSkuCodeExistException ex)
-            {
+            } catch (ProductSkuCodeExistException ex) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-            }
-            catch(Exception ex)
-            {
+            } catch (Exception ex) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
-        }
-        else
-        {
+        } else {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid create new product request").build();
         }
     }
-    
-    
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateProduct(UpdateProductReq updateProductReq)
-    {
-        if(updateProductReq != null)
-        {
-            try
-            {                
+    public Response updateProduct(UpdateProductReq updateProductReq) {
+        if (updateProductReq != null) {
+            try {
                 UserEntity userEntity = userEntitySessionBeanLocal.userLogin(updateProductReq.getUsername(), updateProductReq.getPassword());
                 System.out.println("********** ProductResource.updateProduct(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
-                
+
                 productEntitySessionBeanLocal.updateProduct(updateProductReq.getProductEntity(), updateProductReq.getCategoryId(), updateProductReq.getTagIds());
-                
+
                 return Response.status(Response.Status.OK).build();
-            }
-            catch(InvalidLoginCredentialException ex)
-            {
+            } catch (InvalidLoginCredentialException ex) {
                 return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-            }
-            catch(UpdateProductException ex)
-            {
+            } catch (UpdateProductException ex) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-            }
-            catch(Exception ex)
-            {
+            } catch (Exception ex) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
-        }
-        else
-        {
+        } else {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid update product request").build();
         }
     }
-    
-    
-    
+
     @Path("{productId}")
     @DELETE
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteProduct(@QueryParam("username") String username, 
-                                        @QueryParam("password") String password,
-                                        @PathParam("productId") Long productId)
-    {
-        try
-        {
+    public Response deleteProduct(@QueryParam("username") String username,
+            @QueryParam("password") String password,
+            @PathParam("productId") Long productId) {
+        try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
             System.out.println("********** ProductResource.deleteProduct(): USER(Seller) " + userEntity.getUsername() + " login remotely via web service");
 
             productEntitySessionBeanLocal.deleteProduct(productId);
-            
+
             return Response.status(Status.OK).build();
-        }
-        catch(InvalidLoginCredentialException ex)
-        {
+        } catch (InvalidLoginCredentialException ex) {
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-        }
-        catch(ProductNotFoundException | DeleteProductException ex)
-        {
+        } catch (ProductNotFoundException | DeleteProductException ex) {
             return Response.status(Status.BAD_REQUEST).entity(ex.getMessage()).build();
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }

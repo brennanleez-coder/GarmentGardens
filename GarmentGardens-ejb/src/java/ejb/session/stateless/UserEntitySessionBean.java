@@ -138,6 +138,9 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
 
     @Override
     public void updateUser(UserEntity userEntity) throws UserNotFoundException, UpdateUserException, InputDataValidationException {
+        System.out.println("erm " + userEntity);
+        System.out.println("erm2 " + userEntity.getUserId());
+
         if (userEntity != null && userEntity.getUserId() != null) {
             Set<ConstraintViolation<UserEntity>> constraintViolations = validator.validate(userEntity);
 

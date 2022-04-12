@@ -197,9 +197,9 @@ public class DataInitSessionBean {
         CategoryEntity boxers = categoryEntitySessionBeanLocal.createNewCategoryEntity(new CategoryEntity("Boxers", "Boxers"), undergarments);
 
         List<ProductEntity> list = new ArrayList<>();
-        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD001", "Product A1", "Product A1", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/FoxBP9S.png"), tShirts.getCategoryId(), tagIdsPopular));
-        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD002", "Product A2", "Product A2", 100, new BigDecimal("25.50"), true, "https://i.imgur.com/FoxBP9S.png"), tShirts.getCategoryId(), tagIdsDiscount));
-        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD003", "Product A3", "Product A3", 100, new BigDecimal("15.00"), true, "https://i.imgur.com/FoxBP9S.png"), tShirts.getCategoryId(), tagIdsPopularDiscount));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD001", "Navy Blue T shirt", "Product A1", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/xkV92KB.jpg"), tShirts.getCategoryId(), tagIdsPopular));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD002", "Prada T shirt", "Product A2", 100, new BigDecimal("25.50"), true, "https://i.imgur.com/HR9tEFl.jpg"), tShirts.getCategoryId(), tagIdsDiscount));
+        list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD003", "Nasi T shirt", "Product A3", 100, new BigDecimal("15.00"), true, "https://i.imgur.com/GuNrG8y.jpg"), tShirts.getCategoryId(), tagIdsPopularDiscount));
         list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD004", "Product B1", "Product B1", 100, new BigDecimal("20.00"), true, "https://i.imgur.com/FoxBP9S.png"), hoodies.getCategoryId(), tagIdsPopularNew));
         list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD005", "Product B2", "Product B2", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/FoxBP9S.png"), hoodies.getCategoryId(), tagIdsPopularDiscountNew));
         list.add(productEntitySessionBeanLocal.createNewProduct(new ProductEntity("PROD006", "Product B3", "Product B3", 100, new BigDecimal("100.00"), true, "https://imgur.com/a/7vdCiUd"), hoodies.getCategoryId(), tagIdsEmpty));

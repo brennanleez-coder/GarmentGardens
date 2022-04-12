@@ -49,12 +49,9 @@ public class CategoryResource {
             @QueryParam("password") String password) {
         try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-            System.out.println("********** CategoryResource.retrieveAllCategories(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
 
             List<CategoryEntity> categoryEntities = categoryEntitySessionBeanLocal.retrieveAllCategories();
-            for (int i = 0; i < categoryEntities.size(); i++) {
-                System.out.println(categoryEntities.get(i).getSubCategories());
-            }
+
             for (CategoryEntity categoryEntity : categoryEntities) {
                 if (categoryEntity.getParentCategory() != null) {
                     categoryEntity.getParentCategory().getSubCategories().clear();
@@ -83,7 +80,6 @@ public class CategoryResource {
             @QueryParam("password") String password) {
         try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-            System.out.println("********** CategoryResource.retrieveOnlyParentCategories(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
 
             List<CategoryEntity> rootCategories = categoryEntitySessionBeanLocal.retrieveAllRootCategories();
 
@@ -110,16 +106,10 @@ public class CategoryResource {
     public Response getSubCategories(@QueryParam("username") String username,
             @QueryParam("password") String password, @PathParam("categoryId") Long categoryId) {
         try {
-            
-                        System.out.println("testing: " + categoryId);
-
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-            System.out.println("********** CategoryResource.getSubCategories(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
 
             List<CategoryEntity> subCategories = categoryEntitySessionBeanLocal.getSubCategories(categoryId);
-            System.out.println(subCategories);
             for (CategoryEntity categoryEntity : subCategories) {
-                System.out.println("the cat " + categoryEntity.getParentCategory());
                 if (categoryEntity.getParentCategory() != null) {
                     categoryEntity.getParentCategory().getSubCategories().clear();
                     categoryEntity.setParentCategory(null);
@@ -128,8 +118,6 @@ public class CategoryResource {
                 categoryEntity.getProducts().clear();
             }
             
-            System.out.println("response " + subCategories);
-
             GenericEntity<List<CategoryEntity>> genericEntity = new GenericEntity<List<CategoryEntity>>(subCategories) {
             };
 
@@ -149,7 +137,6 @@ public class CategoryResource {
             @QueryParam("password") String password) {
         try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-            System.out.println("********** CategoryResource.retrieveAllCategories(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
 
             List<CategoryEntity> categoryEntities = categoryEntitySessionBeanLocal.retrieveAllLeafCategories();
 
