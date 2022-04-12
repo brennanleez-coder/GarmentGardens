@@ -98,11 +98,12 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
 
     @Override
     public UserEntity retrieveUserByUserId(Long userId) throws UserNotFoundException {
-        UserEntity staffEntity = entityManager.find(UserEntity.class, userId);
 
-        if (staffEntity != null) {
+        try {
+            UserEntity staffEntity = entityManager.find(UserEntity.class, userId);
             return staffEntity;
-        } else {
+
+        } catch (Exception ex) {
             throw new UserNotFoundException("User ID " + userId + " does not exist!");
         }
     }

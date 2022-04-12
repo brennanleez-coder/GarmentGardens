@@ -22,6 +22,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import util.exception.CategoryNotFoundException;
 import util.exception.CreateNewProductException;
 import util.exception.DeleteProductException;
 import util.exception.InvalidLoginCredentialException;
@@ -72,8 +73,6 @@ public class ProductResource {
                 for (TagEntity tagEntity : productEntity.getTags()) {
                     tagEntity.getProducts().clear();
                 }
-                //productEntity.getTags().clear();
-
             }
             
 //
@@ -100,26 +99,28 @@ public class ProductResource {
             List<ProductEntity> productEntities = productEntitySessionBeanLocal.filterProductsByCategory(categoryId);
 
             for (ProductEntity productEntity : productEntities) {
-                if (productEntity.getCategory().getParentCategory() != null) {
-                    productEntity.getCategory().getParentCategory().getSubCategories().clear();
-                }
+                CategoryEntity categoryEntity = productEntity.getCategory();
 
-                productEntity.getCategory().getProducts().clear();
+                categoryEntity.setParentCategory(null);
+                categoryEntity.getSubCategories().clear();
+                
+                categoryEntity.getProducts().clear();
+                productEntity.getLineItems().clear();
+                productEntity.getRatings().clear();
 
                 for (TagEntity tagEntity : productEntity.getTags()) {
                     tagEntity.getProducts().clear();
                 }
-
             }
 
-            int size = productEntities.size();
-            System.out.println("Size is ........................" + size);
+//            int size = productEntities.size();
+//            System.out.println("Size is ........................" + size);
 
             GenericEntity<List<ProductEntity>> genericEntity = new GenericEntity<List<ProductEntity>>(productEntities) {
             };
 
             return Response.status(Status.OK).entity(genericEntity).build();
-        } catch (Exception ex) {
+        } catch (CategoryNotFoundException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }

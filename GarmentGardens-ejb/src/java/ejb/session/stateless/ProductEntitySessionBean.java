@@ -113,7 +113,7 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
             throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
         }
     }
-    
+
     @Override
     public ProductEntity createNewProductFrontEnd(ProductEntity newProductEntity, Long categoryId, List<Long> tagIds, UserEntity seller) throws ProductSkuCodeExistException, UnknownPersistenceException, InputDataValidationException, CreateNewProductException {
         Set<ConstraintViolation<ProductEntity>> constraintViolations = validator.validate(newProductEntity);
@@ -196,27 +196,48 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
 
     @Override
     public List<ProductEntity> filterProductsByCategory(Long categoryId) throws CategoryNotFoundException {
+        try {
+            CategoryEntity categoryEntity = categoryEntitySessionBeanLocal.retrieveCategoryByCategoryId(categoryId);
+            List<ProductEntity> productEntities = new ArrayList<>();
+
+            if (categoryEntity.getSubCategories().isEmpty()) {
+                productEntities.addAll(categoryEntity.getProducts());
+            } else {
+                for (CategoryEntity subCategoryEntity : categoryEntity.getSubCategories()) {
+                    productEntities.addAll(addSubCategoryProducts(subCategoryEntity));
+                }
+            }
+
+            for (ProductEntity productEntity : productEntities) {
+                productEntity.getCategory();
+                productEntity.getSeller();
+                productEntity.getLineItems();
+                productEntity.getTags().size();
+            }
+
+            Collections.sort(productEntities, new Comparator<ProductEntity>() {
+                public int compare(ProductEntity pe1, ProductEntity pe2) {
+                    return pe1.getSkuCode().compareTo(pe2.getSkuCode());
+                }
+            });
+
+            return productEntities;
+        } catch (Exception ex) {
+            throw new CategoryNotFoundException("Category does not exist!");
+
+        }
+    }
+
+    private List<ProductEntity> addSubCategoryProducts(CategoryEntity categoryEntity) {
         List<ProductEntity> productEntities = new ArrayList<>();
-        CategoryEntity categoryEntity = categoryEntitySessionBeanLocal.retrieveCategoryByCategoryId(categoryId);
 
         if (categoryEntity.getSubCategories().isEmpty()) {
-            productEntities = categoryEntity.getProducts();
+            productEntities.addAll(categoryEntity.getProducts());
         } else {
             for (CategoryEntity subCategoryEntity : categoryEntity.getSubCategories()) {
                 productEntities.addAll(addSubCategoryProducts(subCategoryEntity));
             }
         }
-
-        for (ProductEntity productEntity : productEntities) {
-            productEntity.getCategory();
-            productEntity.getTags().size();
-        }
-
-        Collections.sort(productEntities, new Comparator<ProductEntity>() {
-            public int compare(ProductEntity pe1, ProductEntity pe2) {
-                return pe1.getSkuCode().compareTo(pe2.getSkuCode());
-            }
-        });
 
         return productEntities;
     }
@@ -305,18 +326,18 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
     }
 
     @Override
-    public List<ProductEntity> retrieveProductsBySellerId(Long userId)  {
+    public List<ProductEntity> retrieveProductsBySellerId(Long userId) {
         Query query = entityManager.createQuery("SELECT p FROM ProductEntity p WHERE p.seller.userId = :inUserId");
         query.setParameter("inUserId", userId);
         List<ProductEntity> productEntities = query.getResultList();
 
-            for (ProductEntity p : productEntities) {
-                p.getCategory();
-                p.getTags().size();
-                p.getRatings().size();
-            }
+        for (ProductEntity p : productEntities) {
+            p.getCategory();
+            p.getTags().size();
+            p.getRatings().size();
+        }
 
-            return productEntities;
+        return productEntities;
 
     }
 
@@ -399,20 +420,6 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
     public void creditQuantityOnHand(Long productId, Integer quantityToCredit) throws ProductNotFoundException {
         ProductEntity productEntity = retrieveProductByProductId(productId);
         productEntity.setQuantityOnHand(productEntity.getQuantityOnHand() + quantityToCredit);
-    }
-
-    private List<ProductEntity> addSubCategoryProducts(CategoryEntity categoryEntity) {
-        List<ProductEntity> productEntities = new ArrayList<>();
-
-        if (categoryEntity.getSubCategories().isEmpty()) {
-            return categoryEntity.getProducts();
-        } else {
-            for (CategoryEntity subCategoryEntity : categoryEntity.getSubCategories()) {
-                productEntities.addAll(addSubCategoryProducts(subCategoryEntity));
-            }
-
-            return productEntities;
-        }
     }
 
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<ProductEntity>> constraintViolations) {
