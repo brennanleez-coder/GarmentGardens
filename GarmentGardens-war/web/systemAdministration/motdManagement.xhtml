@@ -49,7 +49,7 @@
 
 
                     <p:column headerText="Action" style="width: 50px">
-                        <p:commandButton actionListener="#{motdManagementManagedBean.doUpdateMotd}" update="formUpdateProduct" oncomplete="PF('dialogUpdateProduct').show()" icon="ui-icon-pencil" title="Update">
+                        <p:commandButton actionListener="#{motdManagementManagedBean.doUpdateMotd}" update="formUpdateMotd" oncomplete="PF('dialogUpdateProduct').show()" icon="ui-icon-pencil" title="Update">
                             <f:attribute name="motdEntityToUpdate" value="#{motdEntity}" />
                         </p:commandButton>
  
@@ -148,7 +148,7 @@
                                 <h:outputLabel value="Message: " />
                             </p:column>
                             <p:column>
-                                <h:outputText value="#{motdManagementManagedBean.motdToUpdate.Message}" />
+                                <h:outputText value="#{motdManagementManagedBean.motdToUpdate.message}" />
                             </p:column>
                             <p:column>
                                 &nbsp;
