@@ -36,7 +36,7 @@ public class IndexManagedBean implements Serializable {
 
     @EJB(name = "OrderEntitySessionBeanLocal")
     private OrderEntitySessionBeanLocal orderEntitySessionBeanLocal;
-    
+
     private String salesLineModelHex1;
     private LineChartModel salesLineModel;
     private List<List<OrderEntity>> orderEntitiesList;
@@ -48,6 +48,10 @@ public class IndexManagedBean implements Serializable {
     @PostConstruct
     public void postConstruct() {
         orderEntitiesList = orderEntitySessionBeanLocal.retrieveAllOrdersInPastYear();
+        System.out.println(orderEntitiesList.size());
+        for (List<OrderEntity> listOfOrders : orderEntitiesList) {
+            System.out.println(listOfOrders.size());
+        }
         createSalesLineChartModel();
     }
 
@@ -61,15 +65,18 @@ public class IndexManagedBean implements Serializable {
 
         if (!getOrderEntitiesList().isEmpty()) {
             for (List<OrderEntity> orderEntities : getOrderEntitiesList()) {
-                //labels.add(orderEntities.get(0).getTransactionDateTime().getMonth() + " " + orderEntities.get(0).getTransactionDateTime().getYear());
+                if (!orderEntities.isEmpty()) {
+                    labels.add(orderEntities.get(0).getTransactionDateTime().getMonth() + " " + orderEntities.get(0).getTransactionDateTime().getYear());
 
-                BigDecimal totalSales = BigDecimal.ZERO;
+                    BigDecimal totalSales = BigDecimal.ZERO;
 
-                for (OrderEntity orderEntity : orderEntities) {
-                    totalSales = totalSales.add(orderEntity.getTotalAmount());
+                    for (OrderEntity orderEntity : orderEntities) {
+                        totalSales = totalSales.add(orderEntity.getTotalAmount());
+                    }
+
+                    values.add(totalSales); 
                 }
 
-                values.add(totalSales);
             }
 
             dataSet.setData(values);

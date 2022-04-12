@@ -48,49 +48,7 @@ public class RewardManagementManagedBean implements Serializable {
     @Inject
     private ViewRewardManagedBean viewRewardManagedBean;
 
-    public RewardEntity getNewRewardEntity() {
-        return newRewardEntity;
-    }
 
-    public void setNewRewardEntity(RewardEntity newRewardEntity) {
-        this.newRewardEntity = newRewardEntity;
-    }
-
-    public RewardEntity getSelectedRewardEntityToUpdate() {
-        return selectedRewardEntityToUpdate;
-    }
-
-    public void setSelectedRewardEntityToUpdate(RewardEntity selectedRewardEntityToUpdate) {
-        this.selectedRewardEntityToUpdate = selectedRewardEntityToUpdate;
-    }
-
-    public List<RewardEntity> getRewardEntities() {
-        return rewardEntities;
-    }
-
-    public void setRewardEntities(List<RewardEntity> rewardEntities) {
-        this.rewardEntities = rewardEntities;
-    }
-
-    public List<RewardEntity> getFilteredRewardEntities() {
-        return filteredRewardEntities;
-    }
-
-    public void setFilteredRewardEntities(List<RewardEntity> filteredRewardEntities) {
-        this.filteredRewardEntities = filteredRewardEntities;
-    }
-
-    public ViewRewardManagedBean getViewRewardManagedBean() {
-        return viewRewardManagedBean;
-    }
-
-    public void setViewRewardManagedBean(ViewRewardManagedBean viewRewardManagedBean) {
-        this.viewRewardManagedBean = viewRewardManagedBean;
-    }
-    
-    public RewardManagementManagedBean() {
-        newRewardEntity = new RewardEntity();
-    }
     
     
     private Date date2;
@@ -316,7 +274,49 @@ public class RewardManagementManagedBean implements Serializable {
         this.maxDateTime = maxDateTime;
     }
     
+        public RewardEntity getNewRewardEntity() {
+        return newRewardEntity;
+    }
+
+    public void setNewRewardEntity(RewardEntity newRewardEntity) {
+        this.newRewardEntity = newRewardEntity;
+    }
+
+    public RewardEntity getSelectedRewardEntityToUpdate() {
+        return selectedRewardEntityToUpdate;
+    }
+
+    public void setSelectedRewardEntityToUpdate(RewardEntity selectedRewardEntityToUpdate) {
+        this.selectedRewardEntityToUpdate = selectedRewardEntityToUpdate;
+    }
+
+    public List<RewardEntity> getRewardEntities() {
+        return rewardEntities;
+    }
+
+    public void setRewardEntities(List<RewardEntity> rewardEntities) {
+        this.rewardEntities = rewardEntities;
+    }
+
+    public List<RewardEntity> getFilteredRewardEntities() {
+        return filteredRewardEntities;
+    }
+
+    public void setFilteredRewardEntities(List<RewardEntity> filteredRewardEntities) {
+        this.filteredRewardEntities = filteredRewardEntities;
+    }
+
+    public ViewRewardManagedBean getViewRewardManagedBean() {
+        return viewRewardManagedBean;
+    }
+
+    public void setViewRewardManagedBean(ViewRewardManagedBean viewRewardManagedBean) {
+        this.viewRewardManagedBean = viewRewardManagedBean;
+    }
     
+    public RewardManagementManagedBean() {
+        newRewardEntity = new RewardEntity();
+    }
     
     
     
