@@ -8,6 +8,7 @@ package ejb.session.singleton;
 import ejb.session.stateless.AdvertisementEntitySessionBeanLocal;
 import ejb.session.stateless.AdvertiserEntitySessionBeanLocal;
 import ejb.session.stateless.CategoryEntitySessionBeanLocal;
+import ejb.session.stateless.CreditCardEntitySessionBeanLocal;
 import ejb.session.stateless.LineItemEntitySessionBeanLocal;
 import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
 import ejb.session.stateless.OrderEntitySessionBeanLocal;
@@ -20,6 +21,7 @@ import ejb.session.stateless.UserEntitySessionBeanLocal;
 import entity.AdvertisementEntity;
 import entity.AdvertiserEntity;
 import entity.CategoryEntity;
+import entity.CreditCardEntity;
 import entity.LineItemEntity;
 import entity.MessageOfTheDayEntity;
 import entity.OrderEntity;
@@ -59,6 +61,7 @@ import util.exception.AdvertiserEntityNotFoundException;
 import util.exception.CreateNewAdvertisementException;
 import util.exception.CreateNewAdvertiserEntityException;
 import util.exception.CreateNewCategoryException;
+import util.exception.CreateNewCreditCardException;
 import util.exception.CreateNewOrderException;
 import util.exception.CreateNewProductException;
 import util.exception.CreateNewRewardException;
@@ -83,6 +86,9 @@ import util.exception.UserUsernameExistException;
 @LocalBean
 @Startup
 public class DataInitSessionBean {
+
+    @EJB(name = "CreditCardEntitySessionBeanLocal")
+    private CreditCardEntitySessionBeanLocal creditCardEntitySessionBeanLocal;
 
     @EJB(name = "RewardEntitySessionBeanLocal")
     private RewardEntitySessionBeanLocal rewardEntitySessionBeanLocal;
@@ -145,6 +151,7 @@ public class DataInitSessionBean {
             initialiseAdvertisersAndAdvertisements();
             initialiseMockOrders();
             initialiseRewards();
+            initialiseCCs();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -230,9 +237,9 @@ public class DataInitSessionBean {
         } catch (UserUsernameExistException ex) {
             Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         list.add(productEntitySessionBeanLocal.createNewProductFrontEnd(new ProductEntity("PROD028", "Front Blue T shirt", "Product A1", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/xkV92KB.jpg"), tShirts.getCategoryId(), tagIdsPopular, seller1));
-        
+
         for (UserEntity user : userEntitySessionBeanLocal.retrieveAllUsers()) {
             for (ProductEntity product : list) {
 
@@ -417,11 +424,50 @@ public class DataInitSessionBean {
             rewardToBeExpired.setRewardName(rewardToBeExpired.getRewardEnum().toString().concat(expiredOrNot));
             rewardEntitySessionBeanLocal.updateReward(rewardToBeExpired);
         }
+    }
+        
+ 
+            
 
+    private void initialiseCCs() throws InputDataValidationException, CreateNewCreditCardException {
+
+        int i = 1;
+        String ccNum = "4234 6767 44";
+        String ccNum2 = "1254 4325 86";
+        String cvv = "12";
+        String cvv2 = "54";
+
+        List<UserEntity> listOfSeller = userEntitySessionBeanLocal.retrieveAllUsers()
+                .stream()
+                .filter(user -> user.getRole().equals(RoleEnum.SELLER))
+                .collect(Collectors.toList());
+
+        for (UserEntity seller : listOfSeller) {
+            CreditCardEntity ccToMake = new CreditCardEntity();
+            ccToMake.setHolderName(seller.getFirstName() + " " + seller.getLastName());
+            ccToMake.setCreditCardNumber(ccNum + i);
+            ccToMake.setCvv(cvv + i);
+            ccToMake.setExpiryDate(new Date());
+            ccToMake.setBillingAddress(seller.getAddress());
+            
+            CreditCardEntity ccToMake2 = new CreditCardEntity();
+            ccToMake2.setHolderName(seller.getFirstName() + " " + seller.getLastName());
+            ccToMake2.setCreditCardNumber(ccNum2 + i);
+            ccToMake2.setCvv(cvv2 + i);
+            ccToMake2.setExpiryDate(new Date());
+            ccToMake2.setBillingAddress(seller.getAddress());
+
+            ccToMake.setUser(seller);
+            ccToMake2.setUser(seller);
+            creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake);
+            creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake2);
+            i++;
+        }
     }
 
-    ////helper////
-    public Pair<String, String> getRandomName() {
+
+////helper////
+public Pair<String, String> getRandomName() {
         String[] firstNames = {
             "Aaren",
             "Aarika",
