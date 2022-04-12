@@ -141,7 +141,7 @@ public class UserResource {
 //            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid password change request").build();
 //        }
 //    }
-//    @Path("updateProfile")
+    @Path("updateProfile")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -156,7 +156,8 @@ public class UserResource {
         System.out.println("3 ");
 
                 userEntitySessionBeanLocal.updateUser(userEntity);
-
+                
+                System.out.println(" Profile updated successfully ****");
                 return Response.status(Response.Status.OK).build();
             } catch (UserNotFoundException | InputDataValidationException | UpdateUserException ex) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
