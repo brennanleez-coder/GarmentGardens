@@ -50,10 +50,6 @@
                         <h:outputText value="#{productEntity.skuCode}" />
                     </p:column>
 
-                    <p:column headerText="Image">
-                        <h:graphicImage value="#{productEntity.imageLink}" height="100" width="100" />
-                    </p:column>
-
                     <p:column headerText="Product ID" style="width:100px" sortBy="#{productEntity.productId}" filterBy="#{productEntity.productId}" filterMatchMode="contains">
                         <h:outputText value="#{productEntity.productId}" />
                     </p:column>                            
@@ -284,18 +280,6 @@
 
                         <p:row>
                             <p:column>
-                                <h:outputLabel value="Image: " />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="image" value="#{productManagementManagedBean.selectedProductEntityToUpdate.imageLink}" />
-                            </p:column>
-                            <p:column>
-                                &nbsp;
-                            </p:column>
-                        </p:row>
-
-                        <p:row>
-                            <p:column>
                                 <h:outputLabel value="SKU Code: " />
                             </p:column>
                             <p:column>
@@ -394,7 +378,7 @@
                 </p:dialog>
 
             </h:form>
-
+            
         </div>
 
     </ui:define>
