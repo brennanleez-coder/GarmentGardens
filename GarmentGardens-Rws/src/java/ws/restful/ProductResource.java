@@ -55,11 +55,10 @@ public class ProductResource {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllProducts(@QueryParam("username") String username,
-            @QueryParam("password") String password) {
+    public Response retrieveAllProducts() {
         try {
-            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-            System.out.println("********** ProductResource.retrieveAllProducts(): User " + userEntity.getUsername() + " login remotely via web service");
+            
+            System.out.println("********** ProductResource.retrieveAllProducts(): web service");
 
             List<ProductEntity> productEntities = productEntitySessionBeanLocal.retrieveAllProducts();
 
@@ -83,10 +82,6 @@ public class ProductResource {
             GenericEntity<List<ProductEntity>> genericEntity = new GenericEntity<List<ProductEntity>>(productEntities) {};
             
             return Response.status(Status.OK).entity(genericEntity).build();
-        }
-        catch(InvalidLoginCredentialException ex)
-        {
-            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         }
         catch(Exception ex)
         {
