@@ -43,9 +43,14 @@ public class RewardManagementManagedBean implements Serializable {
     private RewardEntity selectedRewardEntityToUpdate;
 
     private List<RewardEntity> rewardEntities;
+    private List<RewardEntity> filteredRewardEntities;
 
     @Inject
     private ViewRewardManagedBean viewRewardManagedBean;
+
+    public RewardManagementManagedBean() {
+        newRewardEntity = new RewardEntity();
+    }
 
     @PostConstruct
     public void postConstruct() {
@@ -64,6 +69,10 @@ public class RewardManagementManagedBean implements Serializable {
         try {
             RewardEntity re = rewardEntitySessionBeanLocal.createNewRewardEntity(newRewardEntity);
             rewardEntities.add(re);
+
+            if (filteredRewardEntities != null) {
+                filteredRewardEntities.add(re);
+            }
 
             setNewRewardEntity(new RewardEntity());
 
@@ -97,6 +106,10 @@ public class RewardManagementManagedBean implements Serializable {
 
             getRewardEntities().remove(rewardEntityToDelete);
 
+            if (filteredRewardEntities != null) {
+                filteredRewardEntities.add(rewardEntityToDelete);
+            }
+
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Reward deleted successfully", null));
         } catch (RewardNotFoundException | DeleteRewardException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occurred while deleting reward: " + ex.getMessage(), null));
@@ -129,7 +142,6 @@ public class RewardManagementManagedBean implements Serializable {
         this.rewardEntities = rewardEntities;
     }
 
-
     public ViewRewardManagedBean getViewRewardManagedBean() {
         return viewRewardManagedBean;
     }
@@ -138,8 +150,12 @@ public class RewardManagementManagedBean implements Serializable {
         this.viewRewardManagedBean = viewRewardManagedBean;
     }
 
-    public RewardManagementManagedBean() {
-        newRewardEntity = new RewardEntity();
+    public List<RewardEntity> getFilteredRewardEntities() {
+        return filteredRewardEntities;
+    }
+
+    public void setFilteredRewardEntities(List<RewardEntity> filteredRewardEntities) {
+        this.filteredRewardEntities = filteredRewardEntities;
     }
 
 }
