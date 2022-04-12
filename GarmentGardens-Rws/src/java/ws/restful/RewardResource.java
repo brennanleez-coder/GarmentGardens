@@ -8,6 +8,8 @@ package ws.restful;
 import ejb.session.stateless.RewardEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
 import entity.RewardEntity;
+import entity.StaffEntity;
+import entity.UserEntity;
 import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -55,9 +57,8 @@ public class RewardResource {
             List<RewardEntity> listOfRewards = rewardEntitySessionBeanLocal.retrieveAllRewards();
 
             for (RewardEntity reward : listOfRewards) {
-
-                reward.getCustomer();
-                reward.getStaff();
+                reward.setCustomer(null);
+                reward.setStaff(null);
             }
 
             GenericEntity<List<RewardEntity>> genericEntity = new GenericEntity<List<RewardEntity>>(listOfRewards) {
@@ -78,8 +79,8 @@ public class RewardResource {
 
             RewardEntity reward = rewardEntitySessionBeanLocal.retrieveRewardByRewardId(rewardId);
 
-            reward.getCustomer();
-            reward.getStaff();
+            reward.setCustomer(null);
+            reward.setStaff(null);
 
             return Response.status(Status.OK).entity(reward).build();
         } catch (RewardNotFoundException ex) {
