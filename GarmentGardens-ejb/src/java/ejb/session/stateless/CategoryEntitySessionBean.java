@@ -132,7 +132,6 @@ public class CategoryEntitySessionBean implements CategoryEntitySessionBeanLocal
             categoryEntity.getSubCategories().size();
             categoryEntity.getProducts().size();
         }
-        System.out.println("HERE " + subCategoryEntities);
 
         if (!subCategoryEntities.isEmpty()) {
             return subCategoryEntities;

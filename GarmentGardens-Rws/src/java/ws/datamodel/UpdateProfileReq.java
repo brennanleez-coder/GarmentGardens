@@ -22,10 +22,6 @@ public class UpdateProfileReq {
         this.currentUser = currentUser;
     }
 
-    public UpdateProfileReq(UserEntity currentUser, Long dateOfBirth) {
-        this.currentUser = currentUser;
-    }
-
     /**
      * @return the currentUser
      */

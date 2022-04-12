@@ -40,18 +40,18 @@ public class UserResource {
 
     @Context
     private UriInfo context;
-    
+
     private final SessionBeanLookup sessionBeanLookup;
-    
+
     private final UserEntitySessionBeanLocal userEntitySessionBeanLocal;
 
     /**
      * Creates a new instance of UserResource
      */
     public UserResource() {
-        
+
         sessionBeanLookup = new SessionBeanLookup();
-        
+
         userEntitySessionBeanLocal = sessionBeanLookup.lookupUserEntitySessionBeanLocal();
     }
 
@@ -59,150 +59,111 @@ public class UserResource {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response userLogin(@QueryParam("username") String username, 
-                                @QueryParam("password") String password)
-    {
-        try
-        {
+    public Response userLogin(@QueryParam("username") String username,
+            @QueryParam("password") String password) {
+        try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
             System.out.println("********** UserResource.userLogin(): User " + userEntity.getUsername() + " login remotely via web service");
 
+            // DISASSOCIATE 
             userEntity.setPassword(null);
-            //userEntity.setSalt(null);
-            //staffEntity.getSaleTransactions().clear();            
-            
+            userEntity.setPassword(null);
+            userEntity.getOrders().clear();
+            userEntity.getRewards().clear();
+            userEntity.getCreditCards().clear();
+            userEntity.setIndividualCart(null);
+            userEntity.setGroupCart(null);
+
             return Response.status(Status.OK).entity(userEntity).build();
-        }
-        catch(InvalidLoginCredentialException ex)
-        {
+        } catch (InvalidLoginCredentialException ex) {
             return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-    
-    
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(CreateUserReq createUserReq)
-    {
-        if(createUserReq != null)
-        {
-            try
-            {
-                
-                Long userId  = userEntitySessionBeanLocal.createNewUser(createUserReq.getUserEntity());                
-                
+    public Response createUser(CreateUserReq createUserReq) {
+        if (createUserReq != null) {
+            try {
+
+                Long userId = userEntitySessionBeanLocal.createNewUser(createUserReq.getUserEntity());
+
                 return Response.status(Response.Status.OK).entity(userId).build();
-            }
-            catch(UserUsernameExistException ex)
-            {
+            } catch (UserUsernameExistException ex) {
                 return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-            }
-            catch(UnknownPersistenceException ex)
-            {
+            } catch (UnknownPersistenceException ex) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-            }
-            catch(InputDataValidationException ex)
-            {
+            } catch (InputDataValidationException ex) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-            }
-            catch(Exception ex)
-            {
+            } catch (Exception ex) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
-        }
-        else
-        {
+        } else {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid create new user request").build();
         }
     }
-    
+
     @Path("retrieveUserByUserId/{userId}")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveUserByUserId(@PathParam("userId") Long userId)
-    {
-        try
-        {
+    public Response retrieveUserByUserId(@PathParam("userId") Long userId) {
+        try {
             UserEntity userEntity = userEntitySessionBeanLocal.retrieveUserByUserId(userId);
 
-            userEntity.setPassword(null);
-            //customerEntity.setSalt(null);
-
             return Response.status(Response.Status.OK).entity(userEntity).build();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-    
-    
-    @Path("changePassword")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response userChangePassword(UserChangePasswordReq userChangePasswordReq)
-    {
-        if (userChangePasswordReq != null)
-        {
-            try
-            {
-                userEntitySessionBeanLocal.userChangePassword(userChangePasswordReq.getUsername(), userChangePasswordReq.getOldPassword(), userChangePasswordReq.getNewPassword());
-                        
-                return Response.status(Response.Status.OK).build();
-            }
-            catch (InvalidLoginCredentialException ex)
-            {
-                return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-            }
-            catch (ChangePasswordException ex)
-            {
-                return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-            }
-            catch (Exception ex)
-            {
-                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-            }
-        }
-        else
-        {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid password change request").build();
-        }
-    }
 
-    @Path("updateProfile")
+//    @Path("changePassword")
+//    @POST
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response userChangePassword(UserChangePasswordReq userChangePasswordReq) {
+//        if (userChangePasswordReq != null) {
+//            try {
+//                userEntitySessionBeanLocal.userChangePassword(userChangePasswordReq.getUsername(), userChangePasswordReq.getOldPassword(), userChangePasswordReq.getNewPassword());
+//
+//                return Response.status(Response.Status.OK).build();
+//            } catch (InvalidLoginCredentialException ex) {
+//                return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+//            } catch (ChangePasswordException ex) {
+//                return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+//            } catch (Exception ex) {
+//                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+//            }
+//        } else {
+//            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid password change request").build();
+//        }
+//    }
+//    @Path("updateProfile")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateProfile(UpdateProfileReq updateProfileReq)
-    {
-        if (updateProfileReq != null)
-        {
-            try
-            {
+    public Response updateProfile(UpdateProfileReq updateProfileReq) {
+        System.out.println("1 ");
+
+        if (updateProfileReq != null) {
+                    System.out.println("2 ");
+
+            try {
                 UserEntity userEntity = updateProfileReq.getCurrentUser();
-                
+        System.out.println("3 ");
+
                 userEntitySessionBeanLocal.updateUser(userEntity);
 
                 return Response.status(Response.Status.OK).build();
-            }
-            catch (UserNotFoundException | InputDataValidationException | UpdateUserException ex)
-            {
+            } catch (UserNotFoundException | InputDataValidationException | UpdateUserException ex) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
-        }
-        else
-        {
+        } else {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid user profile update request").build();
         }
     }
