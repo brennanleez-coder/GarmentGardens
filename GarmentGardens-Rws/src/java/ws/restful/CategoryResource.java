@@ -41,13 +41,34 @@ public class CategoryResource {
         categoryEntitySessionBeanLocal = sessionBeanLookup.lookupCategoryEntitySessionBeanLocal();
     }
 
+    @Path("retrieveCategory/{categoryId}")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveCategoryByCategoryId(@PathParam("categoryId") Long categoryId) {
+        try {
+
+            CategoryEntity categoryEntity = categoryEntitySessionBeanLocal.retrieveCategoryByCategoryId(categoryId);
+
+            categoryEntity.getSubCategories().clear();
+            categoryEntity.getProducts().clear();
+            categoryEntity.setParentCategory(null);
+            
+
+            return Response.status(Status.OK).entity(categoryEntity).build();
+        } catch (CategoryNotFoundException ex) {
+            return Response.status(Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+
     @Path("retrieveAllCategories")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveAllCategories() {
         try {
-            
 
             List<CategoryEntity> categoryEntities = categoryEntitySessionBeanLocal.retrieveAllCategories();
 
@@ -108,7 +129,7 @@ public class CategoryResource {
                 categoryEntity.getSubCategories().clear();
                 categoryEntity.getProducts().clear();
             }
-            
+
             GenericEntity<List<CategoryEntity>> genericEntity = new GenericEntity<List<CategoryEntity>>(subCategories) {
             };
 
