@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.CategoryEntity;
 import entity.ProductEntity;
 import entity.TagEntity;
+import entity.UserEntity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -83,6 +84,56 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
                 entityManager.persist(newProductEntity);
                 newProductEntity.setCategory(categoryEntity);
                 newProductEntity.setIsListed(Boolean.TRUE);
+
+                if (tagIds != null && (!tagIds.isEmpty())) {
+                    for (Long tagId : tagIds) {
+                        TagEntity tagEntity = tagEntitySessionBeanLocal.retrieveTagByTagId(tagId);
+                        newProductEntity.addTag(tagEntity);
+
+                    }
+                }
+
+                entityManager.flush();
+
+                return newProductEntity;
+            } catch (PersistenceException ex) {
+                if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
+                    if (ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
+                        throw new ProductSkuCodeExistException();
+                    } else {
+                        throw new UnknownPersistenceException(ex.getMessage());
+                    }
+                } else {
+                    throw new UnknownPersistenceException(ex.getMessage());
+                }
+            } catch (CategoryNotFoundException | TagNotFoundException ex) {
+                throw new CreateNewProductException("An error has occurred while creating the new product: " + ex.getMessage());
+            }
+        } else {
+            throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
+        }
+    }
+    
+    @Override
+    public ProductEntity createNewProductFrontEnd(ProductEntity newProductEntity, Long categoryId, List<Long> tagIds, UserEntity seller) throws ProductSkuCodeExistException, UnknownPersistenceException, InputDataValidationException, CreateNewProductException {
+        Set<ConstraintViolation<ProductEntity>> constraintViolations = validator.validate(newProductEntity);
+
+        if (constraintViolations.isEmpty()) {
+            try {
+                if (categoryId == null) {
+                    throw new CreateNewProductException("The new product must be associated a leaf category");
+                }
+
+                CategoryEntity categoryEntity = categoryEntitySessionBeanLocal.retrieveCategoryByCategoryId(categoryId);
+
+                if (!categoryEntity.getSubCategories().isEmpty()) {
+                    throw new CreateNewProductException("Selected category for the new product is not a leaf category");
+                }
+
+                entityManager.persist(newProductEntity);
+                newProductEntity.setCategory(categoryEntity);
+                newProductEntity.setIsListed(Boolean.TRUE);
+                newProductEntity.setSeller(seller);
 
                 if (tagIds != null && (!tagIds.isEmpty())) {
                     for (Long tagId : tagIds) {

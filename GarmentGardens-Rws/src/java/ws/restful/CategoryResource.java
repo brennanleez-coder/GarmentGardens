@@ -47,6 +47,7 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveAllCategories() {
         try {
+            
 
             List<CategoryEntity> categoryEntities = categoryEntitySessionBeanLocal.retrieveAllCategories();
 

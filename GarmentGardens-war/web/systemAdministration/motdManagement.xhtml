@@ -32,12 +32,6 @@
                              filteredValue="#{motdManagementManagedBean.filteredMotdEntities}"
                              rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
 
-                    <f:facet name="header">
-                        <p:outputPanel style="text-align: right;">
-                            <h:outputText value="Search all fields:" />
-                            <p:inputText id="globalFilter" onkeyup="PF('dataTableAllMotds').filter()" style="width:300px" placeholder="Enter keyword"/>
-                        </p:outputPanel>
-                    </f:facet>
 
                     <p:column headerText="Message ID" style="width: 100px" sortBy="#{motdEntity.motdId}" filterBy="#{motdEntity.motdId}" filterMatchMode="contains">
                         <h:outputText value="#{motdEntity.motdId}" />
@@ -53,7 +47,12 @@
                         <h:outputText value="#{motdEntity.messageDate}" />
                     </p:column>   
 
-                    <p:column headerText="Delete" style="width: 50px">
+
+                    <p:column headerText="Action" style="width: 50px">
+                        <p:commandButton actionListener="#{motdManagementManagedBean.doUpdateMotd}" update="formUpdateProduct" oncomplete="PF('dialogUpdateProduct').show()" icon="ui-icon-pencil" title="Update">
+                            <f:attribute name="motdEntityToUpdate" value="#{motdEntity}" />
+                        </p:commandButton>
+ 
                         <p:commandButton icon="ui-icon-trash" actionListener="#{motdManagementManagedBean.deleteMotd}" update="formAllMotds:dataTableAllMotds formAllMotds:messages">
                             <f:attribute name="motdEntityToDelete" value="#{motdEntity}" />
                             <p:confirm header="Confirmation" message="Are you sure you want to delete #{motdEntity.title}?" icon="ui-icon-alert" />
@@ -122,6 +121,51 @@
                     </p:panelGrid>
 
                 </p:dialog>
+            </h:form>
+            
+            <h:form id="formUpdateMotd">
+
+                <p:dialog id="dialogUpdateMotd" widgetVar="dialogUpdateMotd" header="Update Message Of The Day" closable="true">
+
+                    <p:messages id="messagesUpdateMotd" redisplay="false" />
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Title: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{motdManagementManagedBean.motdToUpdate.title}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel value="Message: " />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{motdManagementManagedBean.motdToUpdate.Message}" />
+                            </p:column>
+                            <p:column>
+                                &nbsp;
+                            </p:column>
+                        </p:row>
+
+                        
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton value="Update Product" update="@form formUpdateMotd:dialogUpdateMotd" actionListener="#{motdManagementManagedBean.updateProduct}" oncomplete="PF('dialogUpdateMotd').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+
             </h:form>
 
 
