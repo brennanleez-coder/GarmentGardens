@@ -36,8 +36,7 @@ public class CreditCardEntity implements Serializable {
     @JoinColumn(nullable = false)
     private UserEntity user;
     
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private AdvertiserEntity advertiser;
 
     public CreditCardEntity() {
