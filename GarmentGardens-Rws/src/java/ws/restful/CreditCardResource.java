@@ -158,7 +158,7 @@ public class CreditCardResource {
         }
     }
     
-    @Path("{creditCardId")
+    @Path("{creditCardId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteCreditCard(@QueryParam("username") String username, 
