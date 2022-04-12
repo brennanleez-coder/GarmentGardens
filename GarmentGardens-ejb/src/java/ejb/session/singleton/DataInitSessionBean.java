@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,9 +67,11 @@ import util.exception.InputDataValidationException;
 import util.exception.ProductInsufficientQuantityOnHandException;
 import util.exception.ProductNotFoundException;
 import util.exception.ProductSkuCodeExistException;
+import util.exception.RewardNotFoundException;
 import util.exception.StaffNotFoundException;
 import util.exception.StaffUsernameExistException;
 import util.exception.UnknownPersistenceException;
+import util.exception.UpdateRewardException;
 import util.exception.UserNotFoundException;
 import util.exception.UserUsernameExistException;
 
@@ -116,8 +119,6 @@ public class DataInitSessionBean {
 
     @EJB(name = "AdvertisementEntitySessionBeanLocal")
     private AdvertisementEntitySessionBeanLocal advertisementEntitySessionBeanLocal;
-    
-    
 
     @PersistenceContext(unitName = "GarmentGardens-ejbPU")
     private EntityManager em;
@@ -130,6 +131,7 @@ public class DataInitSessionBean {
         try {
             staffEntitySessionBeanLocal.retrieveStaffByUsername("admin");
         } catch (StaffNotFoundException ex) {
+
             initializeData();
         }
     }
@@ -138,7 +140,7 @@ public class DataInitSessionBean {
         try {
             System.out.println("Initialising database......");
             initialiseStaffCustomersSellers();
-
+            initialiseMessageOfTheDay();
             initaliseCategoriesTags();
             initialiseAdvertisersAndAdvertisements();
             initialiseMockOrders();
@@ -150,10 +152,7 @@ public class DataInitSessionBean {
 
     }
 
-    private void initaliseCategoriesTags() throws UnknownPersistenceException, ProductSkuCodeExistException, CreateNewTagException, CreateNewProductException, CreateNewCategoryException, InputDataValidationException {
-        messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 1", "Message 1", new Date()));
-        messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 2", "Message 2", new Date()));
-        messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 3", "Message 3", new Date()));
+    private void initaliseCategoriesTags() throws UnknownPersistenceException, ProductSkuCodeExistException, CreateNewTagException, CreateNewProductException, CreateNewCategoryException, InputDataValidationException, UserNotFoundException {
 
         TagEntity tagEntityPopular = tagEntitySessionBeanLocal.createNewTagEntity(new TagEntity("Popular"));
         TagEntity tagEntityDiscount = tagEntitySessionBeanLocal.createNewTagEntity(new TagEntity("Discount"));
@@ -228,24 +227,25 @@ public class DataInitSessionBean {
         for (UserEntity user : userEntitySessionBeanLocal.retrieveAllUsers()) {
             for (ProductEntity product : list) {
 
-                try {
-
-                    RatingEntity testRating = ratingEntitySessionBeanLocal.createRating(new RatingEntity("This product has a very nice colour", 5, new Date()), user.getUserId());
-                    testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(user.getUserId()));
-                    product.getRatings().add(testRating);
-                    for (int i = 1; i < 10; i++) {
-                        UserEntity secondUser = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf((new Random()).nextInt(userEntitySessionBeanLocal.retrieveAllUsers().size() - 1) + 1));
-                        RatingEntity testRating2 = ratingEntitySessionBeanLocal.createRating(new RatingEntity("Mock Ratings", i % 5, new Date()), secondUser.getUserId());
-                        testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(secondUser.getUserId()));
-                        product.getRatings().add(testRating2);
-                    }
-
-                } catch (UserNotFoundException ex) {
-                    Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+                RatingEntity testRating = ratingEntitySessionBeanLocal.createRating(new RatingEntity("This product has a very nice colour", 5, new Date()), user.getUserId());
+                testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(user.getUserId()));
+                product.getRatings().add(testRating);
+                for (int i = 1; i < 10; i++) {
+                    UserEntity secondUser = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf((new Random()).nextInt(userEntitySessionBeanLocal.retrieveAllUsers().size() - 1) + 1));
+                    RatingEntity testRating2 = ratingEntitySessionBeanLocal.createRating(new RatingEntity("Mock Ratings", i % 5, new Date()), secondUser.getUserId());
+                    testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(secondUser.getUserId()));
+                    product.getRatings().add(testRating2);
                 }
+
             }
         }
 
+    }
+
+    private void initialiseMessageOfTheDay() throws InputDataValidationException {
+        messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 1", "Message 1", new Date()));
+        messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 2", "Message 2", new Date()));
+        messageOfTheDayEntitySessionBeanLocal.createNewMessageOfTheDay(new MessageOfTheDayEntity("Title 3", "Message 3", new Date()));
     }
 
     private void initialiseStaffCustomersSellers() throws UserUsernameExistException, StaffUsernameExistException, UnknownPersistenceException, InputDataValidationException {
@@ -348,33 +348,65 @@ public class DataInitSessionBean {
 
     }
 
-    private void initialiseRewards() throws InputDataValidationException, CreateNewRewardException {
+    private void initialiseRewards() throws InputDataValidationException, CreateNewRewardException, RewardNotFoundException, UpdateRewardException {
         RewardEnum[] rewards = RewardEnum.values();
 
-        for (int i = 0; i < 50; i++) {
-            Instant startDate = Instant.now().minus(Duration.ofDays(1 * 10));
+        List<StaffEntity> listOfStaff = staffEntitySessionBeanLocal.retrieveAllStaffs();
+        List<UserEntity> listOfCustomers = userEntitySessionBeanLocal.retrieveAllUsers()
+                .stream()
+                .filter(user -> user.getRole().equals(RoleEnum.CUSTOMER))
+                .collect(Collectors.toList());
+
+        for (int i = 0; i < 60; i++) {
+            Instant startDate = Instant.now().minus(Duration.ofDays(1 * 30));
             Instant expiryDate = Instant.now().plus(Duration.ofDays(1 * 30));
 
-            Instant randomDate = between(startDate, expiryDate);
+            Instant date = between(startDate, expiryDate);
             ZoneOffset zoneOffSet = ZoneOffset.of("+08:00");
-            LocalDateTime randomOrderDate = LocalDateTime.ofInstant(randomDate, zoneOffSet);
-            
+            LocalDateTime randomDate = LocalDateTime.ofInstant(date, zoneOffSet);
+
+            Date randomRewardDate = java.util.Date
+                    .from(randomDate.atZone(ZoneId.systemDefault())
+                            .toInstant());
+
             RewardEntity reward = new RewardEntity();
-            RewardEnum randomTypeOfReward = rewards[new Random().nextInt(rewards.length + 1)];
+            RewardEnum randomTypeOfReward = rewards[new Random().nextInt(rewards.length)];
             reward.setRewardEnum(randomTypeOfReward);
-            Boolean isExpired = expiryDate.isAfter(Instant.now());
-            String expiredOrNot = isExpired ? "" : " (EXPIRED)";
+            Boolean notExpired = expiryDate.isAfter(Instant.now());
+            String expiredOrNot = notExpired ? "" : " (EXPIRED)";
             reward.setRewardName(randomTypeOfReward.toString().concat(expiredOrNot));
-            
-            List<StaffEntity> listOfStaff = staffEntitySessionBeanLocal.retrieveAllStaffs();
-            List<UserEntity> listOfCustomers = userEntitySessionBeanLocal.retrieveAllUsers()
-                                .stream()
-                                .filter(user -> user.getRole().equals(RoleEnum.CUSTOMER))
-                                .collect(Collectors.toList());
+
             reward.setStaff(listOfStaff.get(new Random().nextInt(listOfStaff.size())));
-            reward.setCustomer(listOfCustomers.get(new Random().nextInt(listOfCustomers.size())));
-            
+            reward.setExpiryDate(randomRewardDate);
+
             rewardEntitySessionBeanLocal.createNewRewardEntity(reward);
+        }
+
+        List<RewardEntity> listOfRewards = rewardEntitySessionBeanLocal.retrieveAllRewards();
+        for (int i = 0; i < 10; i++) {
+            RewardEntity rewardToBeRedeemed = listOfRewards.get(i);
+            rewardToBeRedeemed.setCustomer(listOfCustomers.get(new Random().nextInt(listOfCustomers.size())));
+            rewardToBeRedeemed.setRewardName(rewardToBeRedeemed.getRewardName().concat(" (REDEEMED)"));
+            rewardEntitySessionBeanLocal.updateReward(rewardToBeRedeemed);
+        }
+
+        for (int i = 19; i < 30; i++) {
+            RewardEntity rewardToBeExpired = listOfRewards.get(i);
+
+            Instant startDate = Instant.now().minus(Duration.ofDays(1 * 300));
+            Instant expiryDate = Instant.now().minus(Duration.ofDays(1 * 1));
+
+            Instant date = between(startDate, expiryDate);
+            ZoneOffset zoneOffSet = ZoneOffset.of("+08:00");
+            LocalDateTime randomDate = LocalDateTime.ofInstant(date, zoneOffSet);
+
+            Date randomRewardDate = java.util.Date
+                    .from(randomDate.atZone(ZoneId.systemDefault())
+                            .toInstant());
+            Boolean notExpired = expiryDate.isAfter(Instant.now());
+            String expiredOrNot = notExpired ? "" : " (EXPIRED)";
+            rewardToBeExpired.setRewardName(rewardToBeExpired.getRewardEnum().toString().concat(expiredOrNot));
+            rewardEntitySessionBeanLocal.updateReward(rewardToBeExpired);
         }
 
     }
@@ -5337,7 +5369,7 @@ public class DataInitSessionBean {
 
     }
 
-    public static Instant between(Instant startInclusive, Instant endExclusive) {
+    private Instant between(Instant startInclusive, Instant endExclusive) {
         long startSeconds = startInclusive.getEpochSecond();
         long endSeconds = endExclusive.getEpochSecond();
         long random = ThreadLocalRandom
