@@ -59,7 +59,6 @@ public class ProductResource {
 
             List<ProductEntity> productEntities = productEntitySessionBeanLocal.retrieveAllProducts();
             //productEntities = productEntities.subList(0, 10);
-            System.out.println(productEntities);
             for (ProductEntity productEntity : productEntities) {
                 CategoryEntity categoryEntity = productEntity.getCategory();
 

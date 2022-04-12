@@ -122,6 +122,8 @@ public class ProductEntitySessionBean implements ProductEntitySessionBeanLocal {
             productEntity.getCategory();
             productEntity.getTags().size();
             productEntity.getRatings().size();
+            productEntity.getLineItems().size();
+            productEntity.getSeller();
         }
 
         return productEntities;

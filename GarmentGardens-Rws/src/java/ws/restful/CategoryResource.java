@@ -32,12 +32,12 @@ public class CategoryResource {
 
 //    private final StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
     private final CategoryEntitySessionBeanLocal categoryEntitySessionBeanLocal;
-    private final UserEntitySessionBeanLocal userEntitySessionBeanLocal;
+//    private final UserEntitySessionBeanLocal userEntitySessionBeanLocal;
 
     public CategoryResource() {
         sessionBeanLookup = new SessionBeanLookup();
 
-        userEntitySessionBeanLocal = sessionBeanLookup.lookupUserEntitySessionBeanLocal();
+//        userEntitySessionBeanLocal = sessionBeanLookup.lookupUserEntitySessionBeanLocal();
         categoryEntitySessionBeanLocal = sessionBeanLookup.lookupCategoryEntitySessionBeanLocal();
     }
 
@@ -45,10 +45,8 @@ public class CategoryResource {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllCategories(@QueryParam("username") String username,
-            @QueryParam("password") String password) {
+    public Response retrieveAllCategories() {
         try {
-            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
 
             List<CategoryEntity> categoryEntities = categoryEntitySessionBeanLocal.retrieveAllCategories();
 
@@ -65,8 +63,6 @@ public class CategoryResource {
             };
 
             return Response.status(Status.OK).entity(genericEntity).build();
-        } catch (InvalidLoginCredentialException ex) {
-            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
@@ -76,10 +72,8 @@ public class CategoryResource {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveOnlyParentCategories(@QueryParam("username") String username,
-            @QueryParam("password") String password) {
+    public Response retrieveOnlyParentCategories() {
         try {
-            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
 
             List<CategoryEntity> rootCategories = categoryEntitySessionBeanLocal.retrieveAllRootCategories();
 
@@ -92,8 +86,6 @@ public class CategoryResource {
             };
 
             return Response.status(Status.OK).entity(genericEntity).build();
-        } catch (InvalidLoginCredentialException ex) {
-            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
@@ -103,10 +95,8 @@ public class CategoryResource {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSubCategories(@QueryParam("username") String username,
-            @QueryParam("password") String password, @PathParam("categoryId") Long categoryId) {
+    public Response getSubCategories(@PathParam("categoryId") Long categoryId) {
         try {
-            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
 
             List<CategoryEntity> subCategories = categoryEntitySessionBeanLocal.getSubCategories(categoryId);
             for (CategoryEntity categoryEntity : subCategories) {
@@ -122,8 +112,6 @@ public class CategoryResource {
             };
 
             return Response.status(Status.OK).entity(genericEntity).build();
-        } catch (InvalidLoginCredentialException ex) {
-            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (CategoryNotFoundException ex) {
             return Response.status(Status.OK).build();
         }
@@ -133,10 +121,8 @@ public class CategoryResource {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllLeafCategories(@QueryParam("username") String username,
-            @QueryParam("password") String password) {
+    public Response retrieveAllLeafCategories() {
         try {
-            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
 
             List<CategoryEntity> categoryEntities = categoryEntitySessionBeanLocal.retrieveAllLeafCategories();
 
@@ -153,8 +139,6 @@ public class CategoryResource {
             };
 
             return Response.status(Status.OK).entity(genericEntity).build();
-        } catch (InvalidLoginCredentialException ex) {
-            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
