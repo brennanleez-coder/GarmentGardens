@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.ProductEntity;
+import entity.UserEntity;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.CategoryNotFoundException;
@@ -49,5 +50,7 @@ public interface ProductEntitySessionBeanLocal {
     public void creditQuantityOnHand(Long productId, Integer quantityToCredit) throws ProductNotFoundException;
 
     public List<ProductEntity> retrieveProductsBySellerId(Long userId);
+    
+    public ProductEntity createNewProductFrontEnd(ProductEntity newProductEntity, Long categoryId, List<Long> tagIds, UserEntity seller) throws ProductSkuCodeExistException, UnknownPersistenceException, InputDataValidationException, CreateNewProductException;
     
 }
