@@ -29,6 +29,7 @@ import util.exception.InvalidLoginCredentialException;
 import util.exception.ProductNotFoundException;
 import util.exception.ProductSkuCodeExistException;
 import util.exception.UpdateProductException;
+import util.exception.UserNotFoundException;
 import ws.datamodel.CreateProductReq;
 import ws.datamodel.UpdateProductReq;
 
@@ -131,11 +132,9 @@ public class ProductResource {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllSellerProducts(@QueryParam("username") String username,
-            @QueryParam("password") String password) {
+    public Response retrieveAllSellerProducts(@QueryParam("username") String username) {
         try {
-            
-            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
+            UserEntity userEntity = userEntitySessionBeanLocal.retrieveUserByUsername(username);
             System.out.println("********** ProductResource.retrieveSellerProduct(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
 
             List<ProductEntity> productEntities = productEntitySessionBeanLocal.retrieveProductsBySellerId(userEntity.getUserId());
@@ -165,7 +164,7 @@ public class ProductResource {
             };
 
             return Response.status(Status.OK).entity(genericEntity).build();
-        } catch (InvalidLoginCredentialException ex) {
+        } catch (UserNotFoundException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
