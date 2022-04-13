@@ -29,6 +29,7 @@ import util.exception.RedeemRewardException;
 import util.exception.RewardNotFoundException;
 import util.exception.UpdateRewardException;
 import util.exception.UpdateUserException;
+import util.exception.UseRewardException;
 import util.exception.UserNotFoundException;
 
 /**
@@ -108,6 +109,23 @@ public class RewardEntitySessionBean implements RewardEntitySessionBeanLocal {
 
         if (reward.getRewardName().contains("(EXPIRED)") || reward.getRewardName().contains("(USED)")) {
             throw new RedeemRewardException("There was an issue with redeeming this reward: " + reward.getRewardName());
+        } else {
+            reward.setCustomer(user);
+            reward.setRewardName(reward.getRewardName() + " (REDEEMED)");
+            user.getRewards().add(reward);
+            updateReward(reward);
+            userEntitySessionBeanLocal.updateUser(user);
+            return reward;
+        }
+    }
+
+    @Override
+    public RewardEntity useReward(Long rewardId, Long customerId) throws RewardNotFoundException, UpdateUserException, UserNotFoundException, InputDataValidationException, UpdateRewardException, UseRewardException {
+        UserEntity user = userEntitySessionBeanLocal.retrieveUserByUserId(customerId);
+        RewardEntity reward = retrieveRewardByRewardId(rewardId);
+
+        if (reward.getRewardName().contains("(EXPIRED)") || reward.getRewardName().contains("(USED)")) {
+            throw new UseRewardException("There was an issue with using this reward: " + reward.getRewardName());
         } else {
             reward.setCustomer(user);
             reward.setRewardName(reward.getRewardName() + " (USED)");

@@ -30,6 +30,7 @@ import util.exception.RedeemRewardException;
 import util.exception.RewardNotFoundException;
 import util.exception.UpdateRewardException;
 import util.exception.UpdateUserException;
+import util.exception.UseRewardException;
 import util.exception.UserNotFoundException;
 import ws.datamodel.UpdateRewardReq;
 
@@ -144,7 +145,25 @@ public class RewardResource {
             rewardEntitySessionBeanLocal.redeemReward(rewardId, userId);
 
             return Response.status(Response.Status.OK).build();
-        } catch (RewardNotFoundException | UpdateRewardException | UpdateUserException | RedeemRewardException| InputDataValidationException ex) {
+        } catch (RewardNotFoundException | UpdateRewardException | UpdateUserException | RedeemRewardException | InputDataValidationException ex) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+
+    }
+
+    @Path("useReward/{rewardId}/{userId}")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response useReward(@PathParam("rewardId") Long rewardId,
+            @PathParam("userId") Long userId) {
+
+        try {
+            rewardEntitySessionBeanLocal.useReward(rewardId, userId);
+            return Response.status(Response.Status.OK).build();
+        } catch (RewardNotFoundException | UseRewardException | UpdateUserException | InputDataValidationException ex) {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
