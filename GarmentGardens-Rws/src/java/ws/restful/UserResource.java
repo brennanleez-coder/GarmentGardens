@@ -153,7 +153,7 @@ public class UserResource {
 
             try {
                 UserEntity userEntity = updateProfileReq.getCurrentUser();
-        System.out.println("3 ");
+                System.out.println("3 ");
 
                 userEntitySessionBeanLocal.updateUser(userEntity);
                 

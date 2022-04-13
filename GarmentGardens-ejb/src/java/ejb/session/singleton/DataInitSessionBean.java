@@ -429,7 +429,7 @@ public class DataInitSessionBean {
         for (int i = 11; i < 16; i++) {
             RewardEntity rewardRedeemedByUser = listOfRewards.get(i);
 
-            rewardRedeemedByUser.setRewardName(rewardRedeemedByUser.getRewardEnum().toString().concat( "(REDEEMED)"));
+            rewardRedeemedByUser.setRewardName(rewardRedeemedByUser.getRewardEnum().toString().concat(" (REDEEMED)"));
             UserEntity user5 = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf(5));
             rewardRedeemedByUser.setCustomer(user5);
             rewardEntitySessionBeanLocal.updateReward(rewardRedeemedByUser);
