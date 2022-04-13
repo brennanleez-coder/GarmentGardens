@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import util.exception.InputDataValidationException;
+import util.exception.RedeemRewardException;
 import util.exception.RewardNotFoundException;
 import util.exception.UpdateRewardException;
 import util.exception.UpdateUserException;
@@ -140,16 +141,10 @@ public class RewardResource {
             @PathParam("userId") Long userId) {
 
         try {
-            UserEntity user = userEntitySessionBeanLocal.retrieveUserByUserId(userId);
-            RewardEntity reward = rewardEntitySessionBeanLocal.retrieveRewardByRewardId(rewardId);
-            reward.setCustomer(user);
-            reward.setRewardName(reward.getRewardName() + " (USED)");
-            user.getRewards().add(reward);
-            rewardEntitySessionBeanLocal.updateReward(reward);
-            userEntitySessionBeanLocal.updateUser(user);
+            rewardEntitySessionBeanLocal.redeemReward(rewardId, userId);
 
             return Response.status(Response.Status.OK).build();
-        } catch (RewardNotFoundException | UpdateRewardException | InputDataValidationException ex) {
+        } catch (RewardNotFoundException | UpdateRewardException | UpdateUserException | RedeemRewardException| InputDataValidationException ex) {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();

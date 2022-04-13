@@ -11,8 +11,10 @@ import javax.ejb.Local;
 import util.exception.CreateNewRewardException;
 import util.exception.DeleteRewardException;
 import util.exception.InputDataValidationException;
+import util.exception.RedeemRewardException;
 import util.exception.RewardNotFoundException;
 import util.exception.UpdateRewardException;
+import util.exception.UpdateUserException;
 import util.exception.UserNotFoundException;
 
 /**
@@ -35,5 +37,7 @@ public interface RewardEntitySessionBeanLocal {
     public List<RewardEntity> retrieveAvailableRewards();
 
     public List<RewardEntity> retrieveRewardsByUserId(Long customerId) throws UserNotFoundException;
+
+    public RewardEntity redeemReward(Long rewardId, Long customerId) throws RewardNotFoundException, UpdateUserException, UserNotFoundException, InputDataValidationException, UpdateRewardException, RedeemRewardException;
     
 }
