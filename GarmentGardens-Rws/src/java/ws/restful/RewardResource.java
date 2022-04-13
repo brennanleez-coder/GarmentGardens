@@ -7,9 +7,11 @@ package ws.restful;
 
 import ejb.session.stateless.RewardEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
+import ejb.session.stateless.UserEntitySessionBeanLocal;
 import entity.RewardEntity;
 import entity.StaffEntity;
 import entity.UserEntity;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -23,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import util.exception.RewardNotFoundException;
+import util.exception.UserNotFoundException;
 
 /**
  * REST Web Service
@@ -37,6 +40,7 @@ public class RewardResource {
     private final SessionBeanLookup sessionBeanLookup;
     private final StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
     private final RewardEntitySessionBeanLocal rewardEntitySessionBeanLocal;
+    private final UserEntitySessionBeanLocal userEntitySessionBeanLocal;
 
     /**
      * Creates a new instance of RewardResource
@@ -45,6 +49,7 @@ public class RewardResource {
         sessionBeanLookup = new SessionBeanLookup();
         staffEntitySessionBeanLocal = sessionBeanLookup.lookupStaffEntitySessionBeanLocal();
         rewardEntitySessionBeanLocal = sessionBeanLookup.lookupRewardEntitySessionBeanLocal();
+        userEntitySessionBeanLocal = sessionBeanLookup.lookupUserEntitySessionBeanLocal();
     }
 
     @Path("retrieveAllRewards")
@@ -65,6 +70,47 @@ public class RewardResource {
             };
 
             return Response.status(Status.OK).entity(genericEntity).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+
+    @Path("retrieveRewardsByUserId/{userId}")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveRewardsByUserId(@PathParam("userId") Long userId) {
+        try {
+//
+//            List<RewardEntity> listOfRewards = rewardEntitySessionBeanLocal.retrieveRewardsByUserId(userId);
+//
+//            for (RewardEntity reward : listOfRewards) {
+////                reward.setCustomer(null);
+//                reward.getCustomer().getRewards().clear();
+//            }
+
+//this method below works///
+            UserEntity userEntity = userEntitySessionBeanLocal.retrieveUserByUserId(userId);
+            userEntity.getOrders().clear();
+            userEntity.getCreditCards().clear();
+            userEntity.setIndividualCart(null);
+            userEntity.setGroupCart(null);
+            
+            
+            for (RewardEntity reward: userEntity.getRewards()) {
+                reward.setCustomer(null);
+                reward.setStaff(null);
+            }
+            
+            
+            GenericEntity<List<RewardEntity>> genericEntity = new GenericEntity<List<RewardEntity>>(userEntity.getRewards()) {
+            };
+            
+
+            return Response.status(Status.OK).entity(genericEntity).build();
+        } catch (UserNotFoundException ex) {
+            return Response.status(Status.BAD_REQUEST).entity(ex.getMessage()).build();
+
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
