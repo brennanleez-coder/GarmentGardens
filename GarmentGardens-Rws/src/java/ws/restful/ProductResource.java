@@ -176,12 +176,18 @@ public class ProductResource {
     public Response retrieveProduct(@PathParam("productId") Long productId) {
         try {
             ProductEntity productEntity = productEntitySessionBeanLocal.retrieveProductByProductId(productId);
+            System.out.println("Product Entity: " + productEntity.getProductId());
+            
+            CategoryEntity categoryEntity = productEntity.getCategory();
 
-            if (productEntity.getCategory().getParentCategory() != null) {
-                productEntity.getCategory().getParentCategory().getSubCategories().clear();
-            }
+            categoryEntity.setParentCategory(null);
+            categoryEntity.getSubCategories().clear();
 
-            productEntity.getCategory().getProducts().clear();
+            productEntity.setSeller(null);
+
+            categoryEntity.getProducts().clear();
+            productEntity.getLineItems().clear();
+            productEntity.getRatings().clear();
 
             for (TagEntity tagEntity : productEntity.getTags()) {
                 tagEntity.getProducts().clear();

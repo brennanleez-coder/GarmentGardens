@@ -30,5 +30,7 @@ public interface DisputeEntitySessionBeanLocal {
     public void deleteDispute(Long disputeId) throws DisputeNotFoundException, DeleteDisputeException;
 
     public DisputeEntity updateDispute(DisputeEntity disputeEntity) throws UpdateDisputeException, DisputeNotFoundException;
+
+    public List<DisputeEntity> viewMyDisputes(Long userId);
     
 }
