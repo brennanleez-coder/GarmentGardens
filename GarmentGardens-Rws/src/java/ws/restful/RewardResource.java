@@ -70,6 +70,29 @@ public class RewardResource {
         }
     }
 
+    @Path("retrieveAvailableRewards")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retrieveAvailableRewards() {
+        try {
+
+            List<RewardEntity> listOfRewards = rewardEntitySessionBeanLocal.retrieveAvailableRewards();
+
+            for (RewardEntity reward : listOfRewards) {
+                reward.setCustomer(null);
+                reward.setStaff(null);
+            }
+
+            GenericEntity<List<RewardEntity>> genericEntity = new GenericEntity<List<RewardEntity>>(listOfRewards) {
+            };
+
+            return Response.status(Status.OK).entity(genericEntity).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+
     @Path("retrieveReward/{rewardId}")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)

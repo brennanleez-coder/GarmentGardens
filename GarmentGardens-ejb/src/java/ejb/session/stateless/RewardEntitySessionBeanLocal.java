@@ -30,5 +30,7 @@ public interface RewardEntitySessionBeanLocal {
     public void updateReward(RewardEntity rewardEntity) throws InputDataValidationException, RewardNotFoundException, UpdateRewardException;
 
     public void deleteReward(Long rewardId) throws RewardNotFoundException, DeleteRewardException;
+
+    public List<RewardEntity> retrieveAvailableRewards();
     
 }
