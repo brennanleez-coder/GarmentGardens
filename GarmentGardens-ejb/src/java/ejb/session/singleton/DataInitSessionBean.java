@@ -373,7 +373,7 @@ public class DataInitSessionBean {
 
     }
 
-    private void initialiseRewards() throws InputDataValidationException, CreateNewRewardException, RewardNotFoundException, UpdateRewardException {
+    private void initialiseRewards() throws InputDataValidationException, CreateNewRewardException, RewardNotFoundException, UpdateRewardException, UserNotFoundException {
         RewardEnum[] rewards = RewardEnum.values();
 
         List<StaffEntity> listOfStaff = staffEntitySessionBeanLocal.retrieveAllStaffs();
@@ -415,6 +415,7 @@ public class DataInitSessionBean {
             rewardEntitySessionBeanLocal.updateReward(rewardToBeRedeemed);
         }
 
+
         for (int i = 19; i < 30; i++) {
             RewardEntity rewardToBeExpired = listOfRewards.get(i);
 
@@ -433,9 +434,19 @@ public class DataInitSessionBean {
             rewardToBeExpired.setRewardName(rewardToBeExpired.getRewardEnum().toString().concat(expiredOrNot));
             rewardEntitySessionBeanLocal.updateReward(rewardToBeExpired);
         }
+
+        for (int i = 11; i < 16; i++) {
+            RewardEntity rewardRedeemedByUser = listOfRewards.get(i);
+
+            rewardRedeemedByUser.setRewardName(rewardRedeemedByUser.getRewardEnum().toString().concat( "(REDEEMED)"));
+            UserEntity user5 = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf(5));
+            rewardRedeemedByUser.setCustomer(user5);
+            rewardEntitySessionBeanLocal.updateReward(rewardRedeemedByUser);
+        }
+
+        
     }
-    
-    
+
     private void initialiseDisputes() throws UserUsernameExistException, StaffUsernameExistException, UnknownPersistenceException, InputDataValidationException, StaffNotFoundException, OrderNotFoundException {
         
         List<StaffEntity> listOfStaff = staffEntitySessionBeanLocal.retrieveAllStaffs();
@@ -452,9 +463,6 @@ public class DataInitSessionBean {
 //            new Random().nextInt(listOfStaff.size()%5)
         }
     }
-        
- 
-            
 
     private void initialiseCCs() throws InputDataValidationException, CreateNewCreditCardException {
 
@@ -476,7 +484,7 @@ public class DataInitSessionBean {
             ccToMake.setCvv(cvv + i);
             ccToMake.setExpiryDate(new Date());
             ccToMake.setBillingAddress(seller.getAddress());
-            
+
             CreditCardEntity ccToMake2 = new CreditCardEntity();
             ccToMake2.setHolderName(seller.getFirstName() + " " + seller.getLastName());
             ccToMake2.setCreditCardNumber(ccNum2 + i);
@@ -492,9 +500,8 @@ public class DataInitSessionBean {
         }
     }
 
-
 ////helper////
-public Pair<String, String> getRandomName() {
+    public Pair<String, String> getRandomName() {
         String[] firstNames = {
             "Aaren",
             "Aarika",

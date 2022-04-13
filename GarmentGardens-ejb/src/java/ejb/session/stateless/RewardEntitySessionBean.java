@@ -7,10 +7,12 @@ package ejb.session.stateless;
 
 import entity.RewardEntity;
 import entity.StaffEntity;
+import entity.UserEntity;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,6 +27,7 @@ import util.exception.DeleteRewardException;
 import util.exception.InputDataValidationException;
 import util.exception.RewardNotFoundException;
 import util.exception.UpdateRewardException;
+import util.exception.UserNotFoundException;
 
 /**
  *
@@ -32,6 +35,9 @@ import util.exception.UpdateRewardException;
  */
 @Stateless
 public class RewardEntitySessionBean implements RewardEntitySessionBeanLocal {
+
+    @EJB(name = "UserEntitySessionBeanLocal")
+    private UserEntitySessionBeanLocal userEntitySessionBeanLocal;
 
     @PersistenceContext(unitName = "GarmentGardens-ejbPU")
     private EntityManager entityManager;
@@ -41,6 +47,7 @@ public class RewardEntitySessionBean implements RewardEntitySessionBeanLocal {
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
 
+    
     public RewardEntitySessionBean() {
         validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
@@ -81,6 +88,17 @@ public class RewardEntitySessionBean implements RewardEntitySessionBeanLocal {
 
         List<RewardEntity> availableRewards = allRewards.stream().filter(available).collect(Collectors.toList());
         return availableRewards;
+    }
+    
+    @Override
+    public List<RewardEntity> retrieveRewardsByUserId(Long customerId) throws UserNotFoundException {
+        UserEntity user = userEntitySessionBeanLocal.retrieveUserByUserId(customerId);
+        if (user != null) {
+            return user.getRewards();
+        } else {
+            throw new UserNotFoundException("User cannot be found: " + customerId);
+        }
+        
     }
 
     @Override

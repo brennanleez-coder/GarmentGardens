@@ -13,6 +13,7 @@ import util.exception.DeleteRewardException;
 import util.exception.InputDataValidationException;
 import util.exception.RewardNotFoundException;
 import util.exception.UpdateRewardException;
+import util.exception.UserNotFoundException;
 
 /**
  *
@@ -32,5 +33,7 @@ public interface RewardEntitySessionBeanLocal {
     public void deleteReward(Long rewardId) throws RewardNotFoundException, DeleteRewardException;
 
     public List<RewardEntity> retrieveAvailableRewards();
+
+    public List<RewardEntity> retrieveRewardsByUserId(Long customerId) throws UserNotFoundException;
     
 }
