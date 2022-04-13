@@ -9,6 +9,8 @@ import entity.RewardEntity;
 import entity.StaffEntity;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,141 +38,115 @@ public class RewardEntitySessionBean implements RewardEntitySessionBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
-    
-    public RewardEntitySessionBean()
-    {
+
+    public RewardEntitySessionBean() {
         validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
     }
-    
+
     @Override
-    public RewardEntity createNewRewardEntity(RewardEntity newRewardEntity) throws InputDataValidationException, CreateNewRewardException
-    {
-        Set<ConstraintViolation<RewardEntity>>constraintViolations = validator.validate(newRewardEntity);
-        
-        if(constraintViolations.isEmpty())
-        {
-            try
-            {
+    public RewardEntity createNewRewardEntity(RewardEntity newRewardEntity) throws InputDataValidationException, CreateNewRewardException {
+        Set<ConstraintViolation<RewardEntity>> constraintViolations = validator.validate(newRewardEntity);
+
+        if (constraintViolations.isEmpty()) {
+            try {
                 entityManager.persist(newRewardEntity);
                 entityManager.flush();
 
                 return newRewardEntity;
-            }
-            catch(PersistenceException ex)
-            {                
-                if(ex.getCause() != null && 
-                        ex.getCause().getCause() != null &&
-                        ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException"))
-                {
+            } catch (PersistenceException ex) {
+                if (ex.getCause() != null
+                        && ex.getCause().getCause() != null
+                        && ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException")) {
                     throw new CreateNewRewardException("Reward with same name already exist");
-                }
-                else
-                {
+                } else {
                     throw new CreateNewRewardException("An unexpected error has occurred: " + ex.getMessage());
                 }
-            }
-            catch(Exception ex)
-            {                
+            } catch (Exception ex) {
                 throw new CreateNewRewardException("An unexpected error has occurred: " + ex.getMessage());
             }
-        }
-        else
-        {
+        } else {
             throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
         }
     }
-    
-    
+
     @Override
-    public List<RewardEntity> retrieveAllRewards()
-    {
+    public List<RewardEntity> retrieveAvailableRewards() {
+
+        List<RewardEntity> allRewards = retrieveAllRewards();
+        Predicate<RewardEntity> available = x -> !x.getRewardName().contains("(REDEEMED)");
+        
+
+        List<RewardEntity> availableRewards = allRewards.stream().filter(available).collect(Collectors.toList());
+        return availableRewards;
+    }
+
+    @Override
+    public List<RewardEntity> retrieveAllRewards() {
         Query query = entityManager.createQuery("SELECT r FROM RewardEntity r");
         List<RewardEntity> rewardEntities = query.getResultList();
-        
-        for(RewardEntity rewardEntity:rewardEntities)
-        {            
+
+        for (RewardEntity rewardEntity : rewardEntities) {
             rewardEntity.getCustomer();
             rewardEntity.getStaff();
         }
-        
+
         return rewardEntities;
     }
-    
+
     @Override
-    public RewardEntity retrieveRewardByRewardId(Long rewardId) throws RewardNotFoundException
-    {
+    public RewardEntity retrieveRewardByRewardId(Long rewardId) throws RewardNotFoundException {
         RewardEntity rewardEntity = entityManager.find(RewardEntity.class, rewardId);
-        
-        if(rewardEntity != null)
-        {
+
+        if (rewardEntity != null) {
             return rewardEntity;
-        }
-        else
-        {
+        } else {
             throw new RewardNotFoundException("Reward ID " + rewardId + " does not exist!");
-        }               
+        }
     }
-    
-    
+
     @Override
-    public void updateReward(RewardEntity rewardEntity) throws InputDataValidationException, RewardNotFoundException, UpdateRewardException
-    {
-        Set<ConstraintViolation<RewardEntity>>constraintViolations = validator.validate(rewardEntity);
-        
-        if(constraintViolations.isEmpty())
-        {
-            if(rewardEntity.getRewardId()!= null)
-            {
+    public void updateReward(RewardEntity rewardEntity) throws InputDataValidationException, RewardNotFoundException, UpdateRewardException {
+        Set<ConstraintViolation<RewardEntity>> constraintViolations = validator.validate(rewardEntity);
+
+        if (constraintViolations.isEmpty()) {
+            if (rewardEntity.getRewardId() != null) {
                 RewardEntity rewardEntityToUpdate = retrieveRewardByRewardId(rewardEntity.getRewardId());
                 rewardEntityToUpdate.setRewardName(rewardEntity.getRewardName());
                 rewardEntityToUpdate.setCustomer(rewardEntity.getCustomer());
                 rewardEntityToUpdate.setExpiryDate(rewardEntity.getExpiryDate());
                 rewardEntityToUpdate.setStaff(rewardEntity.getStaff());
-            }
-            else
-            {
+            } else {
                 throw new RewardNotFoundException("Reward ID not provided for tag to be updated");
             }
-        }
-        else
-        {
+        } else {
             throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
         }
     }
-    
-    
+
     @Override
-    public void deleteReward(Long rewardId) throws RewardNotFoundException, DeleteRewardException
-    {
+    public void deleteReward(Long rewardId) throws RewardNotFoundException, DeleteRewardException {
         RewardEntity rewardEntityToRemove = retrieveRewardByRewardId(rewardId);
-                
-        if(rewardEntityToRemove.getCustomer() != null)
-        {
+
+        if (rewardEntityToRemove.getCustomer() != null) {
             throw new DeleteRewardException("Reward ID " + rewardId + " is associated with existing customer and cannot be deleted!");
-        }
-        else
-        {
+        } else {
             StaffEntity staff = rewardEntityToRemove.getStaff();
             staff.getCreatedRewards().remove(rewardEntityToRemove);
             entityManager.remove(rewardEntityToRemove);
-        }                
+        }
     }
-    
-    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<RewardEntity>>constraintViolations)
-    {
+
+    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<RewardEntity>> constraintViolations) {
         String msg = "Input data validation error!:";
-            
-        for(ConstraintViolation constraintViolation:constraintViolations)
-        {
+
+        for (ConstraintViolation constraintViolation : constraintViolations) {
             msg += "\n\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage();
         }
-        
+
         return msg;
     }
-    
-    
+
 }
