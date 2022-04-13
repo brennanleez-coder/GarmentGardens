@@ -133,7 +133,7 @@ public class RewardResource {
     }
 
     @Path("redeemReward/{rewardId}/{userId}")
-    @POST
+    @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Response redeemReward(@PathParam("rewardId") Long rewardId,
