@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.DisputeEntity;
 import entity.OrderEntity;
 import entity.StaffEntity;
+import entity.UserEntity;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +22,7 @@ import util.exception.DisputeNotFoundException;
 import util.exception.OrderNotFoundException;
 import util.exception.StaffNotFoundException;
 import util.exception.UpdateDisputeException;
+import util.exception.UserNotFoundException;
 
 /**
  *
@@ -28,6 +30,9 @@ import util.exception.UpdateDisputeException;
  */
 @Stateless
 public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
+
+    @EJB(name = "UserEntitySessionBeanLocal")
+    private UserEntitySessionBeanLocal userEntitySessionBeanLocal;
 
     @EJB(name = "OrderEntitySessionBeanLocal")
     private OrderEntitySessionBeanLocal orderEntitySessionBeanLocal;
@@ -66,6 +71,19 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
         Query query = entityManager.createQuery("SELECT d FROM DisputeEntity d");
 
         return query.getResultList();
+    }
+    
+    @Override
+    public List<DisputeEntity> viewMyDisputes(Long userId) {        
+        
+        Query query = entityManager.createQuery("SELECT d FROM DisputeEntity d WHERE d.order.customer.userId = :inSearch");
+        
+        query.setParameter("inSearch",userId);
+        List<DisputeEntity> disputeEntities = query.getResultList();
+        for(DisputeEntity de: disputeEntities) {
+            System.out.println(de.getTitle());
+        }
+        return disputeEntities;
     }
 
     @Override
@@ -111,6 +129,10 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
             // New in v4.1 to prevent deleting staff with existing sale transaction(s)
             throw new DeleteDisputeException("Dispute ID " + disputeId + " is associated with existing dispute(s) and cannot be deleted!");
         }
+    }
+
+    public void persist(Object object) {
+        entityManager.persist(object);
     }
 
 }
