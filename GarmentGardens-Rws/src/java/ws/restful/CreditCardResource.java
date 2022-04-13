@@ -68,24 +68,22 @@ public class CreditCardResource {
      *
      * @return an instance of java.lang.String
      */
-    @Path("retrieveAllCreditCards/{userId}")
+    @Path("retrieveAllCreditCards")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveAllCreditCards(@QueryParam("username") String username,
-            @QueryParam("password") String password,
-            @PathParam("userId") Long userId) {
+            @QueryParam("password") String password) {
 
         try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
 
-            List<CreditCardEntity> creditCardEntities = creditCardEntitySessionBeanLocal.retrieveAllCreditCards();
+            List<CreditCardEntity> creditCardEntities = userEntity.getCreditCards();
             for (CreditCardEntity creditCardEntity : creditCardEntities) {
-                creditCardEntity.getAdvertiser();
-                creditCardEntity.getUser();
+                //creditCardEntity.getAdvertiser();
+                creditCardEntity.setUser(null);
             }
-            GenericEntity<List<CreditCardEntity>> genericEntity = new GenericEntity<List<CreditCardEntity>>(creditCardEntities) {
-            };
+            GenericEntity<List<CreditCardEntity>> genericEntity = new GenericEntity<List<CreditCardEntity>>(creditCardEntities) {};
             return Response.status(Response.Status.OK).entity(genericEntity).build();
         } catch (InvalidLoginCredentialException ex) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getMessage()).build();
