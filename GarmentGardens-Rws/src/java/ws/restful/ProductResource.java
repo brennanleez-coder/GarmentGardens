@@ -66,6 +66,8 @@ public class ProductResource {
                 categoryEntity.setParentCategory(null);
                 categoryEntity.getSubCategories().clear();
                 
+                productEntity.setSeller(null);
+                
                 categoryEntity.getProducts().clear();
                 productEntity.getLineItems().clear();
                 productEntity.getRatings().clear();
@@ -139,11 +141,16 @@ public class ProductResource {
             List<ProductEntity> productEntities = productEntitySessionBeanLocal.retrieveProductsBySellerId(userEntity.getUserId());
 
             for (ProductEntity productEntity : productEntities) {
-                if (productEntity.getCategory().getParentCategory() != null) {
-                    productEntity.getCategory().getParentCategory().getSubCategories().clear();
-                }
+                CategoryEntity categoryEntity = productEntity.getCategory();
 
-                productEntity.getCategory().getProducts().clear();
+                categoryEntity.setParentCategory(null);
+                categoryEntity.getSubCategories().clear();
+                
+                productEntity.setSeller(null);
+                
+                categoryEntity.getProducts().clear();
+                productEntity.getLineItems().clear();
+                productEntity.getRatings().clear();
 
                 for (TagEntity tagEntity : productEntity.getTags()) {
                     tagEntity.getProducts().clear();
