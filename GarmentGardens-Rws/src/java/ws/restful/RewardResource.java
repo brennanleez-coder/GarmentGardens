@@ -81,15 +81,6 @@ public class RewardResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveRewardsByUserId(@PathParam("userId") Long userId) {
         try {
-//
-//            List<RewardEntity> listOfRewards = rewardEntitySessionBeanLocal.retrieveRewardsByUserId(userId);
-//
-//            for (RewardEntity reward : listOfRewards) {
-////                reward.setCustomer(null);
-//                reward.getCustomer().getRewards().clear();
-//            }
-
-//this method below works///
             UserEntity userEntity = userEntitySessionBeanLocal.retrieveUserByUserId(userId);
             userEntity.getOrders().clear();
             userEntity.getCreditCards().clear();
