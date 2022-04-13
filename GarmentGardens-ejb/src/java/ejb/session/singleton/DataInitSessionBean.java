@@ -9,6 +9,7 @@ import ejb.session.stateless.AdvertisementEntitySessionBeanLocal;
 import ejb.session.stateless.AdvertiserEntitySessionBeanLocal;
 import ejb.session.stateless.CategoryEntitySessionBeanLocal;
 import ejb.session.stateless.CreditCardEntitySessionBeanLocal;
+import ejb.session.stateless.DisputeEntitySessionBeanLocal;
 import ejb.session.stateless.LineItemEntitySessionBeanLocal;
 import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
 import ejb.session.stateless.OrderEntitySessionBeanLocal;
@@ -22,6 +23,7 @@ import entity.AdvertisementEntity;
 import entity.AdvertiserEntity;
 import entity.CategoryEntity;
 import entity.CreditCardEntity;
+import entity.DisputeEntity;
 import entity.LineItemEntity;
 import entity.MessageOfTheDayEntity;
 import entity.OrderEntity;
@@ -54,6 +56,7 @@ import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.AccessRightEnum;
+import util.enumeration.DisputeStatusEnum;
 import util.enumeration.RewardEnum;
 import util.enumeration.RoleEnum;
 import util.exception.AdvertiserEntityExistException;
@@ -67,6 +70,7 @@ import util.exception.CreateNewProductException;
 import util.exception.CreateNewRewardException;
 import util.exception.CreateNewTagException;
 import util.exception.InputDataValidationException;
+import util.exception.OrderNotFoundException;
 import util.exception.ProductInsufficientQuantityOnHandException;
 import util.exception.ProductNotFoundException;
 import util.exception.ProductSkuCodeExistException;
@@ -86,6 +90,9 @@ import util.exception.UserUsernameExistException;
 @LocalBean
 @Startup
 public class DataInitSessionBean {
+
+    @EJB(name = "DisputeEntitySessionBeanLocal")
+    private DisputeEntitySessionBeanLocal disputeEntitySessionBeanLocal;
 
     @EJB(name = "CreditCardEntitySessionBeanLocal")
     private CreditCardEntitySessionBeanLocal creditCardEntitySessionBeanLocal;
@@ -125,6 +132,8 @@ public class DataInitSessionBean {
 
     @EJB(name = "AdvertisementEntitySessionBeanLocal")
     private AdvertisementEntitySessionBeanLocal advertisementEntitySessionBeanLocal;
+    
+    
 
     @PersistenceContext(unitName = "GarmentGardens-ejbPU")
     private EntityManager em;
@@ -152,7 +161,7 @@ public class DataInitSessionBean {
             initialiseMockOrders();
             initialiseRewards();
             initialiseCCs();
-
+            initialiseDisputes();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -434,8 +443,25 @@ public class DataInitSessionBean {
             rewardRedeemedByUser.setCustomer(user5);
             rewardEntitySessionBeanLocal.updateReward(rewardRedeemedByUser);
         }
+
         
+    }
+
+    private void initialiseDisputes() throws UserUsernameExistException, StaffUsernameExistException, UnknownPersistenceException, InputDataValidationException, StaffNotFoundException, OrderNotFoundException {
         
+        List<StaffEntity> listOfStaff = staffEntitySessionBeanLocal.retrieveAllStaffs();
+        
+        List<OrderEntity> listOfOrder = orderEntitySessionBeanLocal.retrieveAllOrders();
+
+        for(int i = 1; i <= 40; i++) {
+            DisputeStatusEnum[] disputes = DisputeStatusEnum.values();
+            DisputeEntity disputeToMake = new DisputeEntity();
+            disputeToMake.setTitle("Dispute " + i);
+            disputeToMake.setDescription("description" + i);
+            disputeToMake.setDisputeStatus(disputes[new Random().nextInt(2)]);
+            disputeEntitySessionBeanLocal.createNewDispute(disputeToMake, listOfStaff.get(i%5).getStaffId() , listOfOrder.get(i).getOrderId());
+//            new Random().nextInt(listOfStaff.size()%5)
+        }
     }
 
     private void initialiseCCs() throws InputDataValidationException, CreateNewCreditCardException {
