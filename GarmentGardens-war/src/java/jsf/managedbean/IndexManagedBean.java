@@ -63,10 +63,6 @@ public class IndexManagedBean implements Serializable {
         }
         createSalesLineChartModel();
         
-//        setListOfMessageOfTheDay(messageOfTheDayEntitySessionBeanLocal.retrieveAllMessagesOfTheDay());
-//        recentThreeMotd.add(listOfMessageOfTheDay.get(listOfMessageOfTheDay.size()-1));
-//        recentThreeMotd.add(listOfMessageOfTheDay.get(listOfMessageOfTheDay.size()-2));
-//        recentThreeMotd.add(listOfMessageOfTheDay.get(listOfMessageOfTheDay.size()-3));
     }
 
     public void createSalesLineChartModel() {
@@ -107,7 +103,7 @@ public class IndexManagedBean implements Serializable {
 
             Title title = new Title();
             title.setDisplay(true);
-            title.setText("Monthly Revenue Report Chart");
+            title.setText("Monthly Total Sales Report Chart");
             options.setTitle(title);
 
             CartesianScales cScales = new CartesianScales();
