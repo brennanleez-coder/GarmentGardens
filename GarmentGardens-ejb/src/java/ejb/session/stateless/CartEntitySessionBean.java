@@ -41,10 +41,10 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
     }
 
     @Override
-    public CartEntity createNewIndividualCart(Long groupOwnerId, CartEntity newCartEntity) throws InputDataValidationException, UserNotFoundException, CreateNewCartException {
+    public CartEntity createNewIndividualCart(Long customerId, CartEntity newCartEntity) throws InputDataValidationException, UserNotFoundException, CreateNewCartException {
         if (newCartEntity != null) {
             try {
-                UserEntity customerEntity = userEntitySessionBeanLocal.retrieveUserByUserId(groupOwnerId);
+                UserEntity customerEntity = userEntitySessionBeanLocal.retrieveUserByUserId(customerId);
                 newCartEntity.setCustomer(customerEntity);
                 entityManager.persist(newCartEntity);
 

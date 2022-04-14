@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.CartEntity;
 import entity.ProductEntity;
 import entity.RatingEntity;
 import entity.RewardEntity;
@@ -25,6 +26,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.enumeration.CartTypeEnum;
+import util.enumeration.RoleEnum;
 import util.exception.ChangePasswordException;
 import util.exception.DeleteRewardException;
 import util.exception.DeleteUserException;
@@ -55,6 +58,9 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
     @EJB(name = "ProductEntitySessionBeanLocal")
     private ProductEntitySessionBeanLocal productEntitySessionBeanLocal;
 
+    @EJB(name = "CartEntitySessionBeanLocal")
+    private CartEntitySessionBeanLocal cartEntitySessionBeanLocal;
+
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
 
@@ -69,6 +75,14 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
 
         if (constraintViolations.isEmpty()) {
             try {
+                if (newUserEntity.getRole() == RoleEnum.CUSTOMER) {
+                    Long customerId = newUserEntity.getUserId();
+                    CartEntity newCartEntity = new CartEntity();
+                    newCartEntity.setCustomer(newUserEntity);
+                    newCartEntity.setCartTypeEnum(CartTypeEnum.INDIVIDUALCART);
+                    entityManager.persist(newCartEntity);
+                }
+
                 entityManager.persist(newUserEntity);
                 entityManager.flush();
 

@@ -1,5 +1,6 @@
 package ws.restful;
 
+import ejb.session.stateless.CartEntitySessionBeanLocal;
 import ejb.session.stateless.CategoryEntitySessionBeanLocal;
 import ejb.session.stateless.CreditCardEntitySessionBeanLocal;
 import ejb.session.stateless.DisputeEntitySessionBeanLocal;
@@ -112,11 +113,21 @@ public class SessionBeanLookup {
             throw new RuntimeException(ne);
         }
     }
-    
+
     public DisputeEntitySessionBeanLocal lookupDisputeEntitySessionBeanLocal() {
         try {
             javax.naming.Context c = new InitialContext();
             return (DisputeEntitySessionBeanLocal) c.lookup("java:global/GarmentGardens/GarmentGardens-ejb/DisputeEntitySessionBean!ejb.session.stateless.DisputeEntitySessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    public CartEntitySessionBeanLocal lookupCartEntitySessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (CartEntitySessionBeanLocal) c.lookup("java:global/GarmentGardens/GarmentGardens-ejb/CartEntitySessionBean!ejb.session.stateless.CartEntitySessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);
