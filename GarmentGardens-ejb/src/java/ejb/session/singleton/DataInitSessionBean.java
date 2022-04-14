@@ -79,6 +79,7 @@ import util.exception.StaffNotFoundException;
 import util.exception.StaffUsernameExistException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateRewardException;
+import util.exception.UpdateUserException;
 import util.exception.UserNotFoundException;
 import util.exception.UserUsernameExistException;
 
@@ -485,7 +486,7 @@ public class DataInitSessionBean {
         }
     }
 
-    private void initialiseCCs() throws InputDataValidationException, CreateNewCreditCardException {
+    private void initialiseCCs() throws InputDataValidationException, CreateNewCreditCardException, UserNotFoundException, UpdateUserException {
         System.out.println("Init CCs..");
 
         int i = 1;
@@ -494,32 +495,31 @@ public class DataInitSessionBean {
         String cvv = "12";
         String cvv2 = "54";
 
-        List<UserEntity> listOfSeller = userEntitySessionBeanLocal.retrieveAllUsers()
-                .stream()
-                .filter(user -> user.getRole().equals(RoleEnum.SELLER))
-                .collect(Collectors.toList());
-
-        for (UserEntity seller : listOfSeller) {
+        List<UserEntity> listOfSeller = userEntitySessionBeanLocal.retrieveAllUsers();
+        List<AdvertiserEntity> listOfAdvertisers = advertiserEntitySessionBeanLocal.retrieveAllAdvertiserEntity();
+        for (UserEntity user : listOfSeller) {
             CreditCardEntity ccToMake = new CreditCardEntity();
-            ccToMake.setHolderName(seller.getFirstName() + " " + seller.getLastName());
+            ccToMake.setHolderName(user.getFirstName() + " " + user.getLastName());
             ccToMake.setCreditCardNumber(ccNum + i);
             ccToMake.setCvv(cvv + i);
             ccToMake.setExpiryDate(new Date());
-            ccToMake.setBillingAddress(seller.getAddress());
-
-            CreditCardEntity ccToMake2 = new CreditCardEntity();
-            ccToMake2.setHolderName(seller.getFirstName() + " " + seller.getLastName());
-            ccToMake2.setCreditCardNumber(ccNum2 + i);
-            ccToMake2.setCvv(cvv2 + i);
-            ccToMake2.setExpiryDate(new Date());
-            ccToMake2.setBillingAddress(seller.getAddress());
-
-            ccToMake.setUser(seller);
-            ccToMake2.setUser(seller);
-            seller.getCreditCards().add(ccToMake);
-            seller.getCreditCards().add(ccToMake2);
+            ccToMake.setBillingAddress(user.getAddress());
+            ccToMake.setUser(user);
+            user.getCreditCards().add(ccToMake);
             creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake);
-            creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake2);
+            userEntitySessionBeanLocal.updateUser(user);
+
+//            CreditCardEntity ccToMake2 = new CreditCardEntity();
+//            ccToMake2.setHolderName(user.getFirstName() + " " + user.getLastName());
+//            ccToMake2.setCreditCardNumber(ccNum2 + i);
+//            ccToMake2.setCvv(cvv2 + i);
+//            ccToMake2.setExpiryDate(new Date());
+//            ccToMake2.setBillingAddress(user.getAddress());
+//            ccToMake2.setUser(user);
+//            user.getCreditCards().add(ccToMake2);
+//            creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake2);
+            
+
             i++;
         }
     }
