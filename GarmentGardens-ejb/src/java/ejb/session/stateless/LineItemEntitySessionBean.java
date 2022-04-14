@@ -44,6 +44,7 @@ public class LineItemEntitySessionBean implements LineItemEntitySessionBeanLocal
             entityManager.persist(newLineItemEntity);
             entityManager.flush();
             
+            System.out.println("line item Created: " + newLineItemEntity.getLineItemId());
             return newLineItemEntity;
         } else {
             System.out.println(constraintViolations);
