@@ -66,9 +66,6 @@ public class ProductResource {
 
                 categoryEntity.setParentCategory(null);
                 categoryEntity.getSubCategories().clear();
-
-                productEntity.setSeller(null);
-
                 categoryEntity.getProducts().clear();
                 productEntity.getLineItems().clear();
                 productEntity.getRatings().clear();
@@ -76,6 +73,14 @@ public class ProductResource {
                 for (TagEntity tagEntity : productEntity.getTags()) {
                     tagEntity.getProducts().clear();
                 }
+
+                // RETRIEVE SELLER TO DISASSOCIATE OTHERS
+                UserEntity seller = productEntity.getSeller();
+                seller.getRewards().clear();
+                seller.setIndividualCart(null);
+                seller.setGroupCart(null);
+                seller.getOrders().clear();
+                seller.getCreditCards().clear();
             }
 
 //
@@ -106,7 +111,6 @@ public class ProductResource {
 
                 categoryEntity.setParentCategory(null);
                 categoryEntity.getSubCategories().clear();
-
                 categoryEntity.getProducts().clear();
                 productEntity.getLineItems().clear();
                 productEntity.getRatings().clear();
@@ -114,6 +118,14 @@ public class ProductResource {
                 for (TagEntity tagEntity : productEntity.getTags()) {
                     tagEntity.getProducts().clear();
                 }
+
+                // RETRIEVE SELLER TO DISASSOCIATE OTHERS
+                UserEntity seller = productEntity.getSeller();
+                seller.getRewards().clear();
+                seller.setIndividualCart(null);
+                seller.setGroupCart(null);
+                seller.getOrders().clear();
+                seller.getCreditCards().clear();
             }
 
 //            int size = productEntities.size();
