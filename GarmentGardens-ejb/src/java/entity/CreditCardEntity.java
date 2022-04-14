@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -32,8 +33,7 @@ public class CreditCardEntity implements Serializable {
     private Date expiryDate;
     private String billingAddress;
     
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
     
     @ManyToOne(fetch = FetchType.LAZY)
