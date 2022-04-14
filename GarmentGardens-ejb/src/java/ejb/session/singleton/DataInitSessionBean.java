@@ -516,6 +516,8 @@ public class DataInitSessionBean {
 
             ccToMake.setUser(seller);
             ccToMake2.setUser(seller);
+            seller.getCreditCards().add(ccToMake);
+            seller.getCreditCards().add(ccToMake2);
             creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake);
             creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake2);
             i++;

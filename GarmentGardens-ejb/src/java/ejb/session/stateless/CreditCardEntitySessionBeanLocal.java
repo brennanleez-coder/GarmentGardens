@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.CreditCardEntity;
+import entity.UserEntity;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.CreateNewCreditCardException;
@@ -21,7 +22,7 @@ import util.exception.UpdateCreditCardException;
 @Local
 public interface CreditCardEntitySessionBeanLocal {
 
-    public CreditCardEntity createNewCreditCardEntity(CreditCardEntity newCreditCardEntity) throws InputDataValidationException, CreateNewCreditCardException;
+    public Long createNewCreditCardEntity(CreditCardEntity newCreditCardEntity) throws InputDataValidationException, CreateNewCreditCardException;
 
     public List<CreditCardEntity> retrieveAllCreditCards();
 
@@ -29,6 +30,6 @@ public interface CreditCardEntitySessionBeanLocal {
 
     public void updateCreditCard(CreditCardEntity creditCard) throws InputDataValidationException, CreditCardNotFoundException, UpdateCreditCardException;
 
-    public void deleteCreditCard(Long creditCardId) throws CreditCardNotFoundException, DeleteCreditCardException;
+    public void deleteCreditCard(UserEntity user, Long creditCardId) throws CreditCardNotFoundException, DeleteCreditCardException;
     
 }

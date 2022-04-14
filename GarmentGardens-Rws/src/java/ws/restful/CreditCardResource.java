@@ -19,6 +19,7 @@ import javax.persistence.Query;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -34,6 +35,7 @@ import util.exception.CreateNewCreditCardException;
 import util.exception.CreditCardNotFoundException;
 import util.exception.DeleteCreditCardException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.UserNotFoundException;
 import ws.datamodel.CreateCreditCardReq;
 import ws.datamodel.UpdateCreditCardReq;
 
@@ -44,10 +46,10 @@ import ws.datamodel.UpdateCreditCardReq;
  */
 @Path("CreditCard")
 public class CreditCardResource {
-
+    
     private final CreditCardEntitySessionBeanLocal creditCardEntitySessionBeanLocal;
     private final UserEntitySessionBeanLocal userEntitySessionBeanLocal;
-
+    
     @Context
     private UriInfo context;
 
@@ -55,10 +57,10 @@ public class CreditCardResource {
      * Creates a new instance of CreditCardResource
      */
     private final SessionBeanLookup sessionBeanLookup;
-
+    
     public CreditCardResource() {
         sessionBeanLookup = new SessionBeanLookup();
-
+        
         creditCardEntitySessionBeanLocal = sessionBeanLookup.lookupCreditCardEntitySessionBeanLocal();
         userEntitySessionBeanLocal = sessionBeanLookup.lookupUserEntitySessionBeanLocal();
     }
@@ -74,25 +76,26 @@ public class CreditCardResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response retrieveAllCreditCards(@QueryParam("username") String username,
             @QueryParam("password") String password) {
-
+        
         try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-
+            
             List<CreditCardEntity> creditCardEntities = userEntity.getCreditCards();
             for (CreditCardEntity creditCardEntity : creditCardEntities) {
                 //creditCardEntity.getAdvertiser();
                 creditCardEntity.setUser(null);
             }
-            GenericEntity<List<CreditCardEntity>> genericEntity = new GenericEntity<List<CreditCardEntity>>(creditCardEntities) {};
+            GenericEntity<List<CreditCardEntity>> genericEntity = new GenericEntity<List<CreditCardEntity>>(creditCardEntities) {
+            };
             return Response.status(Response.Status.OK).entity(genericEntity).build();
         } catch (InvalidLoginCredentialException ex) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
-
+        
     }
-
+    
     @Path("retrieveCreditCard/{creditCardId}")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
@@ -100,14 +103,14 @@ public class CreditCardResource {
     public Response retrieveCreditCard(@QueryParam("username") String username,
             @QueryParam("password") String password,
             @PathParam("creditCardId") Long creditCardId) {
-
+        
         try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-
+            
             CreditCardEntity creditCardEntity = creditCardEntitySessionBeanLocal.retrieveCreditCardByCreditCardId(creditCardId);
             creditCardEntity.getAdvertiser();
             creditCardEntity.getUser();
-
+            
             GenericEntity<CreditCardEntity> genericEntity = new GenericEntity<CreditCardEntity>(creditCardEntity) {
             };
             return Response.status(Response.Status.OK).entity(genericEntity).build();
@@ -115,8 +118,7 @@ public class CreditCardResource {
             return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (CreditCardNotFoundException ex) {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
@@ -124,66 +126,56 @@ public class CreditCardResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createCreditCard(CreateCreditCardReq createCreditCardReq)
-    {
-        if(createCreditCardReq != null)
-        {
-            try
-            {
+    public Response createCreditCard(CreateCreditCardReq createCreditCardReq) {
+        if (createCreditCardReq != null) {
+            try {
                 UserEntity userEntity = userEntitySessionBeanLocal.userLogin(createCreditCardReq.getUsername(), createCreditCardReq.getPassword());
+                System.out.println("********** CreditCardResource.createCreditCard(): User " + createCreditCardReq.getUsername() + " login remotely via web service");
+                CreditCardEntity creditCardEntity = createCreditCardReq.getNewCC();
+                creditCardEntity.setBillingAddress(userEntity.getAddress());
+                creditCardEntity.setUser(userEntity);
                 
+                Long creditCardId = creditCardEntitySessionBeanLocal.createNewCreditCardEntity(creditCardEntity);
+                System.out.println("Successfully Created Credit Card");
                 
-                CreditCardEntity creditCardEntity  = creditCardEntitySessionBeanLocal.createNewCreditCardEntity(new CreditCardEntity(createCreditCardReq.getHolderName(), createCreditCardReq.getCreditCardNumber(),createCreditCardReq.getCvv(), createCreditCardReq.getExpiryDate(), createCreditCardReq.getBillingAddress()));
-                
-                return Response.status(Response.Status.OK).entity(creditCardEntity.getCreditCardId()).build();
-            }
-            catch(InvalidLoginCredentialException ex)
-            {
-                return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-            }
-            catch(CreateNewCreditCardException ex)
-            {
+                return Response.status(Response.Status.OK).entity(creditCardId).build();
+            } catch (CreateNewCreditCardException ex) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-            }
-            catch(Exception ex)
-            {
+            } catch (Exception ex) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
-        }
-        else
-        {
+        } else {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid create new product request").build();
         }
     }
     
-    @Path("{creditCardId}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{userId}/{creditCardId}")
+    @DELETE
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteCreditCard(@QueryParam("username") String username, 
-                                        @QueryParam("password") String password,
-                                        @PathParam("creditCardId") Long creditCardId)
+    public Response deleteCreditCard(@PathParam("userId") Long userId, @PathParam("creditCardId") Long creditCardId) 
     {
-try
+        try 
         {
-            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-            
-
-            creditCardEntitySessionBeanLocal.deleteCreditCard(creditCardId);
-            
+            UserEntity userEntity = userEntitySessionBeanLocal.retrieveUserByUserId(userId);
+            System.out.println("********** CreditCardResource.deleteCreditCard(): User " + userId + " login remotely via web service");
+            System.out.println("********** CreditCardResource.deleteCreditCard(): User " + userId + " wants to remove Credit Card " + creditCardId);
+            List<CreditCardEntity> cards = userEntity.getCreditCards();
+            for (CreditCardEntity cc: cards) {
+                System.out.println("********** CreditCardResource.deleteCreditCard(): User " + userId + " has card ID " + cc.getCreditCardId());
+            }
+            creditCardEntitySessionBeanLocal.deleteCreditCard(userEntity, creditCardId);
             return Response.status(Status.OK).build();
-        }
-        catch(InvalidLoginCredentialException ex)
-        {
-            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-        }
-        catch(CreditCardNotFoundException | DeleteCreditCardException ex)
-        {
+        } 
+        catch (UserNotFoundException ex) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        } 
+        catch (CreditCardNotFoundException | DeleteCreditCardException ex) {
             return Response.status(Status.BAD_REQUEST).entity(ex.getMessage()).build();
-        }
-        catch(Exception ex)
-        {
+        } 
+        catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-
+    
 }
