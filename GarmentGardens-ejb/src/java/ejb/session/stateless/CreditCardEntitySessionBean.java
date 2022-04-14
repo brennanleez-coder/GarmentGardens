@@ -6,8 +6,12 @@
 package ejb.session.stateless;
 
 import entity.CreditCardEntity;
+import entity.UserEntity;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,6 +26,7 @@ import util.exception.CreditCardNotFoundException;
 import util.exception.DeleteCreditCardException;
 import util.exception.InputDataValidationException;
 import util.exception.UpdateCreditCardException;
+import util.exception.UserNotFoundException;
 
 /**
  *
@@ -30,7 +35,9 @@ import util.exception.UpdateCreditCardException;
 @Stateless
 public class CreditCardEntitySessionBean implements CreditCardEntitySessionBeanLocal {
 
-    @PersistenceContext(unitName = "GarmentGardens-ejbPU")
+    @EJB(name = "UserEntitySessionBeanLocal")
+    private UserEntitySessionBeanLocal userEntitySessionBeanLocal;
+
     private EntityManager entityManager;
 
     private final ValidatorFactory validatorFactory;
@@ -38,137 +45,109 @@ public class CreditCardEntitySessionBean implements CreditCardEntitySessionBeanL
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 
-    
     public CreditCardEntitySessionBean() {
-        
+
         validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
     }
 
-    
     @Override
-    public CreditCardEntity createNewCreditCardEntity(CreditCardEntity newCreditCardEntity) throws InputDataValidationException, CreateNewCreditCardException
-    {
-        Set<ConstraintViolation<CreditCardEntity>>constraintViolations = validator.validate(newCreditCardEntity);
-        
-        if(constraintViolations.isEmpty())
-        {
-            try
-            {
+    public Long createNewCreditCardEntity(CreditCardEntity newCreditCardEntity) throws InputDataValidationException, CreateNewCreditCardException {
+        Set<ConstraintViolation<CreditCardEntity>> constraintViolations = validator.validate(newCreditCardEntity);
+
+        if (constraintViolations.isEmpty()) {
+            try {
                 entityManager.persist(newCreditCardEntity);
                 entityManager.flush();
 
-                return newCreditCardEntity;
-            }
-            catch(PersistenceException ex)
-            {                
-                if(ex.getCause() != null && 
-                        ex.getCause().getCause() != null &&
-                        ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException"))
-                {
+                return newCreditCardEntity.getCreditCardId();
+            } catch (PersistenceException ex) {
+                if (ex.getCause() != null
+                        && ex.getCause().getCause() != null
+                        && ex.getCause().getCause().getClass().getSimpleName().equals("SQLIntegrityConstraintViolationException")) {
                     throw new CreateNewCreditCardException("Credit Card with same Credit Card number already exist");
-                }
-                else
-                {
+                } else {
                     throw new CreateNewCreditCardException("An unexpected error has occurred: " + ex.getMessage());
                 }
-            }
-            catch(Exception ex)
-            {                
+            } catch (Exception ex) {
                 throw new CreateNewCreditCardException("An unexpected error has occurred: " + ex.getMessage());
             }
-        }
-        else
-        {
+        } else {
             throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
         }
     }
-    
-    
+
     @Override
-    public List<CreditCardEntity> retrieveAllCreditCards()
-    {
+    public List<CreditCardEntity> retrieveAllCreditCards() {
         Query query = entityManager.createQuery("SELECT c FROM CreditCardEntity c ORDER BY c.holderName ASC");
         List<CreditCardEntity> creditCardEntities = query.getResultList();
-        
-        for(CreditCardEntity creditCardEntity:creditCardEntities)
-        {            
+
+        for (CreditCardEntity creditCardEntity : creditCardEntities) {
             creditCardEntity.getAdvertiser();
             creditCardEntity.getUser();
         }
-        
+
         return creditCardEntities;
     }
-    
+
     @Override
-    public CreditCardEntity retrieveCreditCardByCreditCardId(Long creditCardId) throws CreditCardNotFoundException
-    {
-        CreditCardEntity tagEntity = entityManager.find(CreditCardEntity.class, creditCardId);
+    public CreditCardEntity retrieveCreditCardByCreditCardId(Long creditCardId) throws CreditCardNotFoundException {
+        try {
+            System.out.println("*********CreditCardEntitySessionBean:: retrieveCreditCardByCreditCardId " + creditCardId);
+            CreditCardEntity creditCardEntity = entityManager.find(CreditCardEntity.class, creditCardId);
+            return creditCardEntity;
+        } 
         
-        if(tagEntity != null)
-        {
-            return tagEntity;
-        }
-        else
-        {
+        catch (Exception ex) {
             throw new CreditCardNotFoundException("Credit Card ID " + creditCardId + " does not exist!");
-        }               
+        }
     }
-    
+
     @Override
-    public void updateCreditCard(CreditCardEntity creditCard) throws InputDataValidationException, CreditCardNotFoundException, UpdateCreditCardException
-    {
-        Set<ConstraintViolation<CreditCardEntity>>constraintViolations = validator.validate(creditCard);
-        
-        if(constraintViolations.isEmpty())
-        {
-            if(creditCard.getCreditCardId()!= null)
-            {
+    public void updateCreditCard(CreditCardEntity creditCard) throws InputDataValidationException, CreditCardNotFoundException, UpdateCreditCardException {
+        Set<ConstraintViolation<CreditCardEntity>> constraintViolations = validator.validate(creditCard);
+
+        if (constraintViolations.isEmpty()) {
+            if (creditCard.getCreditCardId() != null) {
                 CreditCardEntity CreditCardEntityToUpdate = retrieveCreditCardByCreditCardId(creditCard.getCreditCardId());
-                
+
                 Query query = entityManager.createQuery("SELECT c FROM CreditCardEntity c WHERE c.creditCardNumber = :inNumber");
                 query.setParameter("inNumber", creditCard.getCreditCardNumber());
-                
-                if(!query.getResultList().isEmpty())
-                {
+
+                if (!query.getResultList().isEmpty()) {
                     throw new UpdateCreditCardException("The Credit Card Number of the card to be updated is duplicated");
                 }
-                
+
                 CreditCardEntityToUpdate.setBillingAddress(creditCard.getBillingAddress());
                 CreditCardEntityToUpdate.setExpiryDate(creditCard.getExpiryDate());
-            }
-            else
-            {
+            } else {
                 throw new CreditCardNotFoundException("Credit Card ID not provided for Credit Card to be updated");
             }
-        }
-        else
-        {
+        } else {
             throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
         }
     }
-    
-    @Override
-    public void deleteCreditCard(Long creditCardId) throws CreditCardNotFoundException, DeleteCreditCardException
-    {
+
+    public void deleteCreditCard(UserEntity user, Long creditCardId) throws CreditCardNotFoundException, DeleteCreditCardException {
+
+        System.out.println("*********Attempting to retieve credit card for removal " + creditCardId);
         CreditCardEntity creditCardEntityToRemove = retrieveCreditCardByCreditCardId(creditCardId);
-        
+        System.out.println("********Attempting to remove credit card " + creditCardId);
+        user.getCreditCards().remove(creditCardEntityToRemove);
+
         entityManager.remove(creditCardEntityToRemove);
-        
-        
+        entityManager.flush();
+
     }
 
-    
-    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<CreditCardEntity>>constraintViolations)
-    {
+    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<CreditCardEntity>> constraintViolations) {
         String msg = "Input data validation error!:";
-            
-        for(ConstraintViolation constraintViolation:constraintViolations)
-        {
+
+        for (ConstraintViolation constraintViolation : constraintViolations) {
             msg += "\n\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage();
         }
-        
+
         return msg;
     }
-    
+
 }
