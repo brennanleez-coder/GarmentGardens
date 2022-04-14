@@ -43,7 +43,8 @@ public class LineItemEntitySessionBean implements LineItemEntitySessionBeanLocal
         if (constraintViolations.isEmpty()) {
             entityManager.persist(newLineItemEntity);
             entityManager.flush();
-
+            
+            System.out.println("line item Created: " + newLineItemEntity.getLineItemId());
             return newLineItemEntity;
         } else {
             System.out.println(constraintViolations);

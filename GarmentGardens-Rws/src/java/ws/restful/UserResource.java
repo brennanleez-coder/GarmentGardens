@@ -146,15 +146,11 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateProfile(UpdateProfileReq updateProfileReq) {
-        System.out.println("1 ");
 
         if (updateProfileReq != null) {
-                    System.out.println("2 ");
 
             try {
                 UserEntity userEntity = updateProfileReq.getCurrentUser();
-                System.out.println("3 ");
-
                 userEntitySessionBeanLocal.updateUser(userEntity);
                 
                 System.out.println(" Profile updated successfully ****");

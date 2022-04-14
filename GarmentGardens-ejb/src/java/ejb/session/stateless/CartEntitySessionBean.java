@@ -15,9 +15,11 @@ import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import util.exception.CartNotFoundException;
 import util.exception.CreateNewCartException;
 import util.exception.InputDataValidationException;
+import util.exception.LineItemNotFoundException;
 import util.exception.UserNotFoundException;
 
 /**
@@ -33,7 +35,7 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
     private EJBContext eJBContext;
 
     @EJB
-    private UserEntitySessionBeanLocal userEntitySessionBeanLocal;    
+    private UserEntitySessionBeanLocal userEntitySessionBeanLocal;
     @EJB
     private LineItemEntitySessionBeanLocal lineItemEntitySessionBeanLocal;
 
@@ -100,7 +102,12 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
 
         if (cartEntity != null) {
             cartEntity.getCartLineItems().size();
-
+            cartEntity.getGroupCustomers().size();
+            cartEntity.getCustomer();
+            cartEntity.getGroupOwner();
+            for (LineItemEntity cartLineItems : cartEntity.getCartLineItems()) {
+                cartLineItems.getProduct();
+            }
             return cartEntity;
         } else {
             throw new CartNotFoundException("Cart ID " + cartId + " does not exist!");
@@ -108,8 +115,43 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
     }
 
     @Override
+    public CartEntity retrieveIndividualCartByUserId(Long userId) throws CartNotFoundException {
+        Query query = entityManager.createQuery("SELECT c FROM CartEntity c WHERE c.customer.userId = :inUserId");
+        query.setParameter("inUserId", userId);
+        CartEntity cartEntity = (CartEntity) query.getSingleResult();
+
+        if (cartEntity != null) {
+            cartEntity.getCartLineItems().size();
+            cartEntity.getGroupCustomers().size();
+            cartEntity.getCustomer();
+            cartEntity.getGroupOwner();
+            for (LineItemEntity cartLineItems : cartEntity.getCartLineItems()) {
+                cartLineItems.getProduct();
+            }
+            return cartEntity;
+        } else {
+            throw new CartNotFoundException("User " + userId + " does not have a cart!");
+        }
+    }
+
+    @Override
     public void updateCart(CartEntity cartEntity) {
         entityManager.merge(cartEntity);
+    }
+
+    @Override
+    public void addLineItemToCart(LineItemEntity lineItemEntity, UserEntity userEntity) throws CartNotFoundException, LineItemNotFoundException {
+        try {
+            LineItemEntity lineItem = entityManager.find(LineItemEntity.class, lineItemEntity.getLineItemId());
+            UserEntity user = entityManager.find(UserEntity.class, userEntity.getUserId());
+            CartEntity cart = entityManager.find(CartEntity.class, user.getIndividualCart().getCartId());
+            cart.getCartLineItems().add(lineItem);
+
+            System.out.println("added item to cart!");
+        } catch (Exception ex) {
+            throw new CartNotFoundException("Error adding item to cart!");
+
+        }
     }
 
     @Override
@@ -159,7 +201,7 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
                 for (LineItemEntity lineItemEntity : cartEntity.getCartLineItems()) {
                     lineItemEntitySessionBeanLocal.deleteLineItem(lineItemEntity);
                 }
-                
+
                 entityManager.remove(cartEntity);
 
                 entityManager.flush();
@@ -174,5 +216,5 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
             throw new CartNotFoundException("Cart not provided");
         }
     }
-    
+
 }
