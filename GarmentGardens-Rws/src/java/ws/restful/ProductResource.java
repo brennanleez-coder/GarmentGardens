@@ -66,9 +66,9 @@ public class ProductResource {
 
                 categoryEntity.setParentCategory(null);
                 categoryEntity.getSubCategories().clear();
-                
+
                 productEntity.setSeller(null);
-                
+
                 categoryEntity.getProducts().clear();
                 productEntity.getLineItems().clear();
                 productEntity.getRatings().clear();
@@ -77,7 +77,7 @@ public class ProductResource {
                     tagEntity.getProducts().clear();
                 }
             }
-            
+
 //
 //            int size = productEntities.size();
 //            System.out.println("Size is ........................" + size);
@@ -106,7 +106,7 @@ public class ProductResource {
 
                 categoryEntity.setParentCategory(null);
                 categoryEntity.getSubCategories().clear();
-                
+
                 categoryEntity.getProducts().clear();
                 productEntity.getLineItems().clear();
                 productEntity.getRatings().clear();
@@ -118,7 +118,6 @@ public class ProductResource {
 
 //            int size = productEntities.size();
 //            System.out.println("Size is ........................" + size);
-
             GenericEntity<List<ProductEntity>> genericEntity = new GenericEntity<List<ProductEntity>>(productEntities) {
             };
 
@@ -127,26 +126,23 @@ public class ProductResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-    
-    @Path("retrieveAllSellerProducts")
+
+    @Path("retrieveAllSellerProducts/{userId}")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllSellerProducts(@QueryParam("username") String username) {
+    public Response retrieveAllSellerProducts(@PathParam("userId") Long userId) {
         try {
-            UserEntity userEntity = userEntitySessionBeanLocal.retrieveUserByUsername(username);
+            UserEntity userEntity = userEntitySessionBeanLocal.retrieveUserByUserId(userId);
             System.out.println("********** ProductResource.retrieveSellerProduct(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
 
-            List<ProductEntity> productEntities = productEntitySessionBeanLocal.retrieveProductsBySellerId(userEntity.getUserId());
+            List<ProductEntity> productEntities = productEntitySessionBeanLocal.retrieveProductsBySellerId(userId);
 
             for (ProductEntity productEntity : productEntities) {
                 CategoryEntity categoryEntity = productEntity.getCategory();
 
                 categoryEntity.setParentCategory(null);
                 categoryEntity.getSubCategories().clear();
-                
-                productEntity.setSeller(null);
-                
                 categoryEntity.getProducts().clear();
                 productEntity.getLineItems().clear();
                 productEntity.getRatings().clear();
@@ -155,6 +151,13 @@ public class ProductResource {
                     tagEntity.getProducts().clear();
                 }
 
+                // RETRIEVE SELLER TO DISASSOCIATE OTHERS
+                UserEntity seller = productEntity.getSeller();
+                seller.getRewards().clear();
+                seller.setIndividualCart(null);
+                seller.setGroupCart(null);
+                seller.getOrders().clear();
+                seller.getCreditCards().clear();
             }
 
             int size = productEntities.size();
@@ -177,7 +180,7 @@ public class ProductResource {
         try {
             ProductEntity productEntity = productEntitySessionBeanLocal.retrieveProductByProductId(productId);
             System.out.println("Product Entity: " + productEntity.getProductId());
-            
+
             CategoryEntity categoryEntity = productEntity.getCategory();
 
             categoryEntity.setParentCategory(null);

@@ -46,7 +46,6 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
     public DisputeEntitySessionBean() {
     }
 
-    
     @Override
     public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws StaffNotFoundException, OrderNotFoundException {
 
@@ -59,11 +58,11 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
             entityManager.persist(newDisputeEntity);
             entityManager.flush();
             return newDisputeEntity.getDisputeId();
-        } catch (OrderNotFoundException | StaffNotFoundException ex) {
-            Logger.getLogger(DisputeEntitySessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (StaffNotFoundException ex) {
+            throw new StaffNotFoundException("Staff " + staffId + " does not exist!");
+        } catch (OrderNotFoundException ex) {
+            throw new OrderNotFoundException("Order " + orderId + " does not exist!");
         }
-        return null;
-
     }
 
     @Override
@@ -72,15 +71,15 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
 
         return query.getResultList();
     }
-    
+
     @Override
-    public List<DisputeEntity> viewMyDisputes(Long userId) {        
-        
+    public List<DisputeEntity> viewMyDisputes(Long userId) {
+
         Query query = entityManager.createQuery("SELECT d FROM DisputeEntity d WHERE d.order.customer.userId = :inSearch");
-        
-        query.setParameter("inSearch",userId);
+
+        query.setParameter("inSearch", userId);
         List<DisputeEntity> disputeEntities = query.getResultList();
-        for(DisputeEntity de: disputeEntities) {
+        for (DisputeEntity de : disputeEntities) {
             System.out.println(de.getTitle());
         }
         return disputeEntities;
