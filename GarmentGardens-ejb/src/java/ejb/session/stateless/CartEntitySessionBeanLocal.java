@@ -6,13 +6,10 @@
 package ejb.session.stateless;
 
 import entity.CartEntity;
-import entity.LineItemEntity;
-import entity.UserEntity;
 import javax.ejb.Local;
 import util.exception.CartNotFoundException;
 import util.exception.CreateNewCartException;
 import util.exception.InputDataValidationException;
-import util.exception.LineItemNotFoundException;
 import util.exception.UserNotFoundException;
 
 /**
@@ -33,9 +30,5 @@ public interface CartEntitySessionBeanLocal {
     public void LeaveGroupCart(Long groupMemberId, CartEntity cartEntity) throws UnsupportedOperationException, CartNotFoundException;
 
     public void deleteGroupCart(Long groupOwnerId, CartEntity cartEntity) throws UnsupportedOperationException, CartNotFoundException;
-
-    public CartEntity retrieveIndividualCartByUserId(Long userId) throws CartNotFoundException;
-
-    public void addLineItemToCart(LineItemEntity lineItemEntity, UserEntity userEntity) throws CartNotFoundException, LineItemNotFoundException;
 
 }
