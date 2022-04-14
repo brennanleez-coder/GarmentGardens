@@ -22,7 +22,7 @@ import util.exception.UpdateCreditCardException;
 @Local
 public interface CreditCardEntitySessionBeanLocal {
 
-    public Long createNewCreditCardEntity(CreditCardEntity newCreditCardEntity) throws InputDataValidationException, CreateNewCreditCardException;
+    public CreditCardEntity createNewCreditCardEntity(CreditCardEntity newCreditCardEntity) throws InputDataValidationException, CreateNewCreditCardException;
 
     public List<CreditCardEntity> retrieveAllCreditCards();
 

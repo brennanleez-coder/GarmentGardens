@@ -52,15 +52,19 @@ public class CreditCardEntitySessionBean implements CreditCardEntitySessionBeanL
     }
 
     @Override
-    public Long createNewCreditCardEntity(CreditCardEntity newCreditCardEntity) throws InputDataValidationException, CreateNewCreditCardException {
+    public CreditCardEntity createNewCreditCardEntity(CreditCardEntity newCreditCardEntity) throws InputDataValidationException, CreateNewCreditCardException {
         Set<ConstraintViolation<CreditCardEntity>> constraintViolations = validator.validate(newCreditCardEntity);
+                System.out.println("out"); 
 
         if (constraintViolations.isEmpty()) {
             try {
+                System.out.println("try"); 
+                System.out.println(newCreditCardEntity); 
+                System.out.println(newCreditCardEntity.getHolderName()); 
                 entityManager.persist(newCreditCardEntity);
                 entityManager.flush();
 
-                return newCreditCardEntity.getCreditCardId();
+                return newCreditCardEntity;
             } catch (PersistenceException ex) {
                 if (ex.getCause() != null
                         && ex.getCause().getCause() != null
@@ -69,8 +73,6 @@ public class CreditCardEntitySessionBean implements CreditCardEntitySessionBeanL
                 } else {
                     throw new CreateNewCreditCardException("An unexpected error has occurred: " + ex.getMessage());
                 }
-            } catch (Exception ex) {
-                throw new CreateNewCreditCardException("An unexpected error has occurred: " + ex.getMessage());
             }
         } else {
             throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
@@ -96,9 +98,7 @@ public class CreditCardEntitySessionBean implements CreditCardEntitySessionBeanL
             System.out.println("*********CreditCardEntitySessionBean:: retrieveCreditCardByCreditCardId " + creditCardId);
             CreditCardEntity creditCardEntity = entityManager.find(CreditCardEntity.class, creditCardId);
             return creditCardEntity;
-        } 
-        
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new CreditCardNotFoundException("Credit Card ID " + creditCardId + " does not exist!");
         }
     }

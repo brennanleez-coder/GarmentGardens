@@ -113,12 +113,12 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
     @Override
     public UserEntity retrieveUserByUserId(Long userId) throws UserNotFoundException {
 
-        try {
-            UserEntity staffEntity = entityManager.find(UserEntity.class, userId);
+        UserEntity staffEntity = entityManager.find(UserEntity.class, userId);
+        if (staffEntity != null) {
             return staffEntity;
-
-        } catch (Exception ex) {
+        } else {
             throw new UserNotFoundException("User ID " + userId + " does not exist!");
+
         }
     }
 
@@ -166,9 +166,20 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
                     userEntityToUpdate.setEmail(userEntity.getEmail());
                     userEntityToUpdate.setDateOfBirth(userEntity.getDateOfBirth());
                     userEntityToUpdate.setAddress(userEntity.getAddress());
+
+                    if (!userEntity.getCreditCards().isEmpty()) {
+                        userEntityToUpdate.setCreditCards(userEntity.getCreditCards());
+                    }
+                    if (!userEntity.getRewards().isEmpty()) {
+                        userEntityToUpdate.setRewards(userEntity.getRewards());
+                    }
+                    if (!userEntity.getOrders().isEmpty()) {
+                        userEntityToUpdate.setOrders(userEntity.getOrders());
+                    }
                 } else {
                     throw new UpdateUserException("Username of user record to be updated does not match the existing record");
                 }
+
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
             }
