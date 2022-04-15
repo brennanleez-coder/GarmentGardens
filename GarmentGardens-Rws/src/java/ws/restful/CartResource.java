@@ -75,6 +75,7 @@ public class CartResource {
                 lineItem.getProduct().setCategory(null);
                 lineItem.getProduct().getTags().clear();
                 lineItem.getProduct().getRatings().clear();
+                lineItem.getProduct().getLineItems().clear();
             }
 
             List<UserEntity> groupCustomers = cart.getGroupCustomers();
@@ -121,6 +122,7 @@ public class CartResource {
         System.out.println("Retrieving Cart");
 
         try {
+            // INDV CART
             CartEntity cart = cartEntitySessionBeanLocal.retrieveIndividualCartByUserId(userId);
 
             List<LineItemEntity> cartLineItems = cart.getCartLineItems();
@@ -129,6 +131,7 @@ public class CartResource {
                 lineItem.getProduct().setCategory(null);
                 lineItem.getProduct().getTags().clear();
                 lineItem.getProduct().getRatings().clear();
+                lineItem.getProduct().getLineItems().clear();
             }
 
             List<UserEntity> groupCustomers = cart.getGroupCustomers();
