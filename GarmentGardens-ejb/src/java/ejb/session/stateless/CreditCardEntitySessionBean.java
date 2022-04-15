@@ -38,12 +38,12 @@ public class CreditCardEntitySessionBean implements CreditCardEntitySessionBeanL
     @EJB(name = "UserEntitySessionBeanLocal")
     private UserEntitySessionBeanLocal userEntitySessionBeanLocal;
 
+    @PersistenceContext(unitName = "GarmentGardens-ejbPU")
     private EntityManager entityManager;
 
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+
 
     public CreditCardEntitySessionBean() {
 
@@ -54,13 +54,9 @@ public class CreditCardEntitySessionBean implements CreditCardEntitySessionBeanL
     @Override
     public CreditCardEntity createNewCreditCardEntity(CreditCardEntity newCreditCardEntity) throws InputDataValidationException, CreateNewCreditCardException {
         Set<ConstraintViolation<CreditCardEntity>> constraintViolations = validator.validate(newCreditCardEntity);
-                System.out.println("out"); 
 
         if (constraintViolations.isEmpty()) {
             try {
-                System.out.println("try"); 
-                System.out.println(newCreditCardEntity); 
-                System.out.println(newCreditCardEntity.getHolderName()); 
                 entityManager.persist(newCreditCardEntity);
                 entityManager.flush();
 

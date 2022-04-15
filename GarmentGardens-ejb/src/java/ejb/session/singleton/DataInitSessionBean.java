@@ -160,7 +160,7 @@ public class DataInitSessionBean {
             initialiseAdvertisersAndAdvertisements();
             initialiseMockOrders();
             initialiseRewards();
-            //initialiseCCs();
+            initialiseCCs();
             initialiseDisputes();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -340,7 +340,7 @@ public class DataInitSessionBean {
             staffEntitySessionBeanLocal.createNewStaff(adminToMake);
 
         }
-        for (int i = 0; i <= 30; i++) {
+        for (int i = 0; i <= 20; i++) {
             StaffEntity managerToMake = new StaffEntity(getRandomName().getKey(), getRandomName().getValue(), AccessRightEnum.MANAGER, "manager" + getRandomName().getKey().concat(getRandomName().getValue()), getRandomName().getKey().concat(getRandomName().getValue()));
             staffEntitySessionBeanLocal.createNewStaff(managerToMake);
         }
@@ -353,7 +353,7 @@ public class DataInitSessionBean {
         int min = 0;
         int max = 1000;
 
-        for (int i = 1; i <= 30; i++) {
+        for (int i = 1; i <= 20; i++) {
 
             AdvertiserEntity advertiser = new AdvertiserEntity("advertiser " + getRandomName().getKey(), getRandomName().getKey().concat(getRandomName().getValue()), getRandomName().getKey().concat(getRandomName().getValue()) + i, getRandomName().getKey().concat(getRandomName().getValue()) + Math.floor(Math.random() * (max - min + 1) + min) + "@mail.com");
             advertiserEntitySessionBeanLocal.createNewAdvertiserEntity(advertiser, new ArrayList<>(), new ArrayList<>());
@@ -368,7 +368,7 @@ public class DataInitSessionBean {
         System.out.println("Mock orders..");
 
         // 25 DIFFERENT ORDERS
-        for (int i = 1; i <= 60; i++) {
+        for (int i = 1; i <= 50; i++) {
             LocalDateTime randomOrderDate = getRandomDate();
 
             long randUserId = new Long(rand.nextInt(30) + 1);
@@ -491,7 +491,7 @@ public class DataInitSessionBean {
         }
     }
 
-    private void initialiseCCs() throws InputDataValidationException, CreateNewCreditCardException, UserNotFoundException, UpdateUserException {
+    private void initialiseCCs() throws InputDataValidationException, CreateNewCreditCardException, UserNotFoundException, UpdateUserException, AdvertiserEntityNotFoundException {
         System.out.println("Init CCs..");
 
         int i = 1;
@@ -502,6 +502,8 @@ public class DataInitSessionBean {
 
         List<UserEntity> listOfSeller = userEntitySessionBeanLocal.retrieveAllUsers();
         List<AdvertiserEntity> listOfAdvertisers = advertiserEntitySessionBeanLocal.retrieveAllAdvertiserEntity();
+
+        System.out.println("Init CC for Sellers..");
         for (UserEntity user : listOfSeller) {
             CreditCardEntity ccToMake = new CreditCardEntity();
             ccToMake.setHolderName(user.getFirstName() + " " + user.getLastName());
@@ -519,24 +521,33 @@ public class DataInitSessionBean {
 
             ccToMake.setUser(user);
             ccToMake2.setUser(user);
+
+            creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake);
+            creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake2);
+
+            // THIS COMES AFTER PERSISTING CC
             user.getCreditCards().add(ccToMake);
             user.getCreditCards().add(ccToMake2);
-
             userEntitySessionBeanLocal.updateUser(user);
+            i++;
+        }
+
+        System.out.println("Init CC for Advertisers..");
+        for (AdvertiserEntity advertiser : listOfAdvertisers) {
+            CreditCardEntity ccToMake = new CreditCardEntity();
+            ccToMake.setHolderName(advertiser.getCompanyName());
+            ccToMake.setCreditCardNumber(ccNum + i);
+            ccToMake.setCvv(cvv + i);
+            ccToMake.setExpiryDate(new Date());
+            ccToMake.setBillingAddress("");
+
+            ccToMake.setAdvertiser(advertiser);
+
             creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake);
-            userEntitySessionBeanLocal.updateUser(user);
 
-//            CreditCardEntity ccToMake2 = new CreditCardEntity();
-//            ccToMake2.setHolderName(user.getFirstName() + " " + user.getLastName());
-//            ccToMake2.setCreditCardNumber(ccNum2 + i);
-//            ccToMake2.setCvv(cvv2 + i);
-//            ccToMake2.setExpiryDate(new Date());
-//            ccToMake2.setBillingAddress(user.getAddress());
-//            ccToMake2.setUser(user);
-//            user.getCreditCards().add(ccToMake2);
-//            creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake2);
-            
-
+            // THIS COMES AFTER PERSISTING CC
+            advertiser.getCreditCards().add(ccToMake);
+            advertiserEntitySessionBeanLocal.updateAdvertiserEntity(advertiser);
             i++;
         }
     }

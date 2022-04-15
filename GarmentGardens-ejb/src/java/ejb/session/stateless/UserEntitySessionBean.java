@@ -106,8 +106,17 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
     @Override
     public List<UserEntity> retrieveAllUsers() {
         Query query = entityManager.createQuery("SELECT u FROM UserEntity u");
+        List<UserEntity> users = query.getResultList();
 
-        return query.getResultList();
+        for (UserEntity u : users) {
+            u.getCreditCards().size();
+            u.getRewards().size();
+            u.getOrders().size();
+            u.getIndividualCart();
+            u.getGroupCart();
+        }
+
+        return users;
     }
 
     @Override
@@ -115,6 +124,13 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
 
         UserEntity staffEntity = entityManager.find(UserEntity.class, userId);
         if (staffEntity != null) {
+
+            staffEntity.getCreditCards().size();
+            staffEntity.getRewards().size();
+            staffEntity.getOrders().size();
+            staffEntity.getIndividualCart();
+            staffEntity.getGroupCart();
+
             return staffEntity;
         } else {
             throw new UserNotFoundException("User ID " + userId + " does not exist!");
@@ -166,16 +182,10 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
                     userEntityToUpdate.setEmail(userEntity.getEmail());
                     userEntityToUpdate.setDateOfBirth(userEntity.getDateOfBirth());
                     userEntityToUpdate.setAddress(userEntity.getAddress());
+                    userEntityToUpdate.setCreditCards(userEntity.getCreditCards());
+                    userEntityToUpdate.setRewards(userEntity.getRewards());
+                    userEntityToUpdate.setOrders(userEntity.getOrders());
 
-                    if (!userEntity.getCreditCards().isEmpty()) {
-                        userEntityToUpdate.setCreditCards(userEntity.getCreditCards());
-                    }
-                    if (!userEntity.getRewards().isEmpty()) {
-                        userEntityToUpdate.setRewards(userEntity.getRewards());
-                    }
-                    if (!userEntity.getOrders().isEmpty()) {
-                        userEntityToUpdate.setOrders(userEntity.getOrders());
-                    }
                 } else {
                     throw new UpdateUserException("Username of user record to be updated does not match the existing record");
                 }
