@@ -14,14 +14,16 @@ public class UpdateCartReq {
     private UserEntity currentUser;
     private ProductEntity productToAdd;
     private int qtyToAdd;
+    private String promoCode;
 
     public UpdateCartReq() {
     }
 
-    public UpdateCartReq(UserEntity currentUser, ProductEntity productToAdd, int qtyToAdd) {
+    public UpdateCartReq(UserEntity currentUser, ProductEntity productToAdd, int qtyToAdd, String promoCode) {
         this.currentUser = currentUser;
         this.productToAdd = productToAdd;
         this.qtyToAdd = qtyToAdd;
+        this.promoCode = promoCode;
     }
 
     public UserEntity getCurrentUser() {
@@ -46,6 +48,14 @@ public class UpdateCartReq {
 
     public void setQtyToAdd(int qtyToAdd) {
         this.qtyToAdd = qtyToAdd;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 
     

@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.OrderEntity;
 import entity.UserEntity;
 import java.util.List;
 import javax.ejb.Local;
@@ -39,5 +40,7 @@ public interface UserEntitySessionBeanLocal {
     public void deleteUser(Long userId) throws UserNotFoundException, DeleteUserException;
 
     public void userChangePassword(String username, String oldPassword, String newPassword) throws ChangePasswordException, InvalidLoginCredentialException;
+
+    public List<OrderEntity> retrieveUserOrdersOnly(Long userId) throws UserNotFoundException;
     
 }

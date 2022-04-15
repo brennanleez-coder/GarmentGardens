@@ -32,7 +32,7 @@ public class CartEntity implements Serializable {
     private Integer totalCartItems;
     private Integer totalQuantity;
     private BigDecimal totalAmount;
-    private CartTypeEnum cartTypeEnum;
+    private CartTypeEnum cartType;
     
     @OneToOne(fetch = FetchType.LAZY)
     private UserEntity customer;
@@ -54,9 +54,9 @@ public class CartEntity implements Serializable {
         this.totalAmount = new BigDecimal(0);
     }
     
-    public CartEntity(Integer totalCartItems, Integer totalQuantity, BigDecimal totalAmount, CartTypeEnum cartTypeEnum) {
+    public CartEntity(Integer totalCartItems, Integer totalQuantity, BigDecimal totalAmount, CartTypeEnum cartType) {
         this();        
-        this.cartTypeEnum = cartTypeEnum;
+        this.cartType = cartType;
         this.totalCartItems = totalCartItems;
         this.totalQuantity = totalQuantity;
         this.totalAmount = totalAmount;
@@ -193,18 +193,12 @@ public class CartEntity implements Serializable {
         this.cartLineItems = cartLineItems;
     }
 
-    /**
-     * @return the cartTypeEnum
-     */
-    public CartTypeEnum getCartTypeEnum() {
-        return cartTypeEnum;
+    public CartTypeEnum getCartType() {
+        return cartType;
     }
 
-    /**
-     * @param cartTypeEnum the cartTypeEnum to set
-     */
-    public void setCartTypeEnum(CartTypeEnum cartTypeEnum) {
-        this.cartTypeEnum = cartTypeEnum;
+    public void setCartType(CartTypeEnum cartType) {
+        this.cartType = cartType;
     }
-    
+
 }

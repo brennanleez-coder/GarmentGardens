@@ -6,8 +6,10 @@
 package ejb.session.stateless;
 
 import entity.OrderEntity;
+import entity.UserEntity;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.CheckoutException;
 import util.exception.CreateNewOrderException;
 import util.exception.InputDataValidationException;
 import util.exception.OrderAlreadyVoidRefundedException;
@@ -36,5 +38,7 @@ public interface OrderEntitySessionBeanLocal {
     public void deleteOrder(OrderEntity orderEntity);
 
     public List<List<OrderEntity>> retrieveAllOrdersInPastYear();
+
+    public void checkout(UserEntity user, String promoCode) throws CheckoutException;
 
 }

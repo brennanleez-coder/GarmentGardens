@@ -143,7 +143,7 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
     @Override
     public void addLineItemToCart(LineItemEntity lineItemEntity, UserEntity userEntity) throws CartNotFoundException, LineItemNotFoundException {
         try {
-            LineItemEntity lineItem = entityManager.find(LineItemEntity.class, lineItemEntity.getLineItemId());
+            LineItemEntity lineItem = entityManager.find(LineItemEntity.class, lineItemEntity.getLineItemId());            
             UserEntity user = entityManager.find(UserEntity.class, userEntity.getUserId());
             CartEntity cart = entityManager.find(CartEntity.class, user.getIndividualCart().getCartId());
             cart.getCartLineItems().add(lineItem);

@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.CartEntity;
+import entity.OrderEntity;
 import entity.ProductEntity;
 import entity.RatingEntity;
 import entity.RewardEntity;
@@ -79,7 +80,7 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
                     Long customerId = newUserEntity.getUserId();
                     CartEntity newCartEntity = new CartEntity();
                     newCartEntity.setCustomer(newUserEntity);
-                    newCartEntity.setCartTypeEnum(CartTypeEnum.INDIVIDUALCART);
+                    newCartEntity.setCartType(CartTypeEnum.INDIVIDUALCART);
                     entityManager.persist(newCartEntity);
                 }
 
@@ -132,6 +133,19 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
             staffEntity.getGroupCart();
 
             return staffEntity;
+        } else {
+            throw new UserNotFoundException("User ID " + userId + " does not exist!");
+
+        }
+    }
+    
+    // FOR FRONTEND CUSTOMER, ONLY LOAD THE ORDERS    
+    @Override
+    public List<OrderEntity> retrieveUserOrdersOnly(Long userId) throws UserNotFoundException {
+        UserEntity customer = entityManager.find(UserEntity.class, userId);
+        if (customer != null) {
+            List<OrderEntity> orders = customer.getOrders();
+            return orders;
         } else {
             throw new UserNotFoundException("User ID " + userId + " does not exist!");
 
