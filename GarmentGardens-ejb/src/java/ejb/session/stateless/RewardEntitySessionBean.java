@@ -107,7 +107,7 @@ public class RewardEntitySessionBean implements RewardEntitySessionBeanLocal {
         UserEntity user = userEntitySessionBeanLocal.retrieveUserByUserId(customerId);
         RewardEntity reward = retrieveRewardByRewardId(rewardId);
 
-        if (reward.getRewardName().contains("(EXPIRED)") || reward.getRewardName().contains("(USED)")) {
+        if (reward.getRewardName().contains("(EXPIRED)") || reward.getRewardName().contains("(USED)") || reward.getRewardName().contains("(REDEEMED)")) {
             throw new RedeemRewardException("There was an issue with redeeming this reward: " + reward.getRewardName());
         } else {
             reward.setCustomer(user);
@@ -127,12 +127,17 @@ public class RewardEntitySessionBean implements RewardEntitySessionBeanLocal {
         if (reward.getRewardName().contains("(EXPIRED)") || reward.getRewardName().contains("(USED)")) {
             throw new UseRewardException("There was an issue with using this reward: " + reward.getRewardName());
         } else {
-            reward.setCustomer(user);
-            reward.setRewardName(reward.getRewardName() + " (USED)");
-            user.getRewards().add(reward);
-            updateReward(reward);
-            userEntitySessionBeanLocal.updateUser(user);
-            return reward;
+            if (reward.getRewardName().contains("(REDEEMED)")) {
+                reward.setCustomer(user);
+                reward.setRewardName(reward.getRewardName() + " (USED)");
+                user.getRewards().add(reward);
+                updateReward(reward);
+                userEntitySessionBeanLocal.updateUser(user);
+                return reward;
+            } else {
+                throw new UseRewardException("There was an issue with using this reward: " + reward.getRewardName());
+            }
+
         }
     }
 
