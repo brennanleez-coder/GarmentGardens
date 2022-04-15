@@ -17,7 +17,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.view.ViewScoped;
+import util.exception.ChangePasswordException;
 import util.exception.InputDataValidationException;
+import util.exception.InvalidLoginCredentialException;
 import util.exception.StaffNotFoundException;
 import util.exception.UpdateStaffException;
 
@@ -51,12 +53,12 @@ public class ChangePasswordManagedBean implements Serializable{
     public void changePassword(ActionEvent event) throws IOException {
         try {
             if (getNewPassword1().equals(getNewPassword2())) {
-                staffEntitySessionBeanLocal.updateStaff(getCurrentStaff());
+                staffEntitySessionBeanLocal.staffChangePassword(currentStaff.getUsername(), currentPassword, newPassword2);
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Password successfully updated", null));
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Passwords do not match", null));
             }
-        } catch (StaffNotFoundException | UpdateStaffException | InputDataValidationException ex) {
+        } catch (ChangePasswordException | InvalidLoginCredentialException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error has occured while changing password. Password is not updated", null));
         }
     }

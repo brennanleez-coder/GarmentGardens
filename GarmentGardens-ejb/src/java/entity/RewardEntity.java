@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Random;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -31,6 +32,7 @@ public class RewardEntity implements Serializable {
     private String rewardName;
     private RewardEnum rewardEnum;
     private Date expiryDate;
+    private int promoCode;
     
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     //@JoinColumn(nullable = false)
@@ -41,13 +43,18 @@ public class RewardEntity implements Serializable {
     private UserEntity customer;
 
     public RewardEntity() {
+        this.promoCode =  ("PrOmOcOdE" + new Random().nextInt(500)).toString().hashCode();
     }
 
-    public RewardEntity(String rewardName, RewardEnum rewardEnum, Date expiryDate) {
+    public RewardEntity(String rewardName, RewardEnum rewardEnum, Date expiryDate,StaffEntity staff, UserEntity customer) {
         this.rewardName = rewardName;
         this.rewardEnum = rewardEnum;
         this.expiryDate = expiryDate;
+        this.staff = staff;
+        this.customer = customer;
     }
+
+
 
     public Long getRewardId() {
         return rewardId;
@@ -133,6 +140,14 @@ public class RewardEntity implements Serializable {
      */
     public void setCustomer(UserEntity customer) {
         this.customer = customer;
+    }
+
+    public int getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(int promoCode) {
+        this.promoCode = promoCode;
     }
     
 }
