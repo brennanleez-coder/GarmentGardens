@@ -32,7 +32,7 @@ public class RewardEntity implements Serializable {
     private String rewardName;
     private RewardEnum rewardEnum;
     private Date expiryDate;
-    private int promoCode;
+    private Integer promoCode;
     
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     //@JoinColumn(nullable = false)
@@ -146,7 +146,7 @@ public class RewardEntity implements Serializable {
         return promoCode;
     }
 
-    public void setPromoCode(int promoCode) {
+    public void setPromoCode(Integer promoCode) {
         this.promoCode = promoCode;
     }
     
