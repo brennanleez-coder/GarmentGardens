@@ -86,6 +86,7 @@ public class LineItemEntitySessionBean implements LineItemEntitySessionBeanLocal
             throw new LineItemNotFoundException("Line Item ID cannot be found");
         }
     }
+    
 
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<LineItemEntity>> constraintViolations) {
         String msg = "Input data validation error!:";

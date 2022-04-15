@@ -158,7 +158,7 @@ public class DataInitSessionBean {
             initialiseAdvertisersAndAdvertisements();
             initialiseMockOrders();
             initialiseRewards();
-            initialiseCCs();
+            //initialiseCCs();
             initialiseDisputes();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -166,15 +166,13 @@ public class DataInitSessionBean {
 
     }
 
-    private void initaliseCategoriesTags() throws UnknownPersistenceException, ProductSkuCodeExistException, CreateNewTagException, CreateNewProductException, CreateNewCategoryException, InputDataValidationException, UserNotFoundException {
+    private void initaliseCategoriesTags() throws UnknownPersistenceException, ProductSkuCodeExistException, CreateNewTagException, CreateNewProductException, CreateNewCategoryException, InputDataValidationException, UserNotFoundException, UserUsernameExistException {
         System.out.println("Init Categories and Tags..");
 
         UserEntity seller1 = new UserEntity("seller1", "lee", "seller1@mail.com", "seller1", "password", new Date(), "NUS", RoleEnum.SELLER);
-        try {
-            userEntitySessionBeanLocal.createNewUser(seller1);
-        } catch (UserUsernameExistException ex) {
-            Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
+        userEntitySessionBeanLocal.createNewUser(seller1);
+        System.out.println("Seller " + seller1.getUsername() + " created successfully");
 
         TagEntity tagEntityPopular = tagEntitySessionBeanLocal.createNewTagEntity(new TagEntity("Popular"));
         TagEntity tagEntityDiscount = tagEntitySessionBeanLocal.createNewTagEntity(new TagEntity("Discount"));
@@ -255,12 +253,12 @@ public class DataInitSessionBean {
                 RatingEntity testRating = ratingEntitySessionBeanLocal.createRating(new RatingEntity("This product has a very nice colour", 5, new Date()), user.getUserId());
                 testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(user.getUserId()));
                 product.getRatings().add(testRating);
-                for (int i = 1; i < 10; i++) {
-                    UserEntity secondUser = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf((new Random()).nextInt(userEntitySessionBeanLocal.retrieveAllUsers().size() - 1) + 1));
-                    RatingEntity testRating2 = ratingEntitySessionBeanLocal.createRating(new RatingEntity("Mock Ratings", i % 5, new Date()), secondUser.getUserId());
-                    testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(secondUser.getUserId()));
-                    product.getRatings().add(testRating2);
-                }
+//                for (int i = 1; i < 10; i++) {
+//                    UserEntity secondUser = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf((new Random()).nextInt(userEntitySessionBeanLocal.retrieveAllUsers().size() - 1) + 1));
+//                    RatingEntity testRating2 = ratingEntitySessionBeanLocal.createRating(new RatingEntity("Mock Ratings", i % 5, new Date()), secondUser.getUserId());
+//                    testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(secondUser.getUserId()));
+//                    product.getRatings().add(testRating2);
+//                }
 
             }
         }

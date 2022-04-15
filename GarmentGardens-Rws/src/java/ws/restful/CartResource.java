@@ -198,4 +198,7 @@ public class CartResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid add to cart request").build();
         }
     }
+    
+    
+
 }
