@@ -15,7 +15,10 @@ import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
+import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.StaffNotFoundException;
+import util.exception.UpdateStaffException;
 
 /**
  *
@@ -27,14 +30,12 @@ public class LoginManagedBean {
 
 //    @EJB(name = "StaffEntitySessionBeanLocal")
 //    private StaffEntitySessionBeanLocal staffEntitySessionBeanLocal1;
-
     @EJB(name = "StaffEntitySessionBeanLocal")
     private StaffEntitySessionBeanLocal staffEntitySessionBeanLocal;
-    
-    
 
     private String username;
     private String password;
+
 
     /**
      * Creates a new instance of LoginManagedBean
@@ -59,6 +60,8 @@ public class LoginManagedBean {
         FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/index.xhtml");
     }
 
+    
+
     public String getUsername() {
         return username;
     }
@@ -74,5 +77,6 @@ public class LoginManagedBean {
     public void setPassword(String password) {
         this.password = password;
     }
+
 
 }

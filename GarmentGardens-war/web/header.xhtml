@@ -30,11 +30,16 @@
         </h:panelGroup>
 
         <h:panelGroup rendered="#{sessionScope.isLogin == true}">
-            <h:form id="logoutForm">
+            <h:form id="changePasswordForm" style="display: inline-block">
+                <p:commandButton value="Change Password" action="systemAdministration/changePassword.xhtml"/>
+            </h:form>
+            <h:form id="logoutForm" style="display: inline-block">
                 <p:commandButton value="Logout" actionListener="#{loginManagedBean.logout}" icon="pi pi-sign-out" />
             </h:form>
+
         </h:panelGroup>
-        
+
+
     </header>
 
 </ui:composition>
