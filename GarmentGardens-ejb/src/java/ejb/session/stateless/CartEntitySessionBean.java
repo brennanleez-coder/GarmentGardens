@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.CartEntity;
 import entity.LineItemEntity;
 import entity.UserEntity;
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -147,10 +148,17 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
             CartEntity cart = entityManager.find(CartEntity.class, user.getIndividualCart().getCartId());
             cart.getCartLineItems().add(lineItem);
 
+            Integer currentTotalCartItems = cart.getTotalCartItems();
+            Integer currentTotalQuantity = cart.getTotalQuantity();
+            BigDecimal currentTotalAmount = cart.getTotalAmount();
+
+            cart.setTotalCartItems(currentTotalCartItems + 1);
+            cart.setTotalQuantity(currentTotalQuantity + lineItem.getQuantity());
+            cart.setTotalAmount(currentTotalAmount.add(lineItem.getSubTotal()));
+
             System.out.println("added item to cart!");
         } catch (Exception ex) {
             throw new CartNotFoundException("Error adding item to cart!");
-
         }
     }
 

@@ -49,6 +49,9 @@ public class CartEntity implements Serializable {
     public CartEntity() {
         this.groupCustomers = new ArrayList<UserEntity>();
         this.cartLineItems = new ArrayList<LineItemEntity>();
+        this.totalCartItems = 0;
+        this.totalQuantity = 0;
+        this.totalAmount = new BigDecimal(0);
     }
     
     public CartEntity(Integer totalCartItems, Integer totalQuantity, BigDecimal totalAmount, CartTypeEnum cartTypeEnum) {
