@@ -14,6 +14,7 @@ import ejb.session.stateless.TagEntitySessionBeanLocal;
 import ejb.session.stateless.UserEntitySessionBeanLocal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -25,6 +26,7 @@ public class SessionBeanLookup {
         ejbModuleJndiPath = "java:global/GarmentGardens/GarmentGardens-ejb/";
     }
 
+    
     public StaffEntitySessionBeanLocal lookupStaffEntitySessionBeanLocal() {
         try {
             javax.naming.Context c = new InitialContext();
@@ -144,4 +146,5 @@ public class SessionBeanLookup {
             throw new RuntimeException(ne);
         }
     }
+
 }
