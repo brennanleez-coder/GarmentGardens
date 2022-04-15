@@ -76,11 +76,13 @@ public class ProductResource {
 
                 // RETRIEVE SELLER TO DISASSOCIATE OTHERS
                 UserEntity seller = productEntity.getSeller();
-                seller.getRewards().clear();
-                seller.setIndividualCart(null);
-                seller.setGroupCart(null);
-                seller.getOrders().clear();
-                seller.getCreditCards().clear();
+                if (seller != null) {
+                    seller.getRewards().clear();
+                    seller.setIndividualCart(null);
+                    seller.setGroupCart(null);
+                    seller.getOrders().clear();
+                    seller.getCreditCards().clear();
+                }
             }
 
 //
@@ -121,11 +123,14 @@ public class ProductResource {
 
                 // RETRIEVE SELLER TO DISASSOCIATE OTHERS
                 UserEntity seller = productEntity.getSeller();
-                seller.getRewards().clear();
-                seller.setIndividualCart(null);
-                seller.setGroupCart(null);
-                seller.getOrders().clear();
-                seller.getCreditCards().clear();
+                if (seller != null) {
+                    seller.getRewards().clear();
+                    seller.setIndividualCart(null);
+                    seller.setGroupCart(null);
+                    seller.getOrders().clear();
+                    seller.getCreditCards().clear();
+                }
+
             }
 
 //            int size = productEntities.size();
@@ -165,11 +170,13 @@ public class ProductResource {
 
                 // RETRIEVE SELLER TO DISASSOCIATE OTHERS
                 UserEntity seller = productEntity.getSeller();
-                seller.getRewards().clear();
-                seller.setIndividualCart(null);
-                seller.setGroupCart(null);
-                seller.getOrders().clear();
-                seller.getCreditCards().clear();
+                if (seller != null) {
+                    seller.getRewards().clear();
+                    seller.setIndividualCart(null);
+                    seller.setGroupCart(null);
+                    seller.getOrders().clear();
+                    seller.getCreditCards().clear();
+                }
             }
 
             int size = productEntities.size();
@@ -207,11 +214,13 @@ public class ProductResource {
 
             // RETRIEVE SELLER TO DISASSOCIATE OTHERS
             UserEntity seller = productEntity.getSeller();
-            seller.getRewards().clear();
-            seller.setIndividualCart(null);
-            seller.setGroupCart(null);
-            seller.getOrders().clear();
-            seller.getCreditCards().clear();
+            if (seller != null) {
+                seller.getRewards().clear();
+                seller.setIndividualCart(null);
+                seller.setGroupCart(null);
+                seller.getOrders().clear();
+                seller.getCreditCards().clear();
+            }
 
             return Response.status(Status.OK).entity(productEntity).build();
         } catch (ProductNotFoundException ex) {

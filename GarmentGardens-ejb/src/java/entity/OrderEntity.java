@@ -53,6 +53,9 @@ public class OrderEntity implements Serializable {
     public OrderEntity() {
         this.lineItems = new ArrayList<LineItemEntity>();
         this.transactionDateTime = LocalDateTime.now();
+        this.totalOrderItem = 0;
+        this.totalQuantity = 0;
+        this.totalAmount = new BigDecimal(0);
     }
 
     public OrderEntity(Integer totalOrderItem, Integer totalQuantity, BigDecimal totalAmount, LocalDateTime transactionDateTime) {

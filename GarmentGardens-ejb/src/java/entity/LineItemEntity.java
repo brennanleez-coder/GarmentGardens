@@ -36,6 +36,9 @@ public class LineItemEntity implements Serializable {
     private ProductEntity product;
 
     public LineItemEntity() {
+        this.quantity = 0;
+        this.unitPrice = new BigDecimal(0);
+        this.subTotal = new BigDecimal(0);
     }
 
     public LineItemEntity(Integer quantity, BigDecimal unitPrice) {

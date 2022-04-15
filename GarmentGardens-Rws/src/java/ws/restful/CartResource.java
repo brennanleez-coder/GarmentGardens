@@ -16,6 +16,7 @@ import entity.OrderEntity;
 import entity.ProductEntity;
 import entity.UserEntity;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -243,23 +244,33 @@ public class CartResource {
         try {
             // GET ORDERS
             List<OrderEntity> orders = userEntitySessionBeanLocal.retrieveUserOrdersOnly(userId);
-
+            List<LineItemEntity> lineItems = new ArrayList<>();
+            
             for (OrderEntity order : orders) {
-                order.getDispute().setStaff(null);
-                order.getCustomer().getCreditCards().clear();
-                order.getCustomer().getOrders().clear();
-                order.getCustomer().getRewards().clear();
-                order.getCustomer().setGroupCart(null);
-                order.getCustomer().setIndividualCart(null);
-
-                // GET LINE ITEMS
-                for (LineItemEntity lineItem : order.getLineItems()) {
-                    lineItem.getProduct().setSeller(null);
-                    lineItem.getProduct().setCategory(null);
-                    lineItem.getProduct().getTags().clear();
-                    lineItem.getProduct().getRatings().clear();
-                    lineItem.getProduct().getLineItems().clear();
+                order.setDispute(null);
+//                if (order.getDispute() != null) {
+//                    order.getDispute().setStaff(null);
+//                }
+                order.setCustomer(null);    
+//                if (order.getCustomer() != null) {
+//                    order.getCustomer().getCreditCards().clear();
+//                    order.getCustomer().getOrders().clear();
+//                    order.getCustomer().getRewards().clear();
+//                    order.getCustomer().setGroupCart(null);
+//                    order.getCustomer().setIndividualCart(null);
+//                }
+                if (!order.getLineItems().isEmpty()) {
+                    lineItems.addAll(order.getLineItems());
                 }
+            }
+
+            // GET LINE ITEMS
+            for (LineItemEntity lineItem : lineItems) {
+                lineItem.getProduct().setSeller(null);
+                lineItem.getProduct().setCategory(null);
+                lineItem.getProduct().getTags().clear();
+                lineItem.getProduct().getRatings().clear();
+                lineItem.getProduct().getLineItems().clear();
             }
 
             System.out.println("Retrieved Orders");

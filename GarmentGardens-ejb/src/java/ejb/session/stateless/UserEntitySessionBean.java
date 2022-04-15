@@ -6,6 +6,8 @@
 package ejb.session.stateless;
 
 import entity.CartEntity;
+import entity.DisputeEntity;
+import entity.LineItemEntity;
 import entity.OrderEntity;
 import entity.ProductEntity;
 import entity.RatingEntity;
@@ -143,8 +145,17 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
     @Override
     public List<OrderEntity> retrieveUserOrdersOnly(Long userId) throws UserNotFoundException {
         UserEntity customer = entityManager.find(UserEntity.class, userId);
+        System.out.println(customer);
         if (customer != null) {
             List<OrderEntity> orders = customer.getOrders();
+            for (OrderEntity order : orders) {
+                order.getDispute();
+                order.getCustomer();
+                List<LineItemEntity> lineItems = order.getLineItems();
+                for (LineItemEntity lineItem : lineItems) {
+                    lineItem.getProduct();
+                } 
+            }
             return orders;
         } else {
             throw new UserNotFoundException("User ID " + userId + " does not exist!");
