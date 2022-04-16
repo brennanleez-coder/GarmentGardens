@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.DisputeEntity;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.ApproveDisputeException;
 import util.exception.DeleteDisputeException;
 import util.exception.DisputeNotFoundException;
 import util.exception.OrderNotFoundException;
@@ -21,7 +22,7 @@ import util.exception.UpdateDisputeException;
 @Local
 public interface DisputeEntitySessionBeanLocal {
 
-    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws StaffNotFoundException, OrderNotFoundException;
+    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws OrderNotFoundException;
 
     public List<DisputeEntity> retrieveAllDisputes();
 
@@ -32,5 +33,7 @@ public interface DisputeEntitySessionBeanLocal {
     public DisputeEntity updateDispute(DisputeEntity disputeEntity) throws UpdateDisputeException, DisputeNotFoundException;
 
     public List<DisputeEntity> viewMyDisputes(Long userId);
+
+    public void approveDispute(DisputeEntity disputeEntity, Long staffId, Long orderId) throws ApproveDisputeException, DisputeNotFoundException, StaffNotFoundException, OrderNotFoundException;
     
 }

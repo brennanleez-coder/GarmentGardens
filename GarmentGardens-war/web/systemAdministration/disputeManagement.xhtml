@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/template/defaultTemplate.xhtml"
+                xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+
+        <ez:Breadcrumb pageName="disputeManagement" />
+
+        <div>
+            <div style="display: flex; justify-content: space-between">
+                <h3 style="padding-left:15px">Dispute Management</h3>
+                <h:form>
+                    <p:commandButton style="margin-right:15px" value="Generate Report" ajax="false" />
+                </h:form>
+            </div>
+            <h:form>
+
+                <p:menubar>
+                    <p:submenu label='File' icon="ui-icon-document">
+                        <p:menuitem value="Create New Dispute" onclick="PF('dialogCreateNewDispute').show()" icon="pi pi-plus"/>
+                    </p:submenu>
+                </p:menubar>
+                <br/>
+
+            </h:form>
+
+            <h:form id="formAllDisputes">
+
+                <p:messages id="messages" redisplay="false" closable="true" />
+
+                <p:dataTable id="dataTableAllDisputes" widgetVar="dataTableAllDisputes" value="#{disputeManagementManagedBean.disputeEntities}" var="disputeEntity" rowKey="#{disputeEntity.disputeId}" rowIndexVar="row"
+                             filteredValue="#{disputeManagementManagedBean.filteredDisputeEntities}"
+                             rows="10" paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,50">
+
+
+                    <p:column headerText="Dispute ID" sortBy="#{disputeEntity.disputeId}" filterBy="#{disputeEntity.disputeId}" filterMatchMode="contains">
+                        <h:outputText value="#{disputeEntity.disputeId}" />
+                    </p:column>  
+
+                    <p:column headerText="Dispute Title" sortBy="#{disputeEntity.title}" filterBy="#{disputeEntity.title}" filterMatchMode="contains">
+                        <h:outputText value="#{disputeEntity.title}" />
+                    </p:column>   
+
+                    <p:column headerText="Dispute Description" sortBy="#{disputeEntity.description}" filterBy="#{disputeEntity.description}" filterMatchMode="contains">
+                        <h:outputText value="#{disputeEntity.description}" />
+                    </p:column>
+
+                    <p:column headerText="Dispute Status" sortBy="#{disputeEntity.disputeStatus}" filterBy="#{disputeEntity.disputeStatus}" filterMatchMode="contains">
+                        <h:outputText value="#{disputeEntity.disputeStatus}" />
+                    </p:column>
+                    
+                    
+                    <p:column headerText="Approved By Staff: " sortBy="#{disputeEntity.staff.staffId}" filterBy="#{disputeEntity.staff.staffId}" filterMatchMode="contains">
+                        <h:outputText value="#{disputeEntity.staff.staffId}"/>
+                    </p:column>
+
+                    <p:column headerText="Order Id" sortBy="#{disputeEntity.order.orderId}" filterBy="#{disputeEntity.order.orderId}" filterMatchMode="contains">
+                        <h:outputText value="#{disputeEntity.order.orderId}"/>
+                    </p:column>
+
+
+                    <p:column headerText="Action" >
+                        <p:commandButton update="ccViewDispute:formViewDispute" oncomplete="PF('dialogViewDispute').show()" icon="ui-icon-document" title="View">
+                            <f:setPropertyActionListener value="#{disputeEntity}" target="#{disputeManagementManagedBean.viewDisputeManagedBean.disputeEntityToView}" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-circle-check" actionListener="#{disputeManagementManagedBean.approveDispute}" title="Approve" update="formAllDisputes:dataTableAllDisputes formAllDisputes:messages">
+                            <f:attribute name="disputeEntityToApprove" value="#{disputeEntity}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to approve #{disputeEntity.disputeId}?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{disputeManagementManagedBean.deleteDispute}" update="formAllDisputes:dataTableAllDisputes formAllDisputes:messages">
+                            <f:attribute name="disputeEntityToDelete" value="#{disputeEntity}" />
+                            <p:confirm header="Confirmation" message="Are you sure you want to delete #{disputeEntity.disputeId}?" icon="ui-icon-circle-check" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+            </h:form>
+
+            <h:form id="formCreateNewDispute">
+
+                <p:dialog id="dialogCreateNewDispute" widgetVar="dialogCreateNewDispute" header="Create New Dispute" closable="true">
+                    <p:messages id="messagesCreateNewDispute" redisplay="false" />
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="disputeTitle" value="Dispute Title " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:inputText id="disputeTitle" value="#{disputeManagementManagedBean.newDisputeEntity.title}" placeholder="Enter Dispute title" required="true" requiredMessage="Dispute Title is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="disputeTitle" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="selDisputeEnum" value="Dispute Status " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="selDisputeEnum" value="#{disputeManagementManagedBean.newDisputeEntity.disputeStatus}">
+                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
+                                    <f:selectItems value="#{utilManagedBean.disputeStatus}"/>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="selDisputeEnum" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="selOrder" value="Disputed Order " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="selOrder" value="#{disputeManagementManagedBean.orderIdToCreateDispute}">
+                                    <f:selectItem itemValue="0" itemLabel="[Select One]" noSelectionOption="true" />
+                                    <f:selectItems value="#{disputeManagementManagedBean.listOfOrders}"/>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="selOrder" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel for="description" value="Dispute Description " style="font-weight: bold;" />
+                            </p:column>
+                            <p:column>
+                                
+                                <p:inputText id="description" value="#{disputeManagementManagedBean.newDisputeEntity.description}" placeholder="Enter Dispute Description" required="true" requiredMessage="Dispute Description is required" />
+                            </p:column>
+                            <p:column>
+                                <p:message for="description" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:commandButton type="reset" value="Clear" />&nbsp;
+                                <p:commandButton  value="Create New Dispute" update="@form formAllDisputes:dataTableAllDisputes" actionListener="#{disputeManagementManagedBean.createNewDispute}" oncomplete="PF('dialogCreateNewDispute').show();" />
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+            </h:form>
+
+            <ez:ViewDispute id="ccViewDispute" />
+        </div>
+
+
+    </ui:define>
+
+</ui:composition>

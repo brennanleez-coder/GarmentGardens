@@ -480,13 +480,13 @@ public class DataInitSessionBean {
 
         List<OrderEntity> listOfOrder = orderEntitySessionBeanLocal.retrieveAllOrders();
 
-        for (int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= listOfOrder.size(); i++) {
             DisputeStatusEnum[] disputes = DisputeStatusEnum.values();
             DisputeEntity disputeToMake = new DisputeEntity();
             disputeToMake.setTitle("Dispute " + i);
             disputeToMake.setDescription("description" + i);
             disputeToMake.setDisputeStatus(disputes[new Random().nextInt(2)]);
-            disputeEntitySessionBeanLocal.createNewDispute(disputeToMake, listOfStaff.get(i % 5).getStaffId(), listOfOrder.get(i).getOrderId());
+            disputeEntitySessionBeanLocal.createNewDispute(disputeToMake, null, listOfOrder.get(i).getOrderId());
 //            new Random().nextInt(listOfStaff.size()%5)
         }
     }

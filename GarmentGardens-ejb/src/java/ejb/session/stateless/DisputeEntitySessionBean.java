@@ -17,6 +17,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.enumeration.DisputeStatusEnum;
+import util.exception.ApproveDisputeException;
 import util.exception.DeleteDisputeException;
 import util.exception.DisputeNotFoundException;
 import util.exception.OrderNotFoundException;
@@ -47,19 +49,15 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
     }
 
     @Override
-    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws StaffNotFoundException, OrderNotFoundException {
+    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws OrderNotFoundException {
 
         try {
-            StaffEntity staffToAssociate = staffEntitySessionBeanLocal.retrieveStaffByStaffId(staffId);
             OrderEntity orderToAssociate = orderEntitySessionBeanLocal.retrieveOrderByOrderId(orderId);
-            newDisputeEntity.setStaff(staffToAssociate);
             newDisputeEntity.setOrder(orderToAssociate);
 
             entityManager.persist(newDisputeEntity);
             entityManager.flush();
             return newDisputeEntity.getDisputeId();
-        } catch (StaffNotFoundException ex) {
-            throw new StaffNotFoundException("Staff " + staffId + " does not exist!");
         } catch (OrderNotFoundException ex) {
             throw new OrderNotFoundException("Order " + orderId + " does not exist!");
         }
@@ -68,8 +66,14 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
     @Override
     public List<DisputeEntity> retrieveAllDisputes() {
         Query query = entityManager.createQuery("SELECT d FROM DisputeEntity d");
+        List<DisputeEntity> listOfDisputes = (List<DisputeEntity>) query.getResultList();
 
-        return query.getResultList();
+        for (DisputeEntity dispute : listOfDisputes) {
+            dispute.getStaff();
+            dispute.getOrder();
+        }
+
+        return listOfDisputes;
     }
 
     @Override
@@ -113,21 +117,42 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
         } else {
             throw new DisputeNotFoundException("Dispute ID: " + disputeEntity.getDisputeId() + "cannot be found");
         }
+    }
+
+    @Override
+    public void approveDispute(DisputeEntity disputeEntity, Long staffId, Long orderId) throws ApproveDisputeException, DisputeNotFoundException, StaffNotFoundException, OrderNotFoundException {
+        DisputeEntity dispute = retrieveDisputeByDisputeId(disputeEntity.getDisputeId());
+        StaffEntity staff = staffEntitySessionBeanLocal.retrieveStaffByStaffId(staffId);
+        OrderEntity order = orderEntitySessionBeanLocal.retrieveOrderByOrderId(orderId);
+        if (dispute == null) {
+            throw new DisputeNotFoundException("Dispute Not Found, ID:" + dispute.getDisputeId());
+        } else {
+            if(dispute.getDisputeStatus().equals(DisputeStatusEnum.RESOLVED)) {
+                throw new ApproveDisputeException("Dispute has already been approved");
+            } else {
+                dispute.setDisputeStatus(DisputeStatusEnum.RESOLVED);
+                dispute.setStaff(staff);
+                dispute.setOrder(order);
+            }
+        }
 
     }
 
     @Override
     public void deleteDispute(Long disputeId) throws DisputeNotFoundException, DeleteDisputeException {
         DisputeEntity disputeEntityToRemove = retrieveDisputeByDisputeId(disputeId);
-
-        if (disputeEntityToRemove.getStaff() == null) {
-            disputeEntityToRemove.getStaff().getDisputes().remove(disputeEntityToRemove);
-            disputeEntityToRemove.getOrder().setDispute(null);
-            entityManager.remove(disputeEntityToRemove);
+        if (disputeEntityToRemove != null) {
+            if (disputeEntityToRemove.getStaff() == null && !disputeEntityToRemove.getDisputeStatus().equals(DisputeStatusEnum.RESOLVED)) {
+                disputeEntityToRemove.getOrder().setDispute(null);
+                entityManager.remove(disputeEntityToRemove);
+            } else {
+                // New in v4.1 to prevent deleting staff with existing sale transaction(s)
+                throw new DeleteDisputeException("Dispute ID " + disputeId + " is associated with existing Staff or has already been RESOLVED and cannot be deleted!");
+            }
         } else {
-            // New in v4.1 to prevent deleting staff with existing sale transaction(s)
-            throw new DeleteDisputeException("Dispute ID " + disputeId + " is associated with existing dispute(s) and cannot be deleted!");
+            throw new DisputeNotFoundException("Dispute cannot be found, ID: " + disputeId);
         }
+
     }
 
     public void persist(Object object) {
