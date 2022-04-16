@@ -162,7 +162,7 @@ public class CreditCardResource {
             UserEntity userEntity = userEntitySessionBeanLocal.retrieveUserByUserId(userId);
             System.out.println("********** CreditCardResource.deleteCreditCard(): User " + userId + " login remotely via web service");
             System.out.println("********** CreditCardResource.deleteCreditCard(): User " + userId + " wants to remove Credit Card " + creditCardId);
-            List<CreditCardEntity> cards = userEntity.getCreditCards();
+            List<CreditCardEntity> cards = creditCardEntitySessionBeanLocal.retrieveCreditCardByCreditUserId(userId);
             for (CreditCardEntity cc: cards) {
                 System.out.println("********** CreditCardResource.deleteCreditCard(): User " + userId + " has card ID " + cc.getCreditCardId());
             }
