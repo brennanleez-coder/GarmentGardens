@@ -495,8 +495,8 @@ public class DataInitSessionBean {
         System.out.println("Init CCs..");
 
         int i = 1;
-        String ccNum = "4234 6767 44";
-        String ccNum2 = "1254 4325 86";
+        String ccNum = "4234 6767 5767 44";
+        String ccNum2 = "1254 4325 7586 86";
         String cvv = "12";
         String cvv2 = "54";
 

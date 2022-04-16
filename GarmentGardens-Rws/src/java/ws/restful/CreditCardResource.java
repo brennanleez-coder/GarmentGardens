@@ -80,11 +80,13 @@ public class CreditCardResource {
         try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
             
-            List<CreditCardEntity> creditCardEntities = userEntity.getCreditCards();
+            List<CreditCardEntity> creditCardEntities = creditCardEntitySessionBeanLocal.retrieveCreditCardByCreditUserId(userEntity.getUserId());
             for (CreditCardEntity creditCardEntity : creditCardEntities) {
                 //creditCardEntity.getAdvertiser();
                 creditCardEntity.setUser(null);
+                System.out.println("********** CreditCardResource.retrieveAllCreditCards(): User " + userEntity.getUserId() + " has card ID " + creditCardEntity.getCreditCardId());
             }
+            System.out.println("********** CreditCardResource.retrieveAllCreditCards(): User has total of " + creditCardEntities.size() + " Credit Card ");
             GenericEntity<List<CreditCardEntity>> genericEntity = new GenericEntity<List<CreditCardEntity>>(creditCardEntities) {
             };
             return Response.status(Response.Status.OK).entity(genericEntity).build();
@@ -160,7 +162,7 @@ public class CreditCardResource {
             UserEntity userEntity = userEntitySessionBeanLocal.retrieveUserByUserId(userId);
             System.out.println("********** CreditCardResource.deleteCreditCard(): User " + userId + " login remotely via web service");
             System.out.println("********** CreditCardResource.deleteCreditCard(): User " + userId + " wants to remove Credit Card " + creditCardId);
-            List<CreditCardEntity> cards = userEntity.getCreditCards();
+            List<CreditCardEntity> cards = creditCardEntitySessionBeanLocal.retrieveCreditCardByCreditUserId(userId);
             for (CreditCardEntity cc: cards) {
                 System.out.println("********** CreditCardResource.deleteCreditCard(): User " + userId + " has card ID " + cc.getCreditCardId());
             }
