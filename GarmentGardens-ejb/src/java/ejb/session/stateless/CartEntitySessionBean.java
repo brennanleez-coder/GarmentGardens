@@ -145,24 +145,54 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
 
         LineItemEntity lineItem = entityManager.find(LineItemEntity.class, lineItemEntity.getLineItemId());
         UserEntity user = entityManager.find(UserEntity.class, userEntity.getUserId());
-        CartEntity cart = entityManager.find(CartEntity.class, user.getIndividualCart().getCartId());
-        cart.getCartLineItems().add(lineItem);
+        if (user != null) {
+            CartEntity cart = entityManager.find(CartEntity.class, user.getIndividualCart().getCartId());
 
-        Integer currentTotalCartItems = cart.getTotalCartItems();
-        Integer currentTotalQuantity = cart.getTotalQuantity();
-        BigDecimal currentTotalAmount = cart.getTotalAmount();
+            cart.getCartLineItems().add(lineItem);
 
-        cart.setTotalCartItems(currentTotalCartItems + 1);
-        cart.setTotalQuantity(currentTotalQuantity + lineItem.getQuantity());
+            Integer currentTotalCartItems = cart.getTotalCartItems();
+            Integer currentTotalQuantity = cart.getTotalQuantity();
+            BigDecimal currentTotalAmount = cart.getTotalAmount();
 
-        BigDecimal subTotalAmount = lineItem.getSubTotal();
-        BigDecimal newTotalAmount = currentTotalAmount.add(subTotalAmount);
-        cart.setTotalAmount(newTotalAmount);
+            cart.setTotalCartItems(currentTotalCartItems + 1);
+            cart.setTotalQuantity(currentTotalQuantity + lineItem.getQuantity());
 
-        System.out.println("added item to cart!");
+            BigDecimal subTotalAmount = lineItem.getSubTotal();
+            BigDecimal newTotalAmount = currentTotalAmount.add(subTotalAmount);
+            cart.setTotalAmount(newTotalAmount);
+
+            System.out.println("added item to cart!");
+        }
         try {
         } catch (Exception ex) {
             throw new CartNotFoundException("Error adding item to cart!");
+        }
+    }
+
+    @Override
+    public void updateLineItemInCart(LineItemEntity lineItemEntity, UserEntity userEntity) throws CartNotFoundException, LineItemNotFoundException {
+
+        LineItemEntity lineItem = entityManager.find(LineItemEntity.class, lineItemEntity.getLineItemId());
+        UserEntity user = entityManager.find(UserEntity.class, userEntity.getUserId());
+        if (user != null) {
+            CartEntity cart = entityManager.find(CartEntity.class, user.getIndividualCart().getCartId());
+
+            Integer currentTotalCartItems = cart.getTotalCartItems();
+            Integer currentTotalQuantity = cart.getTotalQuantity();
+            BigDecimal currentTotalAmount = cart.getTotalAmount();
+
+            cart.setTotalCartItems(currentTotalCartItems + 1);
+            cart.setTotalQuantity(currentTotalQuantity + lineItem.getQuantity());
+
+            BigDecimal subTotalAmount = lineItem.getSubTotal();
+            BigDecimal newTotalAmount = currentTotalAmount.add(subTotalAmount);
+            cart.setTotalAmount(newTotalAmount);
+
+            System.out.println("item updated in cart!");
+        }
+        try {
+        } catch (Exception ex) {
+            throw new CartNotFoundException("Error updating item to cart!");
         }
     }
 

@@ -18,6 +18,8 @@ import entity.UserEntity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -32,7 +34,10 @@ import javax.ws.rs.core.Response.Status;
 import util.exception.CartNotFoundException;
 import util.exception.CheckoutException;
 import util.exception.InputDataValidationException;
+import util.exception.LineItemNotFoundException;
+import util.exception.UpdateLineItemException;
 import util.exception.UserNotFoundException;
+import ws.datamodel.RemoveLineItemReq;
 import ws.datamodel.UpdateCartReq;
 
 /**
@@ -188,20 +193,30 @@ public class CartResource {
                 BigDecimal unitPrice = productToAdd.getUnitPrice();
                 int qtyToAdd = updateCartReq.getQtyToAdd();
 
-                // CREATE NEW LINE ITEM AND PERSIST
-                LineItemEntity newLineItem = new LineItemEntity(qtyToAdd, unitPrice);
-                newLineItem.setProduct(productToAdd);
-                lineItemEntitySessionBeanLocal.createLineItem(newLineItem);
-                System.out.println("ADDED TO CART: " + lineItemEntitySessionBeanLocal.retrieveLineItemById(newLineItem.getLineItemId()));
-
-                // ADD LINE ITEM TO THE CART
-                cartEntitySessionBeanLocal.addLineItemToCart(newLineItem, userEntity);
+                // IF LINE ITEM EXIST IN CART, ELSE
+                CartEntity cart = cartEntitySessionBeanLocal.retrieveIndividualCartByUserId(userEntity.getUserId());
+                if (lineItemEntitySessionBeanLocal.checkProductExistInCart(cart.getCartId(), productToAdd.getProductId())) {
+                    LineItemEntity lineItemToUpdate = lineItemEntitySessionBeanLocal.getLineItemByUserProduct(cart.getCartId(), productToAdd.getProductId());
+                    lineItemEntitySessionBeanLocal.updateLineItem(lineItemToUpdate, qtyToAdd);
+                    System.out.println("Updating line item..");
+                    // UPDATE EXISTING LINE ITEM IN CART
+                    cartEntitySessionBeanLocal.updateLineItemInCart(lineItemToUpdate, userEntity);
+                } else {
+                    // CREATE NEW LINE ITEM AND PERSIST
+                    LineItemEntity newLineItem = new LineItemEntity(qtyToAdd, unitPrice);
+                    newLineItem.setProduct(productToAdd);
+                    lineItemEntitySessionBeanLocal.createLineItem(newLineItem);
+                    System.out.println("Creating line item..");
+                    // ADD LINE ITEM TO THE CART
+                    cartEntitySessionBeanLocal.addLineItemToCart(newLineItem, userEntity);
+                }
 
                 System.out.println("Added to cart successfully ****");
                 return Response.status(Response.Status.OK).build();
             } catch (InputDataValidationException ex) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-            } catch (Exception ex) {
+            } catch (CartNotFoundException | LineItemNotFoundException | UpdateLineItemException ex) {
+                System.out.println(ex);
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
             }
         } else {
@@ -245,13 +260,13 @@ public class CartResource {
             // GET ORDERS
             List<OrderEntity> orders = userEntitySessionBeanLocal.retrieveUserOrdersOnly(userId);
             List<LineItemEntity> lineItems = new ArrayList<>();
-            
+
             for (OrderEntity order : orders) {
                 order.setDispute(null);
 //                if (order.getDispute() != null) {
 //                    order.getDispute().setStaff(null);
 //                }
-                order.setCustomer(null);    
+                order.setCustomer(null);
 //                if (order.getCustomer() != null) {
 //                    order.getCustomer().getCreditCards().clear();
 //                    order.getCustomer().getOrders().clear();
@@ -279,6 +294,50 @@ public class CartResource {
             return Response.status(Status.OK).entity(orders).build();
         } catch (UserNotFoundException ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+
+    @Path("removeCartLineItem")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeCartLineItem(RemoveLineItemReq removeLineItemReq) {
+
+        if (removeLineItemReq != null) {
+            try {
+                UserEntity userEntity = removeLineItemReq.getCurrentUser();
+                LineItemEntity cartLineItemToRemove = removeLineItemReq.getLineItemToRemove();
+
+                lineItemEntitySessionBeanLocal.removeCartLineItemByUser(userEntity, cartLineItemToRemove);
+
+                System.out.println("Removed successfully ****");
+                return Response.status(Response.Status.OK).build();
+            } catch (UpdateLineItemException ex) {
+                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+            }
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid remove from cart request").build();
+        }
+    }
+
+    @Path("clearCart")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response clearCart(RemoveLineItemReq removeLineItemReq) {
+
+        if (removeLineItemReq != null && removeLineItemReq.getClearCart()) {
+            try {
+                UserEntity userEntity = removeLineItemReq.getCurrentUser();
+                lineItemEntitySessionBeanLocal.clearCart(userEntity);
+
+                System.out.println("Clear successfully ****");
+                return Response.status(Response.Status.OK).build();
+            } catch (UpdateLineItemException ex) {
+                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+            }
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid clear cart request").build();
         }
     }
 }

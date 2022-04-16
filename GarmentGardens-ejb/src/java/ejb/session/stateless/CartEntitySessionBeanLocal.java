@@ -38,4 +38,6 @@ public interface CartEntitySessionBeanLocal {
 
     public void addLineItemToCart(LineItemEntity lineItemEntity, UserEntity userEntity) throws CartNotFoundException, LineItemNotFoundException;
 
+    public void updateLineItemInCart(LineItemEntity lineItemEntity, UserEntity userEntity) throws CartNotFoundException, LineItemNotFoundException;
+
 }
