@@ -39,8 +39,8 @@ public interface UserEntitySessionBeanLocal {
 
     public void deleteUser(Long userId) throws UserNotFoundException, DeleteUserException;
 
-    public void userChangePassword(String username, String oldPassword, String newPassword) throws ChangePasswordException, InvalidLoginCredentialException;
-
     public List<OrderEntity> retrieveUserOrdersOnly(Long userId) throws UserNotFoundException;
+
+    public void userChangePassword(UserEntity userEntity, String newPassword) throws UserNotFoundException, ChangePasswordException, InputDataValidationException;
     
 }

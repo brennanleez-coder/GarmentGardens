@@ -26,9 +26,9 @@ import util.exception.UnknownPersistenceException;
 import util.exception.UpdateUserException;
 import util.exception.UserNotFoundException;
 import util.exception.UserUsernameExistException;
+import ws.datamodel.ChangePasswordReq;
 import ws.datamodel.CreateUserReq;
 import ws.datamodel.UpdateProfileReq;
-import ws.datamodel.UserChangePasswordReq;
 
 /**
  * REST Web Service
@@ -120,27 +120,6 @@ public class UserResource {
         }
     }
 
-//    @Path("changePassword")
-//    @POST
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response userChangePassword(UserChangePasswordReq userChangePasswordReq) {
-//        if (userChangePasswordReq != null) {
-//            try {
-//                userEntitySessionBeanLocal.userChangePassword(userChangePasswordReq.getUsername(), userChangePasswordReq.getOldPassword(), userChangePasswordReq.getNewPassword());
-//
-//                return Response.status(Response.Status.OK).build();
-//            } catch (InvalidLoginCredentialException ex) {
-//                return Response.status(Response.Status.UNAUTHORIZED).entity(ex.getMessage()).build();
-//            } catch (ChangePasswordException ex) {
-//                return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-//            } catch (Exception ex) {
-//                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-//            }
-//        } else {
-//            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid password change request").build();
-//        }
-//    }
     @Path("updateProfile")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -164,4 +143,29 @@ public class UserResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid user profile update request").build();
         }
     }
+    
+    @Path("changePassword")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response changePassword(ChangePasswordReq changePasswordReq) {
+
+        if (changePasswordReq != null) {
+
+            try {
+                UserEntity userEntity = changePasswordReq.getCurrentUser();
+                userEntitySessionBeanLocal.userChangePassword(userEntity, changePasswordReq.getNewPassword());
+                
+                System.out.println("Password updated successfully ****");
+                return Response.status(Response.Status.OK).build();
+            } catch (UserNotFoundException | InputDataValidationException | ChangePasswordException ex) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+            } catch (Exception ex) {
+                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+            }
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid user profile update request").build();
+        }
+    }
+    
 }

@@ -126,8 +126,8 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
     @Override
     public UserEntity retrieveUserByUserId(Long userId) throws UserNotFoundException {
 
-        UserEntity staffEntity = entityManager.find(UserEntity.class, userId);
-        if (staffEntity != null) {
+        try {
+            UserEntity staffEntity = entityManager.find(UserEntity.class, userId);
 
             staffEntity.getCreditCards().size();
             staffEntity.getRewards().size();
@@ -136,10 +136,12 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
             staffEntity.getGroupCart();
 
             return staffEntity;
-        } else {
+
+        } catch (Exception ex) {
             throw new UserNotFoundException("User ID " + userId + " does not exist!");
 
         }
+
     }
 
     // FOR FRONTEND CUSTOMER, ONLY LOAD THE ORDERS    
@@ -261,18 +263,27 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
             throw new DeleteUserException("User ID " + userId + " is associated with existing order(s) and cannot be deleted!");
         }
     }
+    
+    public void userChangePassword(UserEntity userEntity, String newPassword) throws UserNotFoundException, ChangePasswordException, InputDataValidationException {
 
-    @Override
-    public void userChangePassword(String username, String oldPassword, String newPassword) throws ChangePasswordException, InvalidLoginCredentialException {
+        if (userEntity != null && userEntity.getUserId() != null) {
+            Set<ConstraintViolation<UserEntity>> constraintViolations = validator.validate(userEntity);
 
-        UserEntity userEntity = userLogin(username, oldPassword);
+            if (constraintViolations.isEmpty()) {
+                UserEntity userEntityToUpdate = retrieveUserByUserId(userEntity.getUserId());
 
-        if (!newPassword.isEmpty() && newPassword != null) {
-            userEntity.setPassword(newPassword);
+                if (userEntityToUpdate.getUsername().equals(userEntity.getUsername())) {
+                    userEntityToUpdate.setPassword(newPassword);
+
+                } else {
+                    throw new ChangePasswordException("New Password provided is not valid");
+                }
+            } else {
+                throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
+            }
         } else {
-            throw new ChangePasswordException("Password is not provided");
+            throw new UserNotFoundException("User ID not provided for user to chnage password");
         }
-
     }
 
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<UserEntity>> constraintViolations) {
