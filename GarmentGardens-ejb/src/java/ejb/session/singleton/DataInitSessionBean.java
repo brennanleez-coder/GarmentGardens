@@ -172,7 +172,7 @@ public class DataInitSessionBean {
         System.out.println("Init Categories and Tags..");
 
         UserEntity seller1 = new UserEntity("seller1", "lee", "seller1@mail.com", "seller1", "password", new Date(), "NUS", RoleEnum.SELLER);
-        
+
         userEntitySessionBeanLocal.createNewUser(seller1);
 
         TagEntity tagEntityPopular = tagEntitySessionBeanLocal.createNewTagEntity(new TagEntity("Popular"));
@@ -262,7 +262,7 @@ public class DataInitSessionBean {
                     UserEntity customer = userEntitySessionBeanLocal.retrieveUserByUserId(userId);
                     testRating.setCustomer(customer);
                     product.getRatings().add(testRating2);
-                }
+                } 
 
             }
         }
@@ -301,7 +301,7 @@ public class DataInitSessionBean {
     private void initialiseUsers() throws InputDataValidationException, UserUsernameExistException, UnknownPersistenceException {
         System.out.println("Init Users..");
 
-        UserEntity customer = new UserEntity("customer1", "lee", "customer@mail.com", "customer", "password", new Date(), "NUS", RoleEnum.CUSTOMER);
+        UserEntity customer = new UserEntity("customer", "lee", "customer@mail.com", "customer", "password", new Date(), "NUS", RoleEnum.CUSTOMER);
         userEntitySessionBeanLocal.createNewUser(customer);
 
         int min = 111111;
@@ -364,21 +364,25 @@ public class DataInitSessionBean {
         System.out.println("Mock orders..");
 
         // 25 DIFFERENT ORDERS
-        for (int i = 1; i <= 50; i++) {
+        for (int i = 1; i <= 25; i++) {
             LocalDateTime randomOrderDate = getRandomDate();
-
-            long randUserId = new Long(rand.nextInt(30) + 1);
-            long randProductId = new Long(rand.nextInt(10) + 1);
-            int randQty = rand.nextInt(2) + 1;
-            int randNumLineItems = rand.nextInt(5) + 1;
 
             int totalQuantity = 0;
             BigDecimal totalAmount = new BigDecimal(0);
-            OrderEntity order = new OrderEntity();
+            OrderEntity order = new OrderEntity(); 
 
-            // randNumLineItems LINE ITEMS EACH
-            for (int x = 1; x <= randNumLineItems; x++) {
+            List<ProductEntity> productsToAdd = new ArrayList<>();
+
+            // 3 DISTINCT LINE ITEMS EACH
+            for (int x = 1; x <= 3; x++) {
+                long randProductId = new Long(rand.nextInt(10) + 1);
+                int randQty = rand.nextInt(2) + 1;
                 ProductEntity product = productEntitySessionBeanLocal.retrieveProductByProductId(randProductId);
+                if (productsToAdd.contains(product)) {
+                    x--;
+                    break;
+                }
+                productsToAdd.add(product);
                 LineItemEntity lineItem = new LineItemEntity(randQty, product.getUnitPrice());
                 lineItem.setProduct(product);
                 lineItemEntitySessionBeanLocal.createLineItem(lineItem);
@@ -387,11 +391,11 @@ public class DataInitSessionBean {
                 order.getLineItems().add(lineItem);
             }
 
-            order.setTotalOrderItem(randNumLineItems);
+            order.setTotalOrderItem(3);
             order.setTotalQuantity(totalQuantity);
             order.setTotalAmount(totalAmount);
             order.setTransactionDateTime(randomOrderDate);
-            orderEntitySessionBeanLocal.createNewOrder(randUserId, order);
+            orderEntitySessionBeanLocal.createNewOrder(new Long(i), order);
         }
 
     }
@@ -476,7 +480,7 @@ public class DataInitSessionBean {
 
         List<OrderEntity> listOfOrder = orderEntitySessionBeanLocal.retrieveAllOrders();
 
-        for (int i = 1; i <= 40; i++) {
+        for (int i = 1; i <= 20; i++) {
             DisputeStatusEnum[] disputes = DisputeStatusEnum.values();
             DisputeEntity disputeToMake = new DisputeEntity();
             disputeToMake.setTitle("Dispute " + i);

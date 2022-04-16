@@ -275,6 +275,7 @@ public class CartResource {
 //                    order.getCustomer().setIndividualCart(null);
 //                }
                 if (!order.getLineItems().isEmpty()) {
+                    System.out.println(order.getLineItems());
                     lineItems.addAll(order.getLineItems());
                 }
             }
@@ -288,8 +289,7 @@ public class CartResource {
                 lineItem.getProduct().getLineItems().clear();
             }
 
-            System.out.println("Retrieved Orders");
-            System.out.println(orders);
+            System.out.println("Retrieved Orders: " + orders);
 
             return Response.status(Status.OK).entity(orders).build();
         } catch (UserNotFoundException ex) {

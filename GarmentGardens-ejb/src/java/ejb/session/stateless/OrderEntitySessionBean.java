@@ -60,17 +60,17 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
             try {
                 UserEntity customerEntity = userEntitySessionBeanLocal.retrieveUserByUserId(customerId);
                 newOrderEntity.setCustomer(customerEntity);
+                customerEntity.getOrders().add(newOrderEntity);
                 entityManager.persist(newOrderEntity);
 
-                for (LineItemEntity lineItemEntity : newOrderEntity.getLineItems()) {
-                    productEntitySessionBeanLocal.debitQuantityOnHand(lineItemEntity.getProduct().getProductId(), lineItemEntity.getQuantity());
-                    lineItemEntitySessionBeanLocal.createLineItem(lineItemEntity);
-                }
+//                for (LineItemEntity lineItemEntity : newOrderEntity.getLineItems()) {
+//                    productEntitySessionBeanLocal.debitQuantityOnHand(lineItemEntity.getProduct().getProductId(), lineItemEntity.getQuantity());
+//                }
 
                 entityManager.flush();
 
                 return newOrderEntity;
-            } catch (InputDataValidationException | UserNotFoundException | ProductNotFoundException | ProductInsufficientQuantityOnHandException ex) {
+            } catch (UserNotFoundException ex) {
                 // The line below rolls back all changes made to the database.
                 eJBContext.setRollbackOnly();
 
@@ -84,7 +84,7 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
     @Override
     public List<OrderEntity> retrieveAllOrders() {
         Query query = entityManager.createQuery("SELECT o FROM OrderEntity o");
-        
+
         return query.getResultList();
     }
 
@@ -173,26 +173,32 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
             int totalCartitems = cart.getTotalCartItems();
             int totalQuantity = cart.getTotalQuantity();
             BigDecimal totalAmount = cart.getTotalAmount();
-            
+
             // CREATE NEW ORDER & FILL ORDER DETAILS
             OrderEntity order = new OrderEntity();
+            System.out.println(lineItems);
             order.setLineItems(lineItems);
             order.setTotalOrderItem(totalCartitems);
             order.setTotalQuantity(totalQuantity);
             order.setTotalAmount(totalAmount);
-            
+
             // ASSOCIATE ORDER TO USER
             order.setCustomer(user);
-            
+
             // CLEAR CART ENTITY
             cart.getCartLineItems().clear();
             cart.setTotalCartItems(0);
             cart.setTotalQuantity(0);
             cart.setTotalAmount(new BigDecimal(0));
+
+            // DEBIT QTY
+            for (LineItemEntity li : order.getLineItems()) {
+                productEntitySessionBeanLocal.debitQuantityOnHand(li.getProduct().getProductId(), li.getQuantity());
+            }
             
             entityManager.persist(order);
             entityManager.flush();
-            
+
         } catch (Exception ex) {
             throw new CheckoutException("The checkout failed!");
         }
