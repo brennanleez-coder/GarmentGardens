@@ -59,6 +59,7 @@ import util.enumeration.AccessRightEnum;
 import util.enumeration.DisputeStatusEnum;
 import util.enumeration.RewardEnum;
 import util.enumeration.RoleEnum;
+import util.exception.AdvertisementEntityExistException;
 import util.exception.AdvertiserEntityExistException;
 import util.exception.AdvertiserEntityNotFoundException;
 import util.exception.CreateNewAdvertisementException;
@@ -79,6 +80,7 @@ import util.exception.StaffNotFoundException;
 import util.exception.StaffUsernameExistException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateRewardException;
+import util.exception.UpdateUserException;
 import util.exception.UserNotFoundException;
 import util.exception.UserUsernameExistException;
 
@@ -247,18 +249,22 @@ public class DataInitSessionBean {
 
         list.add(productEntitySessionBeanLocal.createNewProductFrontEnd(new ProductEntity("PROD028", "Front Blue T shirt", "Product A1", 100, new BigDecimal("10.00"), true, "https://i.imgur.com/xkV92KB.jpg"), tShirts.getCategoryId(), tagIdsPopular, seller1));
 
+        System.out.println("Init ratings..");
+        Random random = new Random();
         for (UserEntity user : userEntitySessionBeanLocal.retrieveAllUsers()) {
             for (ProductEntity product : list) {
 
                 RatingEntity testRating = ratingEntitySessionBeanLocal.createRating(new RatingEntity("This product has a very nice colour", 5, new Date()), user.getUserId());
                 testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(user.getUserId()));
                 product.getRatings().add(testRating);
-//                for (int i = 1; i < 10; i++) {
-//                    UserEntity secondUser = userEntitySessionBeanLocal.retrieveUserByUserId(Long.valueOf((new Random()).nextInt(userEntitySessionBeanLocal.retrieveAllUsers().size() - 1) + 1));
-//                    RatingEntity testRating2 = ratingEntitySessionBeanLocal.createRating(new RatingEntity("Mock Ratings", i % 5, new Date()), secondUser.getUserId());
-//                    testRating.setCustomer(userEntitySessionBeanLocal.retrieveUserByUserId(secondUser.getUserId()));
-//                    product.getRatings().add(testRating2);
-//                }
+                for (int i = 1; i <= 5; i++) {
+                    int rand = random.nextInt(userEntitySessionBeanLocal.retrieveAllUsers().size() - 1);
+                    Long userId = Long.valueOf(rand + 1);
+                    RatingEntity testRating2 = ratingEntitySessionBeanLocal.createRating(new RatingEntity("Mock Ratings", i % 5, new Date()), userId);
+                    UserEntity customer = userEntitySessionBeanLocal.retrieveUserByUserId(userId);
+                    testRating.setCustomer(customer);
+                    product.getRatings().add(testRating2);
+                }
 
             }
         }
@@ -303,7 +309,7 @@ public class DataInitSessionBean {
         int min = 111111;
         int max = 999999;
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 40; i++) {
             UserEntity customerToMake = new UserEntity(getRandomName().getKey(), getRandomName().getValue(), getRandomName().getKey().concat(getRandomName().getValue()) + Math.floor(Math.random() * (max - min + 1) + min) + "@mail.com", getRandomName().getKey().concat(getRandomName().getValue()) + Math.floor(Math.random() * (max - min + 1) + min), getRandomName().getKey().concat(getRandomName().getValue()) + i + Math.floor(Math.random() * (max - min + 1) + min), new Date(), "NUS " + Math.floor(Math.random() * (max - min + 1) + min), RoleEnum.CUSTOMER);
             userEntitySessionBeanLocal.createNewUser(customerToMake);
 
@@ -332,25 +338,25 @@ public class DataInitSessionBean {
             staffEntitySessionBeanLocal.createNewStaff(adminToMake);
 
         }
-        for (int i = 0; i <= 30; i++) {
+        for (int i = 0; i <= 20; i++) {
             StaffEntity managerToMake = new StaffEntity(getRandomName().getKey(), getRandomName().getValue(), AccessRightEnum.MANAGER, "manager" + getRandomName().getKey().concat(getRandomName().getValue()), getRandomName().getKey().concat(getRandomName().getValue()));
             staffEntitySessionBeanLocal.createNewStaff(managerToMake);
         }
 
     }
 
-    private void initialiseAdvertisersAndAdvertisements() throws CreateNewAdvertisementException, CreateNewAdvertiserEntityException, AdvertiserEntityNotFoundException, AdvertiserEntityExistException, UnknownPersistenceException, InputDataValidationException {
+    private void initialiseAdvertisersAndAdvertisements() throws CreateNewAdvertisementException, CreateNewAdvertiserEntityException, AdvertiserEntityNotFoundException, AdvertiserEntityExistException, UnknownPersistenceException, InputDataValidationException, AdvertisementEntityExistException {
         System.out.println("Init Ads..");
 
         int min = 0;
         int max = 1000;
 
-        for (int i = 1; i <= 30; i++) {
+        for (int i = 1; i <= 20; i++) {
 
             AdvertiserEntity advertiser = new AdvertiserEntity("advertiser " + getRandomName().getKey(), getRandomName().getKey().concat(getRandomName().getValue()), getRandomName().getKey().concat(getRandomName().getValue()) + i, getRandomName().getKey().concat(getRandomName().getValue()) + Math.floor(Math.random() * (max - min + 1) + min) + "@mail.com");
             advertiserEntitySessionBeanLocal.createNewAdvertiserEntity(advertiser, new ArrayList<>(), new ArrayList<>());
             AdvertisementEntity advertisementEntity = new AdvertisementEntity("sample description");
-            advertisementEntitySessionBeanLocal.createNewAdvertiserEntity(advertisementEntity, advertiser.getAdvertiserId());
+            advertisementEntitySessionBeanLocal.createNewAdvertisementEntity(advertisementEntity, advertiser.getAdvertiserId());
         }
 
     }
@@ -360,12 +366,12 @@ public class DataInitSessionBean {
         System.out.println("Mock orders..");
 
         // 25 DIFFERENT ORDERS
-        for (int i = 1; i <= 60; i++) {
+        for (int i = 1; i <= 50; i++) {
             LocalDateTime randomOrderDate = getRandomDate();
 
-            long randUserId = new Long(rand.nextInt(50) + 1);
+            long randUserId = new Long(rand.nextInt(30) + 1);
             long randProductId = new Long(rand.nextInt(10) + 1);
-            int randQty = rand.nextInt(3) + 1;
+            int randQty = rand.nextInt(2) + 1;
             int randNumLineItems = rand.nextInt(5) + 1;
 
             int totalQuantity = 0;
@@ -483,7 +489,7 @@ public class DataInitSessionBean {
         }
     }
 
-    private void initialiseCCs() throws InputDataValidationException, CreateNewCreditCardException {
+    private void initialiseCCs() throws InputDataValidationException, CreateNewCreditCardException, UserNotFoundException, UpdateUserException, AdvertiserEntityNotFoundException {
         System.out.println("Init CCs..");
 
         int i = 1;
@@ -492,32 +498,54 @@ public class DataInitSessionBean {
         String cvv = "12";
         String cvv2 = "54";
 
-        List<UserEntity> listOfSeller = userEntitySessionBeanLocal.retrieveAllUsers()
-                .stream()
-                .filter(user -> user.getRole().equals(RoleEnum.SELLER))
-                .collect(Collectors.toList());
+        List<UserEntity> listOfSeller = userEntitySessionBeanLocal.retrieveAllUsers();
+        List<AdvertiserEntity> listOfAdvertisers = advertiserEntitySessionBeanLocal.retrieveAllAdvertiserEntity();
 
-        for (UserEntity seller : listOfSeller) {
+        System.out.println("Init CC for Sellers..");
+        for (UserEntity user : listOfSeller) {
             CreditCardEntity ccToMake = new CreditCardEntity();
-            ccToMake.setHolderName(seller.getFirstName() + " " + seller.getLastName());
+            ccToMake.setHolderName(user.getFirstName() + " " + user.getLastName());
             ccToMake.setCreditCardNumber(ccNum + i);
             ccToMake.setCvv(cvv + i);
             ccToMake.setExpiryDate(new Date());
-            ccToMake.setBillingAddress(seller.getAddress());
+            ccToMake.setBillingAddress(user.getAddress());
 
             CreditCardEntity ccToMake2 = new CreditCardEntity();
-            ccToMake2.setHolderName(seller.getFirstName() + " " + seller.getLastName());
+            ccToMake2.setHolderName(user.getFirstName() + " " + user.getLastName());
             ccToMake2.setCreditCardNumber(ccNum2 + i);
             ccToMake2.setCvv(cvv2 + i);
             ccToMake2.setExpiryDate(new Date());
-            ccToMake2.setBillingAddress(seller.getAddress());
+            ccToMake2.setBillingAddress(user.getAddress());
 
-            ccToMake.setUser(seller);
-            ccToMake2.setUser(seller);
-            seller.getCreditCards().add(ccToMake);
-            seller.getCreditCards().add(ccToMake2);
+            ccToMake.setUser(user);
+            ccToMake2.setUser(user);
+
             creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake);
             creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake2);
+
+            // THIS COMES AFTER PERSISTING CC
+            user.getCreditCards().add(ccToMake);
+            user.getCreditCards().add(ccToMake2);
+            userEntitySessionBeanLocal.updateUser(user);
+            i++;
+        }
+
+        System.out.println("Init CC for Advertisers..");
+        for (AdvertiserEntity advertiser : listOfAdvertisers) {
+            CreditCardEntity ccToMake = new CreditCardEntity();
+            ccToMake.setHolderName(advertiser.getCompanyName());
+            ccToMake.setCreditCardNumber(ccNum + i);
+            ccToMake.setCvv(cvv + i);
+            ccToMake.setExpiryDate(new Date());
+            ccToMake.setBillingAddress("");
+
+            ccToMake.setAdvertiser(advertiser);
+
+            creditCardEntitySessionBeanLocal.createNewCreditCardEntity(ccToMake);
+
+            // THIS COMES AFTER PERSISTING CC
+            advertiser.getCreditCards().add(ccToMake);
+            advertiserEntitySessionBeanLocal.updateAdvertiserEntity(advertiser);
             i++;
         }
     }

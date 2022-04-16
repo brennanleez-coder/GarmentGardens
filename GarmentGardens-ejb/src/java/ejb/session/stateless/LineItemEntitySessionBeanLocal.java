@@ -5,7 +5,9 @@
  */
 package ejb.session.stateless;
 
+import entity.CartEntity;
 import entity.LineItemEntity;
+import entity.UserEntity;
 import javax.ejb.Local;
 import util.exception.InputDataValidationException;
 import util.exception.LineItemNotFoundException;
@@ -24,6 +26,14 @@ public interface LineItemEntitySessionBeanLocal {
 
     public LineItemEntity retrieveLineItemById(Long lineItemId) throws LineItemNotFoundException;
 
-    public LineItemEntity updateLineItem(LineItemEntity lineItem) throws UpdateLineItemException, LineItemNotFoundException;
+    public LineItemEntity removeCartLineItemByUser(UserEntity userEntity, LineItemEntity lineItemEntity) throws UpdateLineItemException;
+
+    public CartEntity clearCart(UserEntity userEntity) throws UpdateLineItemException;
+
+    public boolean checkProductExistInCart(Long cartId, Long productId);
+
+    public LineItemEntity getLineItemByUserProduct(Long cartId, Long productId) throws LineItemNotFoundException;
+
+    public LineItemEntity updateLineItem(LineItemEntity lineItem, int qtyToAdd) throws UpdateLineItemException, LineItemNotFoundException;
     
 }

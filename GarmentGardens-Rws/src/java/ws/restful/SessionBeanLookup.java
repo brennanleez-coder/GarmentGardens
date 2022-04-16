@@ -6,6 +6,7 @@ import ejb.session.stateless.CreditCardEntitySessionBeanLocal;
 import ejb.session.stateless.DisputeEntitySessionBeanLocal;
 import ejb.session.stateless.LineItemEntitySessionBeanLocal;
 import ejb.session.stateless.MessageOfTheDayEntitySessionBeanLocal;
+import ejb.session.stateless.OrderEntitySessionBeanLocal;
 import ejb.session.stateless.ProductEntitySessionBeanLocal;
 import ejb.session.stateless.RatingEntitySessionBeanLocal;
 import ejb.session.stateless.RewardEntitySessionBeanLocal;
@@ -14,6 +15,7 @@ import ejb.session.stateless.TagEntitySessionBeanLocal;
 import ejb.session.stateless.UserEntitySessionBeanLocal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -25,6 +27,7 @@ public class SessionBeanLookup {
         ejbModuleJndiPath = "java:global/GarmentGardens/GarmentGardens-ejb/";
     }
 
+    
     public StaffEntitySessionBeanLocal lookupStaffEntitySessionBeanLocal() {
         try {
             javax.naming.Context c = new InitialContext();
@@ -139,6 +142,16 @@ public class SessionBeanLookup {
         try {
             javax.naming.Context c = new InitialContext();
             return (LineItemEntitySessionBeanLocal) c.lookup("java:global/GarmentGardens/GarmentGardens-ejb/LineItemEntitySessionBean!ejb.session.stateless.LineItemEntitySessionBeanLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    public OrderEntitySessionBeanLocal lookupOrderEntitySessionBeanLocal() {
+        try {
+            javax.naming.Context c = new InitialContext();
+            return (OrderEntitySessionBeanLocal) c.lookup("java:global/GarmentGardens/GarmentGardens-ejb/OrderEntitySessionBean!ejb.session.stateless.OrderEntitySessionBeanLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);

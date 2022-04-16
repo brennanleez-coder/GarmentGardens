@@ -6,6 +6,8 @@
 package ejb.session.stateless;
 
 import entity.CartEntity;
+import entity.LineItemEntity;
+import entity.OrderEntity;
 import entity.ProductEntity;
 import entity.RatingEntity;
 import entity.RewardEntity;
@@ -76,11 +78,13 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
         if (constraintViolations.isEmpty()) {
             try {
                 if (newUserEntity.getRole() == RoleEnum.CUSTOMER) {
-                    Long customerId = newUserEntity.getUserId();
+
                     CartEntity newCartEntity = new CartEntity();
                     newCartEntity.setCustomer(newUserEntity);
-                    newCartEntity.setCartTypeEnum(CartTypeEnum.INDIVIDUALCART);
+                    newCartEntity.setCartType(CartTypeEnum.INDIVIDUALCART);
                     entityManager.persist(newCartEntity);
+
+                    newUserEntity.setIndividualCart(newCartEntity);
                 }
 
                 entityManager.persist(newUserEntity);
@@ -106,19 +110,57 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
     @Override
     public List<UserEntity> retrieveAllUsers() {
         Query query = entityManager.createQuery("SELECT u FROM UserEntity u");
+        List<UserEntity> users = query.getResultList();
 
-        return query.getResultList();
+        for (UserEntity u : users) {
+            u.getCreditCards().size();
+            u.getRewards().size();
+            u.getOrders().size();
+            u.getIndividualCart();
+            u.getGroupCart();
+        }
+
+        return users;
     }
 
     @Override
     public UserEntity retrieveUserByUserId(Long userId) throws UserNotFoundException {
 
-        try {
-            UserEntity staffEntity = entityManager.find(UserEntity.class, userId);
-            return staffEntity;
+        UserEntity staffEntity = entityManager.find(UserEntity.class, userId);
+        if (staffEntity != null) {
 
-        } catch (Exception ex) {
+            staffEntity.getCreditCards().size();
+            staffEntity.getRewards().size();
+            staffEntity.getOrders().size();
+            staffEntity.getIndividualCart();
+            staffEntity.getGroupCart();
+
+            return staffEntity;
+        } else {
             throw new UserNotFoundException("User ID " + userId + " does not exist!");
+
+        }
+    }
+
+    // FOR FRONTEND CUSTOMER, ONLY LOAD THE ORDERS    
+    @Override
+    public List<OrderEntity> retrieveUserOrdersOnly(Long userId) throws UserNotFoundException {
+        UserEntity customer = entityManager.find(UserEntity.class, userId);
+        System.out.println(customer);
+        if (customer != null) {
+            List<OrderEntity> orders = customer.getOrders();
+            for (OrderEntity order : orders) {
+                order.getDispute();
+                order.getCustomer();
+                List<LineItemEntity> lineItems = order.getLineItems();
+                for (LineItemEntity lineItem : lineItems) {
+                    lineItem.getProduct();
+                }
+            }
+            return orders;
+        } else {
+            throw new UserNotFoundException("User ID " + userId + " does not exist!");
+
         }
     }
 
@@ -166,9 +208,14 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
                     userEntityToUpdate.setEmail(userEntity.getEmail());
                     userEntityToUpdate.setDateOfBirth(userEntity.getDateOfBirth());
                     userEntityToUpdate.setAddress(userEntity.getAddress());
+                    userEntityToUpdate.setCreditCards(userEntity.getCreditCards());
+                    userEntityToUpdate.setRewards(userEntity.getRewards());
+                    userEntityToUpdate.setOrders(userEntity.getOrders());
+
                 } else {
                     throw new UpdateUserException("Username of user record to be updated does not match the existing record");
                 }
+
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
             }

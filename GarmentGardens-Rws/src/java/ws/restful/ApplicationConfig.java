@@ -30,6 +30,7 @@ public class ApplicationConfig extends Application
         resources.add(ws.restful.FileResource.class);
         resources.add(ws.restful.MotdResource.class);
         resources.add(ws.restful.ProductResource.class);
+        resources.add(ws.restful.RatingResource.class);
         resources.add(ws.restful.RewardResource.class);
         resources.add(ws.restful.StaffResource.class);
         resources.add(ws.restful.TagResource.class);

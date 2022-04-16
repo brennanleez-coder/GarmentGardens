@@ -135,10 +135,10 @@ public class CreditCardResource {
                 creditCardEntity.setBillingAddress(userEntity.getAddress());
                 creditCardEntity.setUser(userEntity);
                 
-                Long creditCardId = creditCardEntitySessionBeanLocal.createNewCreditCardEntity(creditCardEntity);
+                CreditCardEntity creditCardId = creditCardEntitySessionBeanLocal.createNewCreditCardEntity(creditCardEntity);
                 System.out.println("Successfully Created Credit Card");
                 
-                return Response.status(Response.Status.OK).entity(creditCardId).build();
+                return Response.status(Response.Status.OK).entity(creditCardId.getCreditCardId()).build();
             } catch (CreateNewCreditCardException ex) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
             } catch (Exception ex) {
