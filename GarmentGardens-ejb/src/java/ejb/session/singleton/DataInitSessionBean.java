@@ -160,7 +160,7 @@ public class DataInitSessionBean {
             initialiseAdvertisersAndAdvertisements();
             initialiseMockOrders();
             initialiseRewards();
-            //initialiseCCs();
+            initialiseCCs();
             initialiseDisputes();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -174,7 +174,6 @@ public class DataInitSessionBean {
         UserEntity seller1 = new UserEntity("seller1", "lee", "seller1@mail.com", "seller1", "password", new Date(), "NUS", RoleEnum.SELLER);
         
         userEntitySessionBeanLocal.createNewUser(seller1);
-        System.out.println("Seller " + seller1.getUsername() + " created successfully");
 
         TagEntity tagEntityPopular = tagEntitySessionBeanLocal.createNewTagEntity(new TagEntity("Popular"));
         TagEntity tagEntityDiscount = tagEntitySessionBeanLocal.createNewTagEntity(new TagEntity("Discount"));
