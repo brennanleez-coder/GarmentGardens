@@ -160,7 +160,7 @@ public class DataInitSessionBean {
             initialiseAdvertisersAndAdvertisements();
             initialiseMockOrders();
             initialiseRewards();
-            initialiseCCs();
+            //initialiseCCs();
             initialiseDisputes();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -168,15 +168,13 @@ public class DataInitSessionBean {
 
     }
 
-    private void initaliseCategoriesTags() throws UnknownPersistenceException, ProductSkuCodeExistException, CreateNewTagException, CreateNewProductException, CreateNewCategoryException, InputDataValidationException, UserNotFoundException {
+    private void initaliseCategoriesTags() throws UnknownPersistenceException, ProductSkuCodeExistException, CreateNewTagException, CreateNewProductException, CreateNewCategoryException, InputDataValidationException, UserNotFoundException, UserUsernameExistException {
         System.out.println("Init Categories and Tags..");
 
         UserEntity seller1 = new UserEntity("seller1", "lee", "seller1@mail.com", "seller1", "password", new Date(), "NUS", RoleEnum.SELLER);
-        try {
-            userEntitySessionBeanLocal.createNewUser(seller1);
-        } catch (UserUsernameExistException ex) {
-            Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
+        userEntitySessionBeanLocal.createNewUser(seller1);
+        System.out.println("Seller " + seller1.getUsername() + " created successfully");
 
         TagEntity tagEntityPopular = tagEntitySessionBeanLocal.createNewTagEntity(new TagEntity("Popular"));
         TagEntity tagEntityDiscount = tagEntitySessionBeanLocal.createNewTagEntity(new TagEntity("Discount"));

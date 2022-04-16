@@ -95,6 +95,7 @@ public class LineItemEntitySessionBean implements LineItemEntitySessionBeanLocal
             throw new LineItemNotFoundException("Line Item ID cannot be found");
         }
     }
+    
 
     @Override
     public boolean checkProductExistInCart(Long cartId, Long productId) {

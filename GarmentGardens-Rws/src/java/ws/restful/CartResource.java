@@ -340,4 +340,5 @@ public class CartResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid clear cart request").build();
         }
     }
+
 }
