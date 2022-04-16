@@ -80,11 +80,13 @@ public class CreditCardResource {
         try {
             UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
             
-            List<CreditCardEntity> creditCardEntities = userEntity.getCreditCards();
+            List<CreditCardEntity> creditCardEntities = creditCardEntitySessionBeanLocal.retrieveCreditCardByCreditUserId(userEntity.getUserId());
             for (CreditCardEntity creditCardEntity : creditCardEntities) {
                 //creditCardEntity.getAdvertiser();
                 creditCardEntity.setUser(null);
+                System.out.println("********** CreditCardResource.retrieveAllCreditCards(): User " + userEntity.getUserId() + " has card ID " + creditCardEntity.getCreditCardId());
             }
+            System.out.println("********** CreditCardResource.retrieveAllCreditCards(): User has total of " + creditCardEntities.size() + " Credit Card ");
             GenericEntity<List<CreditCardEntity>> genericEntity = new GenericEntity<List<CreditCardEntity>>(creditCardEntities) {
             };
             return Response.status(Response.Status.OK).entity(genericEntity).build();

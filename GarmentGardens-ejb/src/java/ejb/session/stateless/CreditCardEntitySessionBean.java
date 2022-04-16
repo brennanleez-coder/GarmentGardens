@@ -44,7 +44,6 @@ public class CreditCardEntitySessionBean implements CreditCardEntitySessionBeanL
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
 
-
     public CreditCardEntitySessionBean() {
 
         validatorFactory = Validation.buildDefaultValidatorFactory();
@@ -97,6 +96,17 @@ public class CreditCardEntitySessionBean implements CreditCardEntitySessionBeanL
         } catch (Exception ex) {
             throw new CreditCardNotFoundException("Credit Card ID " + creditCardId + " does not exist!");
         }
+    }
+
+    @Override
+    public List<CreditCardEntity> retrieveCreditCardByCreditUserId(Long userId) throws CreditCardNotFoundException {
+
+        System.out.println("*********CreditCardEntitySessionBean:: retrieveCreditCardByCreditUserId " + userId);
+
+        Query query = entityManager.createQuery("SELECT c FROM CreditCardEntity c WHERE c.user.userId = :inUserId");
+        query.setParameter("inUserId", userId);
+
+        return query.getResultList();
     }
 
     @Override
