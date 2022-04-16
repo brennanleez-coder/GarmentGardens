@@ -387,7 +387,7 @@ public class DataInitSessionBean {
                 lineItem.setProduct(product);
                 lineItemEntitySessionBeanLocal.createLineItem(lineItem);
                 totalQuantity += randQty;
-                totalAmount = totalAmount.add(product.getUnitPrice());
+                totalAmount = totalAmount.add(product.getUnitPrice().multiply(new BigDecimal(randQty)));
                 order.getLineItems().add(lineItem);
             }
 
