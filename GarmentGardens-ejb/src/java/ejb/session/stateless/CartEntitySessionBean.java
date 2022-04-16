@@ -66,7 +66,7 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
             }
         } else {
             throw new CreateNewCartException("Sale transaction information not provided");
-        }
+        } 
     }
 
     @Override
@@ -145,18 +145,12 @@ public class CartEntitySessionBean implements CartEntitySessionBeanLocal {
         try {
             LineItemEntity lineItem = entityManager.find(LineItemEntity.class, lineItemEntity.getLineItemId());
             UserEntity user = entityManager.find(UserEntity.class, userEntity.getUserId());
-            System.out.println(user);
-            System.out.println("cart:" + user.getIndividualCart());
             CartEntity cart = user.getIndividualCart();
             if (cart != null) {
-                System.out.println("here");
 
                 CartEntity managedCart = entityManager.find(CartEntity.class, cart.getCartId());
-                System.out.println("2");
-
                 managedCart.getCartLineItems().add(lineItem);
-                System.out.println("3");
-
+                
                 Integer currentTotalCartItems = managedCart.getTotalCartItems();
                 Integer currentTotalQuantity = managedCart.getTotalQuantity();
                 BigDecimal currentTotalAmount = managedCart.getTotalAmount();

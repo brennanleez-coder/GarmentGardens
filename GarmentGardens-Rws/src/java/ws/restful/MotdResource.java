@@ -44,19 +44,14 @@ public class MotdResource {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response retrieveAllMotds(@QueryParam("username") String username,
-            @QueryParam("password") String password) {
+    public Response retrieveAllMotds() {
         try {
-            UserEntity userEntity = userEntitySessionBeanLocal.userLogin(username, password);
-
             List<MessageOfTheDayEntity> motdEntities = messageOfTheDayEntitySessionBeanLocal.retrieveAllMessagesOfTheDay();
 
             GenericEntity<List<MessageOfTheDayEntity>> genericEntity = new GenericEntity<List<MessageOfTheDayEntity>>(motdEntities) {
             };
 
             return Response.status(Status.OK).entity(genericEntity).build();
-        } catch (InvalidLoginCredentialException ex) {
-            return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }

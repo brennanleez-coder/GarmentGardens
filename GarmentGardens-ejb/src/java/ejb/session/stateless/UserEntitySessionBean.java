@@ -148,7 +148,6 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
     @Override
     public List<OrderEntity> retrieveUserOrdersOnly(Long userId) throws UserNotFoundException {
         UserEntity customer = entityManager.find(UserEntity.class, userId);
-        System.out.println(customer);
         if (customer != null) {
             List<OrderEntity> orders = customer.getOrders();
             for (OrderEntity order : orders) {
@@ -159,6 +158,8 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
                     lineItem.getProduct();
                 }
             }
+            System.out.println("retrieveUserOrdersOnly: " + orders);
+
             return orders;
         } else {
             throw new UserNotFoundException("User ID " + userId + " does not exist!");
