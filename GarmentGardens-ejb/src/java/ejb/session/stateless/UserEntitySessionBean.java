@@ -6,7 +6,6 @@
 package ejb.session.stateless;
 
 import entity.CartEntity;
-import entity.DisputeEntity;
 import entity.LineItemEntity;
 import entity.OrderEntity;
 import entity.ProductEntity;
@@ -79,11 +78,13 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
         if (constraintViolations.isEmpty()) {
             try {
                 if (newUserEntity.getRole() == RoleEnum.CUSTOMER) {
-                    Long customerId = newUserEntity.getUserId();
+
                     CartEntity newCartEntity = new CartEntity();
                     newCartEntity.setCustomer(newUserEntity);
                     newCartEntity.setCartType(CartTypeEnum.INDIVIDUALCART);
                     entityManager.persist(newCartEntity);
+
+                    newUserEntity.setIndividualCart(newCartEntity);
                 }
 
                 entityManager.persist(newUserEntity);
@@ -140,7 +141,7 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
 
         }
     }
-    
+
     // FOR FRONTEND CUSTOMER, ONLY LOAD THE ORDERS    
     @Override
     public List<OrderEntity> retrieveUserOrdersOnly(Long userId) throws UserNotFoundException {
@@ -154,7 +155,7 @@ public class UserEntitySessionBean implements UserEntitySessionBeanLocal {
                 List<LineItemEntity> lineItems = order.getLineItems();
                 for (LineItemEntity lineItem : lineItems) {
                     lineItem.getProduct();
-                } 
+                }
             }
             return orders;
         } else {
