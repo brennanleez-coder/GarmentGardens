@@ -15,6 +15,7 @@ import ejb.session.stateless.TagEntitySessionBeanLocal;
 import ejb.session.stateless.UserEntitySessionBeanLocal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
