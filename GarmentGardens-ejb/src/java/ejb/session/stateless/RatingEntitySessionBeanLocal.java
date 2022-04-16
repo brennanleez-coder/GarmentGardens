@@ -5,9 +5,12 @@
  */
 package ejb.session.stateless;
 
+import entity.ProductEntity;
 import entity.RatingEntity;
+import entity.UserEntity;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.CreateNewRatingException;
 import util.exception.InputDataValidationException;
 import util.exception.ProductNotFoundException;
 import util.exception.RatingNotFoundException;
@@ -34,5 +37,7 @@ public interface RatingEntitySessionBeanLocal {
     public Double retrieveRatingScore(Long productId) throws ProductNotFoundException;
 
     public List<RatingEntity> retrieveRatingsByUserId(Long userId) ;
+
+    public RatingEntity rateProduct(UserEntity userEntity, ProductEntity productEntity, RatingEntity ratingEntity) throws CreateNewRatingException, ProductNotFoundException, UserNotFoundException;
     
 }

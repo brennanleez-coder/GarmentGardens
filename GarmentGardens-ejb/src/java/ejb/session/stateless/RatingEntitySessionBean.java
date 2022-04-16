@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.ProductEntity;
 import entity.RatingEntity;
 import entity.UserEntity;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
@@ -19,6 +20,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.exception.CreateNewRatingException;
 import util.exception.InputDataValidationException;
 import util.exception.ProductNotFoundException;
 import util.exception.RatingNotFoundException;
@@ -60,6 +62,27 @@ public class RatingEntitySessionBean implements RatingEntitySessionBeanLocal {
             return newRatingEntity;
         } else {
             throw new UserNotFoundException("User cannot be found: " + userId);
+        }
+
+    }
+
+    @Override
+    public RatingEntity rateProduct(UserEntity userEntity, ProductEntity productEntity, RatingEntity ratingEntity) throws CreateNewRatingException, ProductNotFoundException, UserNotFoundException {
+        UserEntity customer = userEntitySessionBeanLocal.retrieveUserByUserId(userEntity.getUserId());
+        ProductEntity product = productEntitySessionBeanLocal.retrieveProductByProductId(productEntity.getProductId());
+        if (customer != null && product != null && ratingEntity != null) {
+
+            RatingEntity newRating = new RatingEntity(ratingEntity.getDescription(), ratingEntity.getNumberOfStars(), new Date());
+            newRating.setCustomer(customer);
+
+            entityManager.persist(newRating);
+            entityManager.flush();
+
+            product.getRatings().add(newRating);
+
+            return newRating;
+        } else {
+            throw new CreateNewRatingException("Rate product failed!");
         }
 
     }

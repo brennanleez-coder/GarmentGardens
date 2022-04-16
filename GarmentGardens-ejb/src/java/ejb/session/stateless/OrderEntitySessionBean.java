@@ -169,6 +169,8 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
             CartEntity cart = cartEntitySessionBeanLocal.retrieveIndividualCartByUserId(userEntity.getUserId());
 
             // GET ALL CART INFO
+            System.out.println(cart);
+            System.out.println("HRE :" + cart.getCartLineItems());
             List<LineItemEntity> lineItems = cart.getCartLineItems();
             int totalCartitems = cart.getTotalCartItems();
             int totalQuantity = cart.getTotalQuantity();
@@ -184,6 +186,16 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
 
             // ASSOCIATE ORDER TO USER
             order.setCustomer(user);
+            user.getOrders().add(order);
+            
+            // DEBIT QTY
+            for (LineItemEntity li : order.getLineItems()) {
+                productEntitySessionBeanLocal.debitQuantityOnHand(li.getProduct().getProductId(), li.getQuantity());
+            }
+            
+            // PERSIST BEFORE REMOVING CART
+            entityManager.persist(order);
+            entityManager.flush();
 
             // CLEAR CART ENTITY
             cart.getCartLineItems().clear();
@@ -191,13 +203,6 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
             cart.setTotalQuantity(0);
             cart.setTotalAmount(new BigDecimal(0));
 
-            // DEBIT QTY
-            for (LineItemEntity li : order.getLineItems()) {
-                productEntitySessionBeanLocal.debitQuantityOnHand(li.getProduct().getProductId(), li.getQuantity());
-            }
-            
-            entityManager.persist(order);
-            entityManager.flush();
 
         } catch (Exception ex) {
             throw new CheckoutException("The checkout failed!");
