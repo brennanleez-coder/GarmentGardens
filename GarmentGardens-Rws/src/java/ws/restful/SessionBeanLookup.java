@@ -27,6 +27,7 @@ public class SessionBeanLookup {
         ejbModuleJndiPath = "java:global/GarmentGardens/GarmentGardens-ejb/";
     }
 
+    
     public StaffEntitySessionBeanLocal lookupStaffEntitySessionBeanLocal() {
         try {
             javax.naming.Context c = new InitialContext();
