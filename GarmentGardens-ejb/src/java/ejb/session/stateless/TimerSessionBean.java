@@ -48,11 +48,9 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
     public TimerSessionBean() {
     }
 
-//    @Schedule(dayOfWeek = "Mon-Fri", hour = "17", info="beginFlashSales")
+//    @Schedule(dayOfWeek = "Mon-Fri", hour = "12", info="beginFlashSales") //FOR ACTUAL USE
 //    every weekday at 7-8am and 10-11pm start flash sales
-   
-    
-    @Schedule(hour = "17", minute = "14", info = "beginFlashSales")
+    @Schedule(hour = "17", minute = "14", info = "beginFlashSales") // FOR DEMO PURPOSES
     public void beginFlashSales() {
         try {
             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
@@ -74,10 +72,9 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
 
     }
 
-    @Schedule(hour = "17", minute="16", second="5", info = "endFlashSales")
-    //every weekday at 8am and 11pm, END flash sales
-//    @Schedule(hour = "8", minute = "4,11", second="1", info = "endFlashSales")
-//    @Timeout
+    
+//    @Schedule(dayOfWeek = "Mon-Fri", hour = "12", minute = "15,", second="5", info = "endFlashSales") //FOR ACTUAL USE
+    @Schedule(hour = "17", minute="16", second="5", info = "endFlashSales") //FOR DEMO PURPOSES
     public void endFlashSales() {
         try {
             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
@@ -98,7 +95,7 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
         }
     }
 
-    @Schedule(dayOfWeek = "Mon-Fri")
+    @Schedule(dayOfWeek = "Mon-Fri", minute="1")
     //every weekday at 0000
     public void checkRewardExpiry() {
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
@@ -122,7 +119,7 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
         List<ProductEntity> productEntities = productEntitySessionBeanLocal.retrieveAllProducts();
 
         for (ProductEntity productEntity : productEntities) {
-            if (productEntity.getQuantityOnHand() <= 0) {
+            if (productEntity.getQuantityOnHand() <= 30) {
                 System.out.println("********** Product " + productEntity.getSkuCode() + " requires reordering: QOH = " + productEntity.getQuantityOnHand() + "; RQ = " + 100);
                 productEntity.setQuantityOnHand(100);
             }
