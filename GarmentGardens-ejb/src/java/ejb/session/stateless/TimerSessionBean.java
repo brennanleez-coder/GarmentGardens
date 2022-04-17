@@ -50,7 +50,7 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
 
 //    @Schedule(dayOfWeek = "Mon-Fri", hour = "12", info="beginFlashSales") //FOR ACTUAL USE
 //    every weekday at 7-8am and 10-11pm start flash sales
-    @Schedule(hour = "19", minute = "49", info = "beginFlashSales") // FOR DEMO PURPOSES
+    @Schedule(hour = "22", minute = "28", info = "beginFlashSales") // FOR DEMO PURPOSES
     public void beginFlashSales() {
         try {
             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
@@ -69,12 +69,11 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
         } catch (InputDataValidationException ex) {
             Logger.getLogger(TimerSessionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     
 //    @Schedule(dayOfWeek = "Mon-Fri", hour = "12", minute = "15,", second="5", info = "endFlashSales") //FOR ACTUAL USE
-    @Schedule(hour = "19", minute="50", second="5", info = "endFlashSales") //FOR DEMO PURPOSES
+    @Schedule(hour = "22", minute="29", second="5", info = "endFlashSales") //FOR DEMO PURPOSES
     public void endFlashSales() {
         try {
             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
