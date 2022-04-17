@@ -6,6 +6,7 @@
 package ws.restful;
 
 import ejb.session.stateless.DisputeEntitySessionBeanLocal;
+import ejb.session.stateless.OrderEntitySessionBeanLocal;
 import ejb.session.stateless.StaffEntitySessionBeanLocal;
 import ejb.session.stateless.UserEntitySessionBeanLocal;
 import entity.DisputeEntity;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.QueryParam;
@@ -25,6 +27,10 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import util.enumeration.DisputeStatusEnum;
+import util.exception.CreateNewDisputeException;
+import util.exception.InvalidLoginCredentialException;
+import ws.datamodel.CreateDisputeReq;
 
 /**
  * REST Web Service
@@ -41,6 +47,7 @@ public class DisputeResource {
     
     private final DisputeEntitySessionBeanLocal disputeEntitySessionBeanLocal;
     private final UserEntitySessionBeanLocal userEntitySessionBeanLocal;
+    private final OrderEntitySessionBeanLocal orderEntitySessionBeanLocal;
     
     /**
      * Creates a new instance of DisputeResource
@@ -49,6 +56,7 @@ public class DisputeResource {
         sessionBeanLookup = new SessionBeanLookup();
         userEntitySessionBeanLocal = sessionBeanLookup.lookupUserEntitySessionBeanLocal();
         disputeEntitySessionBeanLocal = sessionBeanLookup.lookupDisputeEntitySessionBeanLocal();
+        orderEntitySessionBeanLocal = sessionBeanLookup.lookupOrderEntitySessionBeanLocal();
     }
     
     @Path("retrieveAllDisputes")
@@ -104,6 +112,36 @@ public class DisputeResource {
         } catch (Exception ex) {
             System.out.println("Exception");
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+    
+    
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createNewDispute(CreateDisputeReq createDisputeReq) {
+        if (createDisputeReq != null) {
+            try {
+                UserEntity userEntity = userEntitySessionBeanLocal.userLogin(createDisputeReq.getUsername(), createDisputeReq.getPassword());
+                System.out.println("********** DisputeResource.createNewDispute(): User(SELLER) " + userEntity.getUsername() + " login remotely via web service");
+
+                
+                OrderEntity order = orderEntitySessionBeanLocal.retrieveOrderByOrderId(Long.valueOf(createDisputeReq.getOrderId()));
+                DisputeEntity disputeEntity = new DisputeEntity();
+                disputeEntity.setTitle(createDisputeReq.getTitle());
+                disputeEntity.setDescription(createDisputeReq.getDescription());
+                disputeEntity.setDisputeStatus(DisputeStatusEnum.PENDING);
+                
+                Long newDisputeEntity = disputeEntitySessionBeanLocal.createNewDispute(disputeEntity, null, order.getOrderId());
+
+                return Response.status(Response.Status.OK).entity(newDisputeEntity).build();
+            } catch (InvalidLoginCredentialException ex) {
+                return Response.status(Status.UNAUTHORIZED).entity(ex.getMessage()).build();
+            } catch (Exception ex) {
+                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+            }
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid create new dispute request").build();
         }
     }
     

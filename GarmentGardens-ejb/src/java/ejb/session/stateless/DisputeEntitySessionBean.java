@@ -7,9 +7,11 @@ package ejb.session.stateless;
 
 import entity.DisputeEntity;
 import entity.OrderEntity;
+import entity.ProductEntity;
 import entity.StaffEntity;
 import entity.UserEntity;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -17,14 +19,20 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import util.enumeration.DisputeStatusEnum;
 import util.exception.ApproveDisputeException;
 import util.exception.DeleteDisputeException;
 import util.exception.DisputeNotFoundException;
+import util.exception.InputDataValidationException;
 import util.exception.OrderNotFoundException;
 import util.exception.StaffNotFoundException;
 import util.exception.UpdateDisputeException;
 import util.exception.UserNotFoundException;
+import util.exception.CreateNewDisputeException;
 
 /**
  *
@@ -44,22 +52,35 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
 
     @PersistenceContext(unitName = "GarmentGardens-ejbPU")
     private EntityManager entityManager;
+    
+    private final ValidatorFactory validatorFactory;
+    private final Validator validator;
 
     public DisputeEntitySessionBean() {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
     }
 
     @Override
-    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws OrderNotFoundException {
+    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws OrderNotFoundException, CreateNewDisputeException {
+        Set<ConstraintViolation<DisputeEntity>> constraintViolations = validator.validate(newDisputeEntity);
 
-        try {
-            OrderEntity orderToAssociate = orderEntitySessionBeanLocal.retrieveOrderByOrderId(orderId);
-            newDisputeEntity.setOrder(orderToAssociate);
+        if (constraintViolations.isEmpty()) {
+            try {
+                System.out.println("Dispute title" + newDisputeEntity.getTitle());
+                OrderEntity orderToAssociate = orderEntitySessionBeanLocal.retrieveOrderByOrderId(orderId);
+                newDisputeEntity.setOrder(orderToAssociate);
 
-            entityManager.persist(newDisputeEntity);
-            entityManager.flush();
-            return newDisputeEntity.getDisputeId();
-        } catch (OrderNotFoundException ex) {
-            throw new OrderNotFoundException("Order " + orderId + " does not exist!");
+                entityManager.persist(newDisputeEntity);
+                entityManager.flush();
+                return newDisputeEntity.getDisputeId();
+            } catch (OrderNotFoundException ex) {
+                throw new OrderNotFoundException("Order " + orderId + " does not exist!");
+            } catch (CreateNewDisputeException ex) {
+                throw new CreateNewDisputeException("Error in creating " + newDisputeEntity.getDisputeId());
+            }
+        } else {
+            throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
         }
     }
 
@@ -102,7 +123,7 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
 
     @Override
     public DisputeEntity updateDispute(DisputeEntity disputeEntity) throws UpdateDisputeException, DisputeNotFoundException {
-
+        
         DisputeEntity disputeEntityToUpdate = retrieveDisputeByDisputeId(disputeEntity.getDisputeId());
         if (disputeEntityToUpdate == null) {
             if (disputeEntityToUpdate.getTitle().equals(disputeEntity.getTitle())) {
@@ -154,9 +175,15 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
         }
 
     }
+    
+    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<DisputeEntity>> constraintViolations) {
+        String msg = "Input data validation error!:";
 
-    public void persist(Object object) {
-        entityManager.persist(object);
+        for (ConstraintViolation constraintViolation : constraintViolations) {
+            msg += "\n\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage();
+        }
+
+        return msg;
     }
 
 }
