@@ -52,7 +52,7 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
 //    every weekday at 7-8am and 10-11pm start flash sales
    
     
-    @Schedule(hour = "9", minute = "55", info = "beginFlashSales")
+    @Schedule(hour = "17", minute = "14", info = "beginFlashSales")
     public void beginFlashSales() {
         try {
             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
@@ -74,7 +74,7 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
 
     }
 
-    @Schedule(hour = "9", minute="56", second="5", info = "endFlashSales")
+    @Schedule(hour = "17", minute="16", second="5", info = "endFlashSales")
     //every weekday at 8am and 11pm, END flash sales
 //    @Schedule(hour = "8", minute = "4,11", second="1", info = "endFlashSales")
 //    @Timeout
@@ -127,6 +127,12 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
                 productEntity.setQuantityOnHand(100);
             }
         }
+    }
+    
+    @Schedule(hour = "*", minute = "*", second="*/5", info = "timer check")
+    public void timerCheck() {
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        System.out.println("** TIMER CHECK: " + timeStamp);
     }
 
     public void persist(Object object) {
