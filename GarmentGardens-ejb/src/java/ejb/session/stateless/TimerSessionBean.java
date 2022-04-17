@@ -48,12 +48,11 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
     public TimerSessionBean() {
     }
 
-    @Schedule(dayOfWeek = "Mon-Fri", hour = "17", info="beginFlashSales")
+//    @Schedule(dayOfWeek = "Mon-Fri", hour = "17", info="beginFlashSales")
 //    every weekday at 7-8am and 10-11pm start flash sales
-//    @Schedule(hour = "7-8", minute = "*", second = "*/5", info = "beginFlashSales")
-    //TO TEST
+   
     
-//    @Schedule(hour = "8", minute = "2,10", info = "beginFlashSales")
+    @Schedule(hour = "9", minute = "55", info = "beginFlashSales")
     public void beginFlashSales() {
         try {
             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
@@ -75,7 +74,7 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
 
     }
 
-    @Schedule(dayOfWeek = "Mon-Fri", hour = "17", minute="20", second="5", info = "endFlashSales")
+    @Schedule(hour = "9", minute="56", second="5", info = "endFlashSales")
     //every weekday at 8am and 11pm, END flash sales
 //    @Schedule(hour = "8", minute = "4,11", second="1", info = "endFlashSales")
 //    @Timeout
@@ -115,7 +114,7 @@ public class TimerSessionBean implements TimerSessionBeanLocal {
         }
     }
 
-    @Schedule(hour = "*", minute = "*/1", second = "*", info = "productEntityReorderQuantityCheckTimer")
+    @Schedule(hour = "*", minute = "*/1", info = "productEntityReorderQuantityCheckTimer")
     public void productEntityReorderQuantityCheckTimer() {
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
         System.out.println("********** EjbTimerSessionBean.productEntityReorderQuantityCheckTimer(): Timeout at " + timeStamp);
