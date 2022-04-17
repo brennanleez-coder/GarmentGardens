@@ -70,6 +70,7 @@ public class RatingEntitySessionBean implements RatingEntitySessionBeanLocal {
     public RatingEntity rateProduct(UserEntity userEntity, ProductEntity productEntity, RatingEntity ratingEntity) throws CreateNewRatingException, ProductNotFoundException, UserNotFoundException {
         UserEntity customer = userEntitySessionBeanLocal.retrieveUserByUserId(userEntity.getUserId());
         ProductEntity product = productEntitySessionBeanLocal.retrieveProductByProductId(productEntity.getProductId());
+        
         if (customer != null && product != null && ratingEntity != null) {
 
             RatingEntity newRating = new RatingEntity(ratingEntity.getDescription(), ratingEntity.getNumberOfStars(), new Date());

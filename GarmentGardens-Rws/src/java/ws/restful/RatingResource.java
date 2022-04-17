@@ -41,6 +41,7 @@ public class RatingResource {
     private final SessionBeanLookup sessionBeanLookup;
     private final RatingEntitySessionBeanLocal ratingEntitySessionBeanLocal;
     private final ProductEntitySessionBeanLocal productEntitySessionBeanLocal;
+
     /**
      * Creates a new instance of RatingResource
      */
@@ -58,8 +59,8 @@ public class RatingResource {
         try {
             ProductEntity productEntity = productEntitySessionBeanLocal.retrieveProductByProductId(productId);
             List<RatingEntity> listOfRatings = productEntity.getRatings();
-            
-            for (RatingEntity rating: listOfRatings) {
+
+            for (RatingEntity rating : listOfRatings) {
                 UserEntity customer = rating.getCustomer();
                 customer.getRewards().clear();
                 customer.getCreditCards().clear();
@@ -67,7 +68,6 @@ public class RatingResource {
                 customer.setGroupCart(null);
                 customer.getOrders().clear();
             }
-            
 
             GenericEntity<List<RatingEntity>> genericEntity = new GenericEntity<List<RatingEntity>>(listOfRatings) {
             };
@@ -78,7 +78,7 @@ public class RatingResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
-    
+
     @Path("rateProduct")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -86,8 +86,11 @@ public class RatingResource {
     public Response rateProduct(CreateRatingReq createRatingReq) {
         if (createRatingReq != null) {
             try {
-                RatingEntity rating = ratingEntitySessionBeanLocal.rateProduct(createRatingReq.getUser(), createRatingReq.getProduct(), createRatingReq.getNewRating());
+                System.out.println(createRatingReq);
 
+                RatingEntity rating = ratingEntitySessionBeanLocal.rateProduct(createRatingReq.getUser(), createRatingReq.getProduct(), createRatingReq.getNewRating());
+                rating.setCustomer(null);
+                System.out.println(rating);
                 return Response.status(Response.Status.OK).entity(rating).build();
             } catch (Exception ex) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();

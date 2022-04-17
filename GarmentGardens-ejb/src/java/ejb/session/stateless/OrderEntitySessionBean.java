@@ -198,7 +198,7 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
             entityManager.flush();
 
             // CLEAR CART ENTITY
-            cart.getCartLineItems().clear();
+            cart.setCartLineItems(new ArrayList<>());
             cart.setTotalCartItems(0);
             cart.setTotalQuantity(0);
             cart.setTotalAmount(new BigDecimal(0));
