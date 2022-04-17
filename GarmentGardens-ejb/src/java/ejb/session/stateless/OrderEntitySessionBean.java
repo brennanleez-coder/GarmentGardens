@@ -63,9 +63,14 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
                 customerEntity.getOrders().add(newOrderEntity);
                 entityManager.persist(newOrderEntity);
 
+                // FOR INIT DONT NEED DEDCUT
 //                for (LineItemEntity lineItemEntity : newOrderEntity.getLineItems()) {
 //                    productEntitySessionBeanLocal.debitQuantityOnHand(lineItemEntity.getProduct().getProductId(), lineItemEntity.getQuantity());
 //                }
+
+                // ADD CHLOROPHYLL
+                int chlorophyll = customerEntity.getChlorophyll();
+                customerEntity.setChlorophyll(chlorophyll + newOrderEntity.getTotalAmount().intValue());
 
                 entityManager.flush();
 
@@ -187,12 +192,16 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
             // ASSOCIATE ORDER TO USER
             order.setCustomer(user);
             user.getOrders().add(order);
-            
+
+            // ADD CHLOROPHYLL
+            int chlorophyll = user.getChlorophyll();
+            user.setChlorophyll(chlorophyll + totalAmount.intValue());
+
             // DEBIT QTY
             for (LineItemEntity li : order.getLineItems()) {
                 productEntitySessionBeanLocal.debitQuantityOnHand(li.getProduct().getProductId(), li.getQuantity());
             }
-            
+
             // PERSIST BEFORE REMOVING CART
             entityManager.persist(order);
             entityManager.flush();
@@ -202,7 +211,6 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
             cart.setTotalCartItems(0);
             cart.setTotalQuantity(0);
             cart.setTotalAmount(new BigDecimal(0));
-
 
         } catch (Exception ex) {
             throw new CheckoutException("The checkout failed!");

@@ -81,6 +81,10 @@ public class RatingEntitySessionBean implements RatingEntitySessionBeanLocal {
 
             product.getRatings().add(newRating);
 
+            // ADD CHLOROPHYLL
+            int chlorophyll = customer.getChlorophyll();
+            customer.setChlorophyll(chlorophyll + 2);
+            
             return newRating;
         } else {
             throw new CreateNewRatingException("Rate product failed!");

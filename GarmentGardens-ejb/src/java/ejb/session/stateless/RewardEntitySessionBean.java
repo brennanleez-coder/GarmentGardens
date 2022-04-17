@@ -22,6 +22,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.enumeration.RewardEnum;
 import util.exception.CreateNewRewardException;
 import util.exception.DeleteRewardException;
 import util.exception.InputDataValidationException;
@@ -114,6 +115,19 @@ public class RewardEntitySessionBean implements RewardEntitySessionBeanLocal {
             reward.setRewardName(reward.getRewardName() + " (REDEEMED)");
             user.getRewards().add(reward);
             updateReward(reward);
+
+            // DEDUCT CHLOROPHYLL
+            int chloroToDeduct = 0;
+            if (reward.getRewardEnum() == RewardEnum.PROMOCODE10) {
+                chloroToDeduct = 200;
+            } else if (reward.getRewardEnum() == RewardEnum.PROMOCODE35) {
+                chloroToDeduct = 600;
+            } else {
+                chloroToDeduct = 1000;
+            }
+            int chlorophyll = user.getChlorophyll();
+            user.setChlorophyll(chlorophyll - chloroToDeduct);
+
             userEntitySessionBeanLocal.updateUser(user);
             return reward;
         }
