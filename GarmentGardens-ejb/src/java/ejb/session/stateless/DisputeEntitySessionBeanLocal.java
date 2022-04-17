@@ -12,6 +12,7 @@ import util.exception.ApproveDisputeException;
 import util.exception.CreateNewDisputeException;
 import util.exception.DeleteDisputeException;
 import util.exception.DisputeNotFoundException;
+import util.exception.InputDataValidationException;
 import util.exception.OrderNotFoundException;
 import util.exception.StaffNotFoundException;
 import util.exception.UpdateDisputeException;
@@ -23,7 +24,7 @@ import util.exception.UpdateDisputeException;
 @Local
 public interface DisputeEntitySessionBeanLocal {
 
-    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws OrderNotFoundException, CreateNewDisputeException;
+    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws OrderNotFoundException, CreateNewDisputeException, InputDataValidationException;
 
     public List<DisputeEntity> retrieveAllDisputes();
 

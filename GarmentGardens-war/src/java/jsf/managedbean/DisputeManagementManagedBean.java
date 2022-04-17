@@ -24,8 +24,10 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import util.enumeration.DisputeStatusEnum;
 import util.exception.ApproveDisputeException;
+import util.exception.CreateNewDisputeException;
 import util.exception.DeleteDisputeException;
 import util.exception.DisputeNotFoundException;
+import util.exception.InputDataValidationException;
 import util.exception.OrderNotFoundException;
 import util.exception.StaffNotFoundException;
 import util.exception.UpdateDisputeException;
@@ -77,7 +79,7 @@ public class DisputeManagementManagedBean implements Serializable {
 
     }
 
-    public void createNewDispute(ActionEvent event) {
+    public void createNewDispute(ActionEvent event) throws CreateNewDisputeException, InputDataValidationException {
 
         try {
             StaffEntity staff = (StaffEntity) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("currentStaffEntity");

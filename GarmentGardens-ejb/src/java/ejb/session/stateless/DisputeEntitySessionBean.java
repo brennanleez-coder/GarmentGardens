@@ -62,7 +62,7 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
     }
 
     @Override
-    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws OrderNotFoundException, CreateNewDisputeException {
+    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws OrderNotFoundException, CreateNewDisputeException, InputDataValidationException {
         Set<ConstraintViolation<DisputeEntity>> constraintViolations = validator.validate(newDisputeEntity);
 
         if (constraintViolations.isEmpty()) {
@@ -76,8 +76,6 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
                 return newDisputeEntity.getDisputeId();
             } catch (OrderNotFoundException ex) {
                 throw new OrderNotFoundException("Order " + orderId + " does not exist!");
-            } catch (CreateNewDisputeException ex) {
-                throw new CreateNewDisputeException("Error in creating " + newDisputeEntity.getDisputeId());
             }
         } else {
             throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));

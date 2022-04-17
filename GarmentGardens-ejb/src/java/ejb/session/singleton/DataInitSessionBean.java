@@ -44,8 +44,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.util.Pair;
 import javax.annotation.PostConstruct;
@@ -66,6 +64,7 @@ import util.exception.CreateNewAdvertisementException;
 import util.exception.CreateNewAdvertiserEntityException;
 import util.exception.CreateNewCategoryException;
 import util.exception.CreateNewCreditCardException;
+import util.exception.CreateNewDisputeException;
 import util.exception.CreateNewOrderException;
 import util.exception.CreateNewProductException;
 import util.exception.CreateNewRewardException;
@@ -473,7 +472,7 @@ public class DataInitSessionBean {
 
     }
 
-    private void initialiseDisputes() throws UserUsernameExistException, StaffUsernameExistException, UnknownPersistenceException, InputDataValidationException, StaffNotFoundException, OrderNotFoundException {
+    private void initialiseDisputes() throws UserUsernameExistException, StaffUsernameExistException, UnknownPersistenceException, InputDataValidationException, StaffNotFoundException, OrderNotFoundException, CreateNewDisputeException {
         System.out.println("Init Disputes..");
 
         List<StaffEntity> listOfStaff = staffEntitySessionBeanLocal.retrieveAllStaffs();
