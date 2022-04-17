@@ -14,8 +14,8 @@
         <div>
             <div style="display: flex; justify-content: space-between">
                 <h3 style="padding-left:15px">Category Management</h3>
-                <h:form>
-                    <p:commandButton style="margin-right:15px" value="Generate Report" ajax="false" />
+<h:form>
+                    <p:commandButton style="margin-right:15px" value="Generate Report" actionListener="#{reportManagedBean.generateCategoryReport}" ajax="false" />
                 </h:form>
             </div>
             <h:form id="formAllCategories">

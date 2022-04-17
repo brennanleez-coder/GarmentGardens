@@ -14,7 +14,7 @@
         <div style="display: flex; justify-content: space-between">
             <h3 style="padding-left:15px">Order Management</h3>
             <h:form>
-                <p:commandButton style="margin-right:15px" value="Generate Report" ajax="false" />
+                <p:commandButton style="margin-right:15px" value="Generate Report" actionListener="#{reportManagedBean.generateOrderReport}" ajax="false" />
             </h:form>
         </div>
         <h:form id="formAllOrders">
