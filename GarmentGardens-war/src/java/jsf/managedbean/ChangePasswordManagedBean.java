@@ -51,6 +51,8 @@ public class ChangePasswordManagedBean implements Serializable{
 
     
     public void changePassword(ActionEvent event) throws IOException {
+        System.out.println("password1 new:" + getNewPassword1());
+        System.out.println("password1 new:" + getNewPassword2());
         try {
             if (getNewPassword1().equals(getNewPassword2())) {
                 staffEntitySessionBeanLocal.staffChangePassword(currentStaff.getUsername(), currentPassword, newPassword2);
