@@ -67,7 +67,6 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
 
         if (constraintViolations.isEmpty()) {
             try {
-                System.out.println("Dispute title" + newDisputeEntity.getTitle());
                 OrderEntity orderToAssociate = orderEntitySessionBeanLocal.retrieveOrderByOrderId(orderId);
                 newDisputeEntity.setOrder(orderToAssociate);
 

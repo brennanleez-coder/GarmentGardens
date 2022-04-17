@@ -192,4 +192,24 @@ public class RewardResource {
         }
     }
 
+    @Path("getRewardByCode/{promoCode}")
+    @GET
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRewardByCode(@PathParam("promoCode") Integer promoCode
+    ) {
+        try {
+            RewardEntity reward = rewardEntitySessionBeanLocal.retrieveRewardByPromoCode(promoCode);
+
+            reward.setCustomer(null);
+            reward.setStaff(null);
+
+            return Response.status(Status.OK).entity(reward).build();
+        } catch (RewardNotFoundException ex) {
+            return Response.status(Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+    }
+
 }

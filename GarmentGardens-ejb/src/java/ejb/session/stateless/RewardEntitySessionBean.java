@@ -180,6 +180,22 @@ public class RewardEntitySessionBean implements RewardEntitySessionBeanLocal {
     }
 
     @Override
+    public RewardEntity retrieveRewardByPromoCode(Integer promoCode) throws RewardNotFoundException {
+        try {
+            Query query = entityManager.createQuery("SELECT a FROM RewardEntity a WHERE a.promoCode = ?1");
+            query.setParameter(1, promoCode);
+            RewardEntity rewardFound = (RewardEntity) query.getSingleResult();
+
+            rewardFound.getCustomer();
+            rewardFound.getStaff();
+
+            return rewardFound;
+        }catch (Exception ex) {
+            throw new RewardNotFoundException("Reward for promo code " + promoCode + " does not exist!");
+        }
+    }
+
+    @Override
     public void updateReward(RewardEntity rewardEntity) throws InputDataValidationException, RewardNotFoundException, UpdateRewardException {
         Set<ConstraintViolation<RewardEntity>> constraintViolations = validator.validate(rewardEntity);
 

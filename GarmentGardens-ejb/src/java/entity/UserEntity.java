@@ -66,6 +66,8 @@ public class UserEntity implements Serializable {
         this.rewards = new ArrayList<RewardEntity>();
         this.orders = new ArrayList<OrderEntity>();
         this.tiering = TierEnum.TIER1;
+        this.chlorophyll = 0;
+        this.wallet = new BigDecimal(0);
     }
     
 

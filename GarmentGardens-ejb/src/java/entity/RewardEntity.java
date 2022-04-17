@@ -43,7 +43,7 @@ public class RewardEntity implements Serializable {
     private UserEntity customer;
 
     public RewardEntity() {
-        this.promoCode =  ("PrOmOcOdE" + new Random().nextInt(500)).toString().hashCode();
+        this.promoCode =  ("PrOmOcOdE" + new Random().nextInt(500)).hashCode();
     }
 
     public RewardEntity(String rewardName, RewardEnum rewardEnum, Date expiryDate,StaffEntity staff, UserEntity customer) {
