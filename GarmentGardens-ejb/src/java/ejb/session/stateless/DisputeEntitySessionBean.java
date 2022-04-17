@@ -7,9 +7,11 @@ package ejb.session.stateless;
 
 import entity.DisputeEntity;
 import entity.OrderEntity;
+import entity.ProductEntity;
 import entity.StaffEntity;
 import entity.UserEntity;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -17,12 +19,20 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import util.enumeration.DisputeStatusEnum;
+import util.exception.ApproveDisputeException;
 import util.exception.DeleteDisputeException;
 import util.exception.DisputeNotFoundException;
+import util.exception.InputDataValidationException;
 import util.exception.OrderNotFoundException;
 import util.exception.StaffNotFoundException;
 import util.exception.UpdateDisputeException;
 import util.exception.UserNotFoundException;
+import util.exception.CreateNewDisputeException;
 
 /**
  *
@@ -42,34 +52,49 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
 
     @PersistenceContext(unitName = "GarmentGardens-ejbPU")
     private EntityManager entityManager;
+    
+    private final ValidatorFactory validatorFactory;
+    private final Validator validator;
 
     public DisputeEntitySessionBean() {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
     }
 
     @Override
-    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws StaffNotFoundException, OrderNotFoundException {
+    public Long createNewDispute(DisputeEntity newDisputeEntity, Long staffId, Long orderId) throws OrderNotFoundException, CreateNewDisputeException {
+        Set<ConstraintViolation<DisputeEntity>> constraintViolations = validator.validate(newDisputeEntity);
 
-        try {
-            StaffEntity staffToAssociate = staffEntitySessionBeanLocal.retrieveStaffByStaffId(staffId);
-            OrderEntity orderToAssociate = orderEntitySessionBeanLocal.retrieveOrderByOrderId(orderId);
-            newDisputeEntity.setStaff(staffToAssociate);
-            newDisputeEntity.setOrder(orderToAssociate);
+        if (constraintViolations.isEmpty()) {
+            try {
+                System.out.println("Dispute title" + newDisputeEntity.getTitle());
+                OrderEntity orderToAssociate = orderEntitySessionBeanLocal.retrieveOrderByOrderId(orderId);
+                newDisputeEntity.setOrder(orderToAssociate);
 
-            entityManager.persist(newDisputeEntity);
-            entityManager.flush();
-            return newDisputeEntity.getDisputeId();
-        } catch (StaffNotFoundException ex) {
-            throw new StaffNotFoundException("Staff " + staffId + " does not exist!");
-        } catch (OrderNotFoundException ex) {
-            throw new OrderNotFoundException("Order " + orderId + " does not exist!");
+                entityManager.persist(newDisputeEntity);
+                entityManager.flush();
+                return newDisputeEntity.getDisputeId();
+            } catch (OrderNotFoundException ex) {
+                throw new OrderNotFoundException("Order " + orderId + " does not exist!");
+            } catch (CreateNewDisputeException ex) {
+                throw new CreateNewDisputeException("Error in creating " + newDisputeEntity.getDisputeId());
+            }
+        } else {
+            throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
         }
     }
 
     @Override
     public List<DisputeEntity> retrieveAllDisputes() {
         Query query = entityManager.createQuery("SELECT d FROM DisputeEntity d");
+        List<DisputeEntity> listOfDisputes = (List<DisputeEntity>) query.getResultList();
 
-        return query.getResultList();
+        for (DisputeEntity dispute : listOfDisputes) {
+            dispute.getStaff();
+            dispute.getOrder();
+        }
+
+        return listOfDisputes;
     }
 
     @Override
@@ -98,7 +123,7 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
 
     @Override
     public DisputeEntity updateDispute(DisputeEntity disputeEntity) throws UpdateDisputeException, DisputeNotFoundException {
-
+        
         DisputeEntity disputeEntityToUpdate = retrieveDisputeByDisputeId(disputeEntity.getDisputeId());
         if (disputeEntityToUpdate == null) {
             if (disputeEntityToUpdate.getTitle().equals(disputeEntity.getTitle())) {
@@ -113,25 +138,52 @@ public class DisputeEntitySessionBean implements DisputeEntitySessionBeanLocal {
         } else {
             throw new DisputeNotFoundException("Dispute ID: " + disputeEntity.getDisputeId() + "cannot be found");
         }
+    }
+
+    @Override
+    public void approveDispute(DisputeEntity disputeEntity, Long staffId, Long orderId) throws ApproveDisputeException, DisputeNotFoundException, StaffNotFoundException, OrderNotFoundException {
+        DisputeEntity dispute = retrieveDisputeByDisputeId(disputeEntity.getDisputeId());
+        StaffEntity staff = staffEntitySessionBeanLocal.retrieveStaffByStaffId(staffId);
+        OrderEntity order = orderEntitySessionBeanLocal.retrieveOrderByOrderId(orderId);
+        if (dispute == null) {
+            throw new DisputeNotFoundException("Dispute Not Found, ID:" + dispute.getDisputeId());
+        } else {
+            if(dispute.getDisputeStatus().equals(DisputeStatusEnum.RESOLVED)) {
+                throw new ApproveDisputeException("Dispute has already been approved");
+            } else {
+                dispute.setDisputeStatus(DisputeStatusEnum.RESOLVED);
+                dispute.setStaff(staff);
+                dispute.setOrder(order);
+            }
+        }
 
     }
 
     @Override
     public void deleteDispute(Long disputeId) throws DisputeNotFoundException, DeleteDisputeException {
         DisputeEntity disputeEntityToRemove = retrieveDisputeByDisputeId(disputeId);
-
-        if (disputeEntityToRemove.getStaff() == null) {
-            disputeEntityToRemove.getStaff().getDisputes().remove(disputeEntityToRemove);
-            disputeEntityToRemove.getOrder().setDispute(null);
-            entityManager.remove(disputeEntityToRemove);
+        if (disputeEntityToRemove != null) {
+            if (disputeEntityToRemove.getStaff() == null && !disputeEntityToRemove.getDisputeStatus().equals(DisputeStatusEnum.RESOLVED)) {
+                disputeEntityToRemove.getOrder().setDispute(null);
+                entityManager.remove(disputeEntityToRemove);
+            } else {
+                // New in v4.1 to prevent deleting staff with existing sale transaction(s)
+                throw new DeleteDisputeException("Dispute ID " + disputeId + " is associated with existing Staff or has already been RESOLVED and cannot be deleted!");
+            }
         } else {
-            // New in v4.1 to prevent deleting staff with existing sale transaction(s)
-            throw new DeleteDisputeException("Dispute ID " + disputeId + " is associated with existing dispute(s) and cannot be deleted!");
+            throw new DisputeNotFoundException("Dispute cannot be found, ID: " + disputeId);
         }
-    }
 
-    public void persist(Object object) {
-        entityManager.persist(object);
+    }
+    
+    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<DisputeEntity>> constraintViolations) {
+        String msg = "Input data validation error!:";
+
+        for (ConstraintViolation constraintViolation : constraintViolations) {
+            msg += "\n\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage();
+        }
+
+        return msg;
     }
 
 }
