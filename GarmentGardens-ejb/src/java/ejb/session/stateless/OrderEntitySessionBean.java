@@ -167,7 +167,7 @@ public class OrderEntitySessionBean implements OrderEntitySessionBeanLocal {
     @Override
     public void checkout(UserEntity userEntity, String promoCode) throws CheckoutException {
         try {
-            // PROMO CODE LOGIC HERE
+            // PROMO CODE LOGIC HERE SHOULD WE PERSIST ASSOCIATION
 
             // GET PERSISTED ENTITIES
             UserEntity user = userEntitySessionBeanLocal.retrieveUserByUserId(userEntity.getUserId());

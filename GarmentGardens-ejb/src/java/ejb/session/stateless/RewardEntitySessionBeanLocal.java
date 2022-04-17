@@ -42,5 +42,7 @@ public interface RewardEntitySessionBeanLocal {
     public RewardEntity redeemReward(Long rewardId, Long customerId) throws RewardNotFoundException, UpdateUserException, UserNotFoundException, InputDataValidationException, UpdateRewardException, RedeemRewardException;
 
     public RewardEntity useReward(Long rewardId, Long customerId) throws RewardNotFoundException, UpdateUserException, UserNotFoundException, InputDataValidationException, UpdateRewardException, UseRewardException ;
+
+    public RewardEntity retrieveRewardByPromoCode(Integer promoCode) throws RewardNotFoundException;
     
 }

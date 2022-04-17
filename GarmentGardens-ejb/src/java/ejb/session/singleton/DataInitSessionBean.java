@@ -479,7 +479,7 @@ public class DataInitSessionBean {
 
         List<OrderEntity> listOfOrder = orderEntitySessionBeanLocal.retrieveAllOrders();
 
-        for (int i = 1; i <= listOfOrder.size(); i++) {
+        for (int i = 1; i < listOfOrder.size(); i++) {
             DisputeStatusEnum[] disputes = DisputeStatusEnum.values();
             DisputeEntity disputeToMake = new DisputeEntity();
             disputeToMake.setTitle("Dispute " + i);
